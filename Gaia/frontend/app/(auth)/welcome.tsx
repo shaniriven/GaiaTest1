@@ -4,8 +4,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import Swiper from "react-native-swiper";
 import { useRef, useState } from "react";
-import { onboarding } from "../../constants/index"
+import { onboarding } from "../../constants/index";
+
 import CustomButton from "@/components/CustomButton";
+
 
 const Onboarding = () => {
   const swiperRef = useRef<Swiper>(null);
@@ -45,7 +47,7 @@ const Onboarding = () => {
       </Swiper>
       <CustomButton
         title={isLastSlide ? 'Get Started' : 'Next'} 
-        className="w-[35%] mt-10 mb-10"
+        className="w-[130px] mt-10 mb-10"
         bgVariant="gray-vibe"
         textVariant="primary"
         
