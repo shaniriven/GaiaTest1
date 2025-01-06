@@ -2,12 +2,12 @@
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const History = () => {
+const Search = () => {
   return (
     <SafeAreaView>
-      <Text>History</Text>
+      <Text>Search</Text>
     </SafeAreaView>
   );
 };
 
-export default History;
+export default Search;
