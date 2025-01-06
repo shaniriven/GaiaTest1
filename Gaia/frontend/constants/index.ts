@@ -2,6 +2,7 @@ import ob1 from "@/assets/images/ob1.png";
 import ob2 from "@/assets/images/NatureOrCity.png";
 import ob3 from "@/assets/images/groupIcons.png";
 import singUp from "@/assets/images/logo.png";
+import check from "@/assets/images/check.png"
 import arrowDown from "@/assets/icons/arrow-down.png";
 import arrowUp from "@/assets/icons/arrow-up.png";
 import backArrow from "@/assets/icons/back-arrow.png";
@@ -49,6 +50,7 @@ export const onboarding = [
 ];
 
 export const singUpImage = singUp;
+export const checkVerification = check;
 
 export const icons = {
   arrowDown,
