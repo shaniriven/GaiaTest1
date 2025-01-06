@@ -16,7 +16,7 @@ requests = "*"
 pytest-mock = "*"
 flask-pymongo = "*"
 selenium = "*"
-
+flask_pymongo="*"
 [dev-packages]
 
 [requires]
