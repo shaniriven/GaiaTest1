@@ -18,6 +18,7 @@ module.exports = {
         JakartaSemiBold: ["Jakarta-SemiBold", "sans-serif"],
       },
       colors: {
+        "gray-vibe": "#557865",
         primary: {
           100: "#F5F8FF",
           200: "#EBF4FF",
@@ -28,6 +29,7 @@ module.exports = {
           700: "#475A99",
           800: "#364573",
           900: "#242B4D",
+          111: "#13875B",
         },
         secondary: {
           100: "#F8F8F8",
