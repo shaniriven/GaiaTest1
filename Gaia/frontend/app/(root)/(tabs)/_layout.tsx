@@ -26,18 +26,26 @@ export default function Layout() {
         tabBarInactiveTintColor: "white",
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "#333333",
-          borderRadius: 50,
-          paddingBottom: 0, // ios only
-          overflow: "hidden",
-          marginHorizontal: 20,
-          marginBottom: 20,
-          height: 78,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexDirection: "row",
-          position: "absolute",
+            backgroundColor: "grey",
+            position: "absolute",
+            bottom: 30,
+            marginHorizontal: 20,
+            height: 60,
+            borderRadius: 50,
+            shadowColor: '#000',
+            shadowOpacity: 0.06,
+            shadowOffset: {
+               width: 10,
+               height: 10,
+            },
+
+        //   paddingBottom: 0, // ios only
+        //   overflow: "hidden",
+        //   marginBottom: 20,
+        //   display: "flex",
+        //   justifyContent: "space-between",
+        //   alignItems: "center",
+        //   flexDirection: "row",
         },
       }}
     >
@@ -52,12 +60,12 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="rides"
+        name="user"
         options={{
-          title: "Rides",
+          title: "User",
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <TabIcon source={icons.list} focused={focused} />
+            <TabIcon source={icons.user} focused={focused} />
           ),
         }}
       />
@@ -68,16 +76,6 @@ export default function Layout() {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon source={icons.chat} focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon source={icons.profile} focused={focused} />
           ),
         }}
       />
