@@ -6,6 +6,16 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-cors = "*"
+pymongo = "*"
+pytest-flask = "*"
+mongomock = "*"
+pytest = "*"
+setuptools = "*"
+python-dotenv = "*"
+requests = "*"
+pytest-mock = "*"
+flask-pymongo = "*"
+selenium = "*"
 
 [dev-packages]
 
