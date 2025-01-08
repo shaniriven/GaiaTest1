@@ -12,9 +12,9 @@ import { ReactNativeModal } from "react-native-modal";
 import { useSignUp } from "@clerk/clerk-expo";
 
 const SignUp = () => {
-  // clerk
   const { isLoaded, signUp, setActive } = useSignUp()
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
   const [verification, setVerification] = useState({
     state: 'default',
     error: "",

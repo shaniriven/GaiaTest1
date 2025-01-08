@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Text, ScrollView, View, Image, } from "react-native";
+import { Text, ScrollView, View, Image, Alert } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { singUpImage, icons } from "../../constants/index";
 import InputField from "@/components/InputField";
@@ -7,21 +7,16 @@ import { useCallback, useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import OAuth from "@/components/OAuth";
 import { useSignIn } from "@clerk/clerk-expo";
+
 const SignIn = () => {
   const { signIn, setActive, isLoaded } = useSignIn()
   const router = useRouter()
-  const [form, setForm] = useState(
-    {
-      email: '',
-      password: '',
-    }
-  );
+  const [form, setForm] = useState({ email: '', password: '',});
   
-  // auth using flask / clerk 
+  // auth using clerk 
   // Handle the submission of the sign-in form
   const onSignInPress = useCallback(async () => {
     if (!isLoaded) return
-
     // Start the sign-in process using the email and password provided
     try {
       const signInAttempt = await signIn.create({
@@ -29,20 +24,18 @@ const SignIn = () => {
         password: form.password,
       })
 
-      // If sign-in process is complete, set the created session as active
-      // and redirect the user
+      // If sign-in process is complete, set the created session as active and redirect the user
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId })
         router.replace('/')
       } else {
-        // If the status isn't complete, check why. User might need to
-        // complete further steps.
-        console.error(JSON.stringify(signInAttempt, null, 2))
+        // If the status isn't complete, check why. User might need to complete further steps.
+        Alert.alert('Error', err.errors[0].longMessage)
       }
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      Alert.alert('Error', err.errors[0].longMessage)
     }
   }, [isLoaded, form.email, form.password])
 
