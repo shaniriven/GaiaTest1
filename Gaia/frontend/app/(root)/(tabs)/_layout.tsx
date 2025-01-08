@@ -1,17 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Tabs } from "expo-router";
-import {
-  Animated,
-  Platform,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-// icons
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-
-// icons -- delete if not used
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Animated, Platform, TouchableOpacity, View, } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";                  
 import { useRef } from "react";
 
 const TabIcon = ({ source, focused }) => {
@@ -40,7 +30,6 @@ const TabIcon = ({ source, focused }) => {
 };
 
 export default function Layout() {
-    const tabOffsetValue = useRef(new Animated.Value(0)).current;
     
     return (
       <View className="flex-1 bg-gray-200">
@@ -67,54 +56,38 @@ export default function Layout() {
             },
           }}
         >
-          <Tabs.Screen
-            name="home"
+          <Tabs.Screen name="home"
             options={{
               title: "Home",
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
-                <TabIcon source="home" focused={focused} />
-              ),
+              tabBarIcon: ({ focused }) => ( <TabIcon source="home" focused={focused} /> ),
             }}
           />
-          <Tabs.Screen
-            name="user"
+          <Tabs.Screen name="user"
             options={{
               title: "User",
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
-                <TabIcon source="user" focused={focused} />
-              ),
+              tabBarIcon: ({ focused }) => ( <TabIcon source="user" focused={focused} /> ),
             }}
           />
-          <Tabs.Screen
-            name="newPlan"
+          <Tabs.Screen name="newPlan"
             options={{
               title: "New Plan",
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
-                <TabIcon source="plus" focused={focused} />
-              ),
+              tabBarIcon: ({ focused }) => ( <TabIcon source="plus" focused={focused} /> ),
             }}
           />
-          <Tabs.Screen
-            name="search"
+          <Tabs.Screen name="search"
             options={{
               title: "Search",
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
-                <TabIcon source="search" focused={focused} />
-              ),
+              tabBarIcon: ({ focused }) => ( <TabIcon source="search" focused={focused} /> ),
             }}
           />
-          <Tabs.Screen
-            name="chat"
+          <Tabs.Screen name="chat"
             options={{
               title: "Chat",
-              headerShown: false,
-              tabBarIcon: ({ focused }) => (
-                <TabIcon source="wechat" focused={focused} />
-              ),
+              headerShown: false, tabBarIcon: ({ focused }) => ( <TabIcon source="wechat" focused={focused} /> ),
             }}
           />
         </Tabs>

@@ -1,3 +1,5 @@
+import { DraggableFlatListProps } from "react-native-draggable-flatlist";
+
 declare module "*.png" {
   const value: string;
   export default value;
@@ -47,4 +49,19 @@ declare interface InputFieldProps extends TextInputProps {
   inputStyle?: string;
   iconStyle?: string;
   className?: string;
+}
+
+declare interface CustomDragListProps extends DraggableFlatListProps {
+  data: Array;
+  className?: string;
+}
+
+declare interface Trip {
+  key: string;
+  name: string,
+  country: string,
+  type: string,
+  time_hours: number,
+  level: string,
+  ages: number,
 }

@@ -33,8 +33,6 @@ const SignIn = () => {
         Alert.alert('Error', err.errors[0].longMessage)
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
       Alert.alert('Error', err.errors[0].longMessage)
     }
   }, [isLoaded, form.email, form.password])
@@ -44,9 +42,7 @@ const SignIn = () => {
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px] mt-6">
-          <Image
-            source={singUpImage} className="z-0 w-full h-[250px]"
-          />
+          <Image source={singUpImage} className="z-0 w-full h-[250px]" />
         </View>
         <View className="px-4 left-5" style={{ marginTop: 60 }}>
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5">
@@ -80,11 +76,8 @@ const SignIn = () => {
               })
             }
           />
-
           <CustomButton title="Sign In" onPress={onSignInPress} className="mt-10" bgVariant="primary" />
-          
           <OAuth/>
-          
           <Link href="/sign-up" className="text-lg text-center text-general-200 mt-5">
             <Text>Don't have an account? </Text>
             <Text className="text-primary-111">Sign Up</Text>

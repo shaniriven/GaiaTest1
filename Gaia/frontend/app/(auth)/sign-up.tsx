@@ -62,7 +62,7 @@ const onVerifyPress = async () => {
 
     // If verification was completed, set the session to active and redirect the user
     if (signUpAttempt.status === 'complete') {
-      // -> insert database connection 
+      // ----------------------------------------------------------------------> insert database connection 
       await setActive({ session: signUpAttempt.createdSessionId })
       setVerification({ ...verification, state: 'success' })
     } else {
