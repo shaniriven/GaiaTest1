@@ -25,14 +25,14 @@ declare module "*.svg" {
 
 declare interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  bgVariant?: "default" | "gray-vibe" | "secondary" | "danger" | "outline" | "success";
+  bgVariant?: "default" | "grey-vibe" | "secondary" | "danger" | "outline" | "success";
   textVariant?:
     | "primary"
     | "default"
     | "secondary"
     | "danger"
     | "success"
-    | "gray-vibe";
+    | "grey-vibe";
   IconLeft?: React.ComponentType<any>;
   IconRight?: React.ComponentType<any>;
   className?: string;

@@ -18,7 +18,7 @@ const OAuth = () => (
         className="mt-2 w-full shadow-none mt-3 border-neutral-400"
         IconLeft={ () => (
             <Image source={icons.google} resizeMode="contain" className="w-5 h-5 mx-2"/>
-        )}
+        )}  
     />
   </View>
 );
