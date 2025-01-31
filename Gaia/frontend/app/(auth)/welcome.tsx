@@ -44,16 +44,14 @@ const Onboarding = () => {
           ))}
       </Swiper>
       <CustomButton
-        title={isLastSlide ? 'Get Started' : 'Next'} 
+        title={isLastSlide ? 'Get Started' : 'Next'}
         className="w-[130px] mt-10 mb-10"
         bgVariant="gray-vibe"
         textVariant="primary"
-        
-        onPress={() =>
-          isLastSlide
+
+        onPress={() => isLastSlide
           ? router.replace('/(auth)/sign-up')
-          : swiperRef.current?.scrollBy(1)
-        }/>
+          : swiperRef.current?.scrollBy(1)} IconLeft={undefined} IconRight={undefined}/>
     </SafeAreaView>
   );
 };

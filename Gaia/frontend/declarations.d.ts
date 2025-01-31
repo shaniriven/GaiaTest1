@@ -27,17 +27,18 @@ declare module "*.svg" {
 
 declare interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  bgVariant?: "default" | "grey-vibe" | "secondary" | "danger" | "outline" | "success";
+  bgVariant?: "default" | "primary" | "gray-vibe" | "secondary" | "danger" | "outline" | "success";
   textVariant?:
     | "primary"
     | "default"
     | "secondary"
     | "danger"
     | "success"
-    | "grey-vibe";
+    | "gray-vibe";
   IconLeft?: React.ComponentType<any>;
   IconRight?: React.ComponentType<any>;
   className?: string;
+  onPress?: (event: GestureResponderEvent) => void | Promise<void>;
 }
 
 declare interface InputFieldProps extends TextInputProps {

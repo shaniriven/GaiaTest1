@@ -30,9 +30,9 @@ const SignIn = () => {
         router.replace('/')
       } else {
         // If the status isn't complete, check why. User might need to complete further steps.
-        Alert.alert('Error', err.errors[0].longMessage)
+        Alert.alert('Error','error, cant sign in')
       }
-    } catch (err) {
+    } catch (err: any) {
       Alert.alert('Error', err.errors[0].longMessage)
     }
   }, [isLoaded, form.email, form.password])
@@ -56,7 +56,7 @@ const SignIn = () => {
             placeholder="Enter your email"
             icon={icons.email}
             value={form.email} 
-            onChangeText={(value) =>
+            onChangeText={(value: string) =>
               setForm({
                 ...form,
                 email: value,
@@ -69,7 +69,7 @@ const SignIn = () => {
             icon={icons.lock}
             secureTextEntry={true}
             value={form.password} 
-            onChangeText={(value) =>
+            onChangeText={(value: any) =>
               setForm({
                 ...form,
                 password: value,
