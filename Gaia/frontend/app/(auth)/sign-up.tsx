@@ -12,9 +12,9 @@ import { ReactNativeModal } from "react-native-modal";
 import { useSignUp } from "@clerk/clerk-expo";
 
 const SignUp = () => {
-  // clerk
   const { isLoaded, signUp, setActive } = useSignUp()
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
   const [verification, setVerification] = useState({
     state: 'default',
     error: "",
@@ -45,7 +45,7 @@ const onSignUpPress = async () => {
 
     // Set 'setVerification' to true to display second form
     setVerification({...verification, state: 'pending',});
-  } catch (err) {
+  } catch (err: any) {
     Alert.alert('Error', err.errors[0].longMessage)
   }
 }
@@ -62,13 +62,13 @@ const onVerifyPress = async () => {
 
     // If verification was completed, set the session to active and redirect the user
     if (signUpAttempt.status === 'complete') {
-      // -> insert database connection 
+      // ----------------------------------------------------------------------> insert database connection 
       await setActive({ session: signUpAttempt.createdSessionId })
       setVerification({ ...verification, state: 'success' })
     } else {
       setVerification({ ...verification, error: "Verification failed", state: 'failed' })
     }
-  } catch (err) {
+  } catch (err: any) {
     setVerification({ ...verification, error: err.errors[0].longMessage, state: 'failed' })
   }
 }
@@ -77,9 +77,7 @@ const onVerifyPress = async () => {
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px] mt-6">
-          <Image
-            source={singUpImage} className="z-0 w-full h-[250px]"
-          />
+          <Image source={singUpImage} className="z-0 w-full h-[250px]" />
         </View>
         <View className="px-4 left-5" style={{ marginTop: 60 }}>
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5">
@@ -93,7 +91,7 @@ const onVerifyPress = async () => {
             placeholder="Enter your name"
             icon={icons.person}
             value={form.name} 
-            onChangeText={(value) =>
+            onChangeText={(value: string) =>
               setForm({
                 ...form,
                 name: value,
@@ -105,7 +103,7 @@ const onVerifyPress = async () => {
             placeholder="Enter your email"
             icon={icons.email}
             value={form.email} 
-            onChangeText={(value) =>
+            onChangeText={(value: string) =>
               setForm({
                 ...form,
                 email: value,
@@ -118,7 +116,7 @@ const onVerifyPress = async () => {
             icon={icons.lock}
             secureTextEntry={true}
             value={form.password} 
-            onChangeText={(value) =>
+            onChangeText={(value: any) =>
               setForm({
                 ...form,
                 password: value,
@@ -126,7 +124,7 @@ const onVerifyPress = async () => {
             }
           />
 
-          <CustomButton title="Sign Up" onPress={onSignUpPress} className="mt-10" bgVariant="primary" />
+          <CustomButton title="Sign Up" onPress={onSignUpPress} className="mt-10" bgVariant="primary" IconLeft={undefined} IconRight={undefined} />
           
           <OAuth/>
           
@@ -154,7 +152,7 @@ const onVerifyPress = async () => {
               placeholder={"12345"}
               value={verification.code}
               keyboardType="numeric"
-              onChangeText={(code) =>
+              onChangeText={(code: string) =>
                 setVerification({ ...verification, code })
               }
             />
@@ -168,8 +166,7 @@ const onVerifyPress = async () => {
               onPress={onVerifyPress}
               className="mt-5"
               bgVariant="gray-vibe"
-              textVariant="primary"
-            />
+              textVariant="primary" IconLeft={undefined} IconRight={undefined}            />
 
           </View>
         </ReactNativeModal>
@@ -186,13 +183,12 @@ const onVerifyPress = async () => {
             <CustomButton
               title="Start Planning"
               onPress={() => {
-                setShowSuccessModal(false);  
-                router.push(`/(root)/(tabs)/home`)}
-              }
+                setShowSuccessModal(false);
+                router.push(`/(root)/(tabs)/home`);
+              } }
               className="mt-10"
               bgVariant="gray-vibe"
-              textVariant="primary"
-            />
+              textVariant="primary" IconLeft={undefined} IconRight={undefined}            />
             </View>
         </ReactNativeModal>
       </View>

@@ -1,13 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import  SignOutButton  from "@/components/SignOutButton";
 
-const Plan = () => {
+const User = () => {
   return (
     <SafeAreaView>
-      <Text>Plan</Text>
+      <Text>User</Text>
+      <SignOutButton></SignOutButton>
     </SafeAreaView>
   );
 };
 
-export default Plan;
+export default User;

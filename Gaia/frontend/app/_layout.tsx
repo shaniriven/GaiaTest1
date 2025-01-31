@@ -14,6 +14,7 @@ import "../global.css";
 // Clerk imports
 import { tokenCache } from '@/cache'
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
@@ -49,6 +50,7 @@ export default function RootLayout() {
   }
 
   return (
+    <GestureHandlerRootView>
     // wrapping layout with Clerk provider to use Clerck auth
     <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
       <ClerkLoaded>
@@ -58,7 +60,9 @@ export default function RootLayout() {
           <Stack.Screen name="(root)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
+        <StatusBar style="auto"/>
       </ClerkLoaded>
     </ClerkProvider>
+    </GestureHandlerRootView>
   );
 }

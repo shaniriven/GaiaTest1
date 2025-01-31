@@ -1,3 +1,5 @@
+import { DraggableFlatListProps } from "react-native-draggable-flatlist";
+
 declare module "*.png" {
   const value: string;
   export default value;
@@ -25,7 +27,7 @@ declare module "*.svg" {
 
 declare interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  bgVariant?: "default" | "gray-vibe" | "secondary" | "danger" | "outline" | "success";
+  bgVariant?: "default" | "primary" | "gray-vibe" | "secondary" | "danger" | "outline" | "success";
   textVariant?:
     | "primary"
     | "default"
@@ -36,6 +38,7 @@ declare interface ButtonProps extends TouchableOpacityProps {
   IconLeft?: React.ComponentType<any>;
   IconRight?: React.ComponentType<any>;
   className?: string;
+  onPress?: (event: GestureResponderEvent) => void | Promise<void>;
 }
 
 declare interface InputFieldProps extends TextInputProps {
@@ -47,4 +50,19 @@ declare interface InputFieldProps extends TextInputProps {
   inputStyle?: string;
   iconStyle?: string;
   className?: string;
+}
+
+declare interface CustomDragListProps extends DraggableFlatListProps {
+  data: Array;
+  className?: string;
+}
+
+declare interface Trip {
+  key: string;
+  name: string,
+  country: string,
+  type: string,
+  time_hours: number,
+  level: string,
+  ages: number,
 }

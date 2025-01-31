@@ -2,12 +2,12 @@
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Map = () => {
+const newPlan = () => {
   return (
     <SafeAreaView>
-      <Text>Map</Text>
+      <Text>newPlan</Text>
     </SafeAreaView>
   );
 };
 
-export default Map;
+export default newPlan;

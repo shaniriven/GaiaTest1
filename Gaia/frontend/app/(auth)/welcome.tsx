@@ -16,14 +16,12 @@ const Onboarding = () => {
   
   return (
     <SafeAreaView className="flex h-full items-center justify-between bg-white">
-      <TouchableOpacity onPress={() => { 
-        router.replace('/(auth)/sign-up');
-        }}
-        className="w-full flex justify-end items-end p-5">
+      <TouchableOpacity onPress={() => { router.replace('/(auth)/sign-in'); }} className="w-full flex justify-end items-end p-5">
         <Text className="text-black text-md font-JakartaBold">Skip</Text>
       </TouchableOpacity>
 
-      <Swiper ref={swiperRef}
+      <Swiper 
+        ref={swiperRef} 
         loop={false}
         dot={<View className="w-[32px] h-[6px] mx-1 bg-[#9aa19d] rounded-full"/>}
         activeDot={<View className="w-[32px] h-[6px] mx-1 bg-[#13875b] rounded-full"/>}
@@ -46,16 +44,14 @@ const Onboarding = () => {
           ))}
       </Swiper>
       <CustomButton
-        title={isLastSlide ? 'Get Started' : 'Next'} 
+        title={isLastSlide ? 'Get Started' : 'Next'}
         className="w-[130px] mt-10 mb-10"
         bgVariant="gray-vibe"
         textVariant="primary"
-        
-        onPress={() =>
-          isLastSlide
+
+        onPress={() => isLastSlide
           ? router.replace('/(auth)/sign-up')
-          : swiperRef.current?.scrollBy(1)
-        }/>
+          : swiperRef.current?.scrollBy(1)} IconLeft={undefined} IconRight={undefined}/>
     </SafeAreaView>
   );
 };
