@@ -1,5 +1,5 @@
+"""
 from pymongo import MongoClient
-
 class PyMongoClient:
     def __init__(self):
         self.client = None
@@ -11,3 +11,18 @@ class PyMongoClient:
         self.client = client
 
 mongo = PyMongoClient()
+"""
+
+from pymongo import MongoClient
+import os
+
+class Mongo:
+    client = None
+
+    def init_app(self, app):
+        mongo_uri = app.config.get('MONGO_URI', 'mongodb://localhost:27017')
+        self.client = MongoClient(mongo_uri)
+        app.db = self.client.get_database("GaiaDB")  # or specify a database name
+
+# Create an instance to be imported
+mongo = Mongo()
