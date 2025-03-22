@@ -22,3 +22,5 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
     MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/tripplanner")
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "your-google-api-key")
+    AMADEUS_CLIENT_ID = os.getenv("AMADEUS_CLIENT_ID")
+    AMADEUS_CLIENT_SECRET = os.getenv("AMADEUS_CLIENT_SECRET")
