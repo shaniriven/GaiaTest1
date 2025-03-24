@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { Text } from "react-native";
+import ScreenHeader from "@/components/ScreenHeader";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const newPlan = () => {
   return (
-    <SafeAreaView>
-      <Text>newPlan</Text>
+    <SafeAreaView className="flex-1 bg-white ">
+      <View className="flex-1">
+        <ScreenHeader text="New Plan" />
+      </View>
     </SafeAreaView>
   );
 };
