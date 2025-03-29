@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // frontend/src/screens/SearchScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
@@ -45,8 +46,15 @@ const SearchScreen = () => {
       setLoading(false);
     }
   };
+=======
+/* eslint-disable prettier/prettier */
+import ScreenHeader from "@/components/ScreenHeader";
+import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+>>>>>>> shani
 
   return (
+<<<<<<< HEAD
     <View style={styles.container}>
       <Text style={styles.label}>Your Name:</Text>
       <TextInput 
@@ -98,6 +106,11 @@ const SearchScreen = () => {
         </View>
       )}
     </View>
+=======
+    <SafeAreaView>
+      <ScreenHeader text="Search" />
+    </SafeAreaView>
+>>>>>>> shani
   );
 };
 

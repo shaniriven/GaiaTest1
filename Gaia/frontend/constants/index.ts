@@ -49,6 +49,11 @@ export const onboarding = [
   },
 ];
 
+
+export const newTripPlanningScreens = [
+
+];
+
 export const singUpImage = singUp;
 export const checkVerification = check;
 
@@ -79,3 +84,31 @@ export const icons = {
   target,
   to,
 }
+
+
+export const screens = [
+  {
+    id: 0,
+    title: "location",
+    icon: "location",
+    fields: ["location"]
+  },
+  {
+    id: 1,
+    title: "dates",
+    icon: "calendar",
+    fields: ["dates"]
+  },
+  {
+    id: 2,
+    title: "travelers",
+    icon: "user",
+    fields: ["adults", "children"]
+  },
+  {
+    id: 3,
+    title: "interests",
+    icon: "plus",
+    fields: ["interests"]
+  },
+]
