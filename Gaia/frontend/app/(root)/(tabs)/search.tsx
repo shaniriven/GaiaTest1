@@ -1,9 +1,6 @@
-
 // frontend/src/screens/SearchScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import ScreenHeader from "@/components/ScreenHeader";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const SearchScreen = () => {
   const [userName, setUserName] = useState('');
@@ -32,7 +29,7 @@ const SearchScreen = () => {
 
     try {
       // Replace with your actual backend URL
-      const response = await fetch('http://192.168.1.218:5000/api/trip', {
+      const response = await fetch('http://192.168.1.107:5000/api/trip', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,65 +46,58 @@ const SearchScreen = () => {
     }
   };
 
-  /* eslint-disable prettier/prettier */
-
-
   return (
-    <SafeAreaView>
-      <ScreenHeader text="Search" />
-      <View style={styles.container}>
-        <Text style={styles.label}>Your Name:</Text>
-        <TextInput
-          style={styles.input}
-          value={userName}
-          onChangeText={setUserName}
-          placeholder="John Doe"
-        />
+    <View style={styles.container}>
+      <Text style={styles.label}>Your Name:</Text>
+      <TextInput 
+        style={styles.input} 
+        value={userName} 
+        onChangeText={setUserName} 
+        placeholder="John Doe" 
+      />
 
-        <Text style={styles.label}>Start Date (YYYY-MM-DD):</Text>
-        <TextInput
-          style={styles.input}
-          value={startDate}
-          onChangeText={setStartDate}
-          placeholder="2025-01-01"
-        />
+      <Text style={styles.label}>Start Date (YYYY-MM-DD):</Text>
+      <TextInput 
+        style={styles.input} 
+        value={startDate} 
+        onChangeText={setStartDate} 
+        placeholder="2025-01-01" 
+      />
 
-        <Text style={styles.label}>End Date (YYYY-MM-DD):</Text>
-        <TextInput
-          style={styles.input}
-          value={endDate}
-          onChangeText={setEndDate}
-          placeholder="2025-01-05"
-        />
+      <Text style={styles.label}>End Date (YYYY-MM-DD):</Text>
+      <TextInput 
+        style={styles.input} 
+        value={endDate} 
+        onChangeText={setEndDate} 
+        placeholder="2025-01-05" 
+      />
 
-        <Text style={styles.label}>Destination:</Text>
-        <TextInput
-          style={styles.input}
-          value={destination}
-          onChangeText={setDestination}
-          placeholder="Berlin"
-        />
+      <Text style={styles.label}>Destination:</Text>
+      <TextInput 
+        style={styles.input} 
+        value={destination} 
+        onChangeText={setDestination} 
+        placeholder="Berlin" 
+      />
 
-        <Text style={styles.label}>Hobbies (comma-separated):</Text>
-        <TextInput
-          style={styles.input}
-          value={hobbiesInput}
-          onChangeText={setHobbiesInput}
-          placeholder="art, museum, cafes"
-        />
+      <Text style={styles.label}>Hobbies (comma-separated):</Text>
+      <TextInput 
+        style={styles.input} 
+        value={hobbiesInput} 
+        onChangeText={setHobbiesInput} 
+        placeholder="art, museum, cafes" 
+      />
 
-        <Button title="Plan Trip" onPress={handleSearch} disabled={loading} />
+      <Button title="Plan Trip" onPress={handleSearch} disabled={loading} />
 
-        {loading && <Text>Loading...</Text>}
-        {result && (
-          <View style={styles.resultContainer}>
-            <Text>Result:</Text>
-            <Text>{JSON.stringify(result, null, 2)}</Text>
-          </View>
-        )}
-
-      </View>
-    </SafeAreaView>
+      {loading && <Text>Loading...</Text>}
+      {result && (
+        <View style={styles.resultContainer}>
+          <Text>Result:</Text>
+          <Text>{JSON.stringify(result, null, 2)}</Text>
+        </View>
+      )}
+    </View>
   );
 };
 
