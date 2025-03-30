@@ -1,6 +1,8 @@
 // frontend/src/screens/SearchScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import config from '../../../config';
+const api_url = config.api_url;
 
 const SearchScreen = () => {
   const [userName, setUserName] = useState('');
@@ -28,8 +30,9 @@ const SearchScreen = () => {
     };
 
     try {
-      // Replace with your actual backend URL
-      const response = await fetch('http://192.168.1.107:5000/api/trip', {
+      const url = `${api_url}/trip/newTrip/`; 
+      console.log(url);
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
