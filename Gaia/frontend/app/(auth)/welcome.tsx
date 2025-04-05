@@ -5,7 +5,6 @@ import { router } from "expo-router";
 import Swiper from "react-native-swiper";
 import { useRef, useState } from "react";
 import { onboarding } from "../../constants/index";
-
 import CustomButton from "@/components/CustomButton";
 
 
