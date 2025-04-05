@@ -24,5 +24,8 @@ class Mongo:
         self.client = MongoClient(mongo_uri)
         app.db = self.client.get_database("GaiaDB")  # or specify a database name
 
+    def get_db(self, db_name):
+        return self.client.get_database(db_name)
+    
 # Create an instance to be imported
 mongo = Mongo()

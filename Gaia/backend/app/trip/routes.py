@@ -8,7 +8,7 @@ from flask import request, jsonify, current_app
 from bson import ObjectId  # To help with ObjectId conversion
 from .ai_module import generate_query_for_hobby
 from .scraper import scrape_municipality_open_data
-
+from .new_trip_creation import save_location, save_start, save_end, save_group, save_interests
 # Google Places API base URL and key from the environment
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -31,6 +31,44 @@ def convert_objectids(obj):
     else:
         return obj
     
+@bp.route('submit/<string:fieldName>/', methods=['POST'])
+def submitField(fieldName): 
+    data = request.json
+    db = mongo.get_db("Users")
+    trips_collection = db.get_collection("planned_trips")
+    open_trip = trips_collection.find_one({"user_id": data.get("user_id")})
+    if fieldName == "start":
+        data["type"] = "start"
+    elif fieldName == "end":
+        data["type"] = "end"
+        
+    handlers = {
+        'location': save_location,
+        'start': save_start,
+        'end': save_end,
+        'group': save_group,
+        'interests': save_interests,
+    }
+
+    if fieldName in handlers:
+        return handlers[fieldName](trips_collection, data, open_trip)
+    
+    return jsonify({"error": "Invalid field name"}), 400
+
+@bp.route('delete/', methods=['POST'])
+def deleteTrip():
+    db = mongo.get_db("Users")
+    trips_collection = db.get_collection("planned_trips")
+    user_id = request.json.get('user_id')
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+    result = trips_collection.delete_many({"user_id": user_id})
+    if result.deleted_count > 0:
+        return jsonify({"message": "trip deleted for user {user_id}"}), 200
+    else:
+         return jsonify({"message": "no trips for user {user_id}"}), 200
+
+
 @bp.route('newTrip/', methods=['POST'])
 def newTrip():
     print("newTrip")
