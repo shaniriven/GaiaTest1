@@ -94,7 +94,7 @@ const InterestScreen = ({ handleSelect, userInterests }: NewTripScreenProps) => 
                         isActive={isLabelIncluded(label)}
                         onPress={() => handleSubPress(label)}
                         className="mt-2"
-                        style={{ minWidth: 100, maxWidth: 150, textAlign: 'center' }} // Ensure each button has a minimum width and text is centered
+                        style={{ minWidth: 100, maxWidth: 150, textAlign: 'center' }} 
                     />
                 ))}
             </View>

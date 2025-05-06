@@ -1,5 +1,5 @@
-const api_url = 'http://172.16.99.27:5000/';
-const googlePlacesApiKey = 'AIzaSyBT9zhXMkHJ2HxJt9xirONN-X6aTGx_6mc';
+const api_url = "http://172.20.10.2:5000";
+const googlePlacesApiKey = "AIzaSyA0ZFyG18zS-AVQx3yyI2hYrm_aHKb1O34";
 
 export default {
   api_url,

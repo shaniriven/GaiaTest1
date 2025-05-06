@@ -15,8 +15,14 @@ import { UserInterestesSelections } from "@/declarations";
 import InterestScreen from "@/components/NewTripScreens/InterestsScreen";
 import Animated from 'react-native-reanimated';
 import { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import axios from 'axios';
+import config from '../../../config';
+import { useUser } from "@clerk/clerk-expo"; 
 
 const NewPlan = () => {
+  const { user } = useUser(); 
+  console.log(user.id);
+  const api_url = config.api_url;
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const isLastScreen = activeIndex === screens.length - 1;
@@ -65,6 +71,40 @@ const NewPlan = () => {
     }));
   };
 
+  const submitField = async (fieldData: any, fieldName: 'location' | 'start' | 'end' | 'group' | 'interests') => {
+    try {
+      const response = await axios.post(`${api_url}/trip/submit/${fieldName}/`, { fieldData, user_id: user.id });
+      console.log(`Step '${fieldName}' submitted successfully:`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(`Error submitting step ${fieldName}:`, error);
+    }
+  }
+
+  useEffect(() => {
+    submitField({ ['location']: selectedCountries }, 'location')
+  }, [form.location]);
+
+  useEffect(() => {
+    submitField({ ['start']: startDate }, 'start')
+  }, [form.start]);
+
+  useEffect(() => {
+    submitField({ ['end']: endDate }, 'end')
+  }, [form.end]);
+
+  useEffect(() => {
+    submitField({ ['end']: endDate }, 'end')
+  }, [form.end]);
+
+  useEffect(() => {
+    submitField({ ['group']: group }, 'group')
+  }, [group]);
+
+  useEffect(() => {
+    submitField({ ['interests']: interestsList }, 'interests')
+  }, [form.interestsList]);
+
   const handleSelectCountry = (country: { name: string; code: string }) => {
     setSelectedCountries((prevSelected) => {
       const alreadySelected = prevSelected.find((c) => c.code === country.code);
@@ -74,6 +114,7 @@ const NewPlan = () => {
         return [...prevSelected, country];
       }
     });
+
     updateField('location', country.name)
   }
 
@@ -118,19 +159,25 @@ const NewPlan = () => {
     updateField('interestsList', userInterestsSelections);
   };
   
-  // for testing
-  useEffect(() => {
-    console.log("form update: ", form)
-    // console.log("Updated selected country:", selectedCountries);
-    // console.log("start: ", startDate);
-    // console.log("ends: ", endDate);
-    // console.log('c: ', children, ' a: ',adults, ' type: ', groupType)
-  }, [form]);
+  const askAgent = async () => {
+    try {
+      const response = await axios.post(`${api_url}/trip/askAgent/`);
+      if (response.status === 200) {
+          console.log("Agent response:", response.data.response); // Log the response from the backend
+      } else {
+          console.error("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+        console.error("Error asking agent:", error);
+    }
+    console.log("Agent asked for help");
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white p-5 ">
 
       {/* Title and close Button */}
+      {/* באג- כשלוחצים על האיקס חוזרים אחורה בניווט ולא עולה חלון המחק\שמור ולכן נתקע */}
       <View className="flex items-center">
         <TouchableOpacity onPress={() => router.back()} className="w-full flex justify-end items-end pt-3 pr-3" >
           <FontAwesome name="close" size={22} />
@@ -163,7 +210,7 @@ const NewPlan = () => {
       </View> */}
 
       {/* Animated Screen Content */}
-      <Animated.View style={animatedStyle} className="flex items-center justify-between bg-white" key={`content-${activeIndex}`}>
+      <Animated.View style={animatedStyle} className="flex-1 items-center justify-between bg-white" key={`content-${activeIndex}`}>
         {activeIndex === 0 && <LocationScreen handleSelect={handleSelectCountry} currentValue={selectedCountries} />}
         {activeIndex === 1 && <DatesScreen startDate={startDate} endDate={endDate} onChangeStart={onChangeStart} onChangeEnd={onChangeEnd} />}
         {activeIndex === 2 && <TravelersScreen handleSelect={handleChangeNumberOfPeople} onChangeGroupType={onChangeGroupType} currentGroupValue={group} />}
@@ -176,10 +223,13 @@ const NewPlan = () => {
           className="w-[130px]"
           bgVariant="gray-vibe"
           textVariant="primary"
-
           onPress={() => isLastScreen
-            ? router.replace('/')
-            : setActiveIndex(activeIndex + 1)} />
+            ? askAgent()
+            : setActiveIndex(activeIndex + 1)} 
+          // onPress={() => isLastScreen
+          //   ? router.replace('/')
+          //   : setActiveIndex(activeIndex + 1)} 
+          />
       </View>
     </SafeAreaView>
   );
