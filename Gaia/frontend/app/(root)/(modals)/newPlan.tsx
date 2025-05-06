@@ -159,6 +159,19 @@ const NewPlan = () => {
     updateField('interestsList', userInterestsSelections);
   };
   
+  const askAgent = async () => {
+    try {
+      const response = await axios.post(`${api_url}/trip/askAgent/`);
+      if (response.status === 200) {
+          console.log("Agent response:", response.data.response); // Log the response from the backend
+      } else {
+          console.error("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+        console.error("Error asking agent:", error);
+    }
+    console.log("Agent asked for help");
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white p-5 ">
@@ -211,7 +224,7 @@ const NewPlan = () => {
           bgVariant="gray-vibe"
           textVariant="primary"
           onPress={() => isLastScreen
-            ? router.replace('/')
+            ? askAgent()
             : setActiveIndex(activeIndex + 1)} 
           // onPress={() => isLastScreen
           //   ? router.replace('/')

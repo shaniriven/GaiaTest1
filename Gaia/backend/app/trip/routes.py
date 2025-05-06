@@ -1,6 +1,6 @@
 from app.trip import bp
 from app.extensions import mongo
-from flask import jsonify, logging, request
+from flask import jsonify, logging, request, Flask
 import os
 import json
 import requests
@@ -9,6 +9,8 @@ from bson import ObjectId  # To help with ObjectId conversion
 from .ai_module import generate_query_for_hobby
 from .scraper import scrape_municipality_open_data
 from .new_trip_creation import save_location, save_start, save_end, save_group, save_interests
+from google import genai
+
 # Google Places API base URL and key from the environment
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -68,7 +70,16 @@ def deleteTrip():
     else:
          return jsonify({"message": "no trips for user {user_id}"}), 200
 
+@bp.route('askAgent/', methods=['POST'])
+def askAgent():
+    client = genai.Client(api_key=GOOGLE_API_KEY)
+    response = client.models.generate_content(
+    model="gemini-2.0-flash", contents="Explain how AI works in a few words"
+    )
+    print(response.text)
 
+
+# check if needed
 @bp.route('newTrip/', methods=['POST'])
 def newTrip():
     print("newTrip")

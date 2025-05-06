@@ -4,7 +4,9 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import config from '../config';
 
 const GooglePlacesInput = () => {
+    
     const googlePlacesApiKey = config.googlePlacesApiKey;
+    
     return (
         <GooglePlacesAutocomplete
             textInputProps={{ placeholderTextColor: 'grey' }}

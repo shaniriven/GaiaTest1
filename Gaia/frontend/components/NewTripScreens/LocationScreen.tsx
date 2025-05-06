@@ -19,7 +19,7 @@ const LocationScreen = ({ handleSelect, currentValue }: NewTripScreenProps) => {
             <View className="flex-1 items-center w-[100%]">
                 <Text className="text-2xl mt-5 font-JakartaBold">Where would you like to go?</Text>
 
-                <GooglePlacesInput />
+                {/* <GooglePlacesInput /> */}
             </View>
         </TouchableWithoutFeedback>
     );
