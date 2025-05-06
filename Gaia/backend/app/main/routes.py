@@ -65,20 +65,7 @@ def trip():
         else:
             api_results[hobby] = []
 
-    # Step 2: Retrieve or scrape municipality open data.
-    """
-    municipality_collection = db.get_collection("municipality_data")
-    municipality_doc = municipality_collection.find_one({"city": destination.lower()})
-    if municipality_doc:
-        municipality_data = municipality_doc.get("data", [])
-    else:
-        scraped_data = scrape_municipality_open_data(destination)
-        municipality_data = scraped_data.get("data", [])
-        municipality_collection.insert_one({
-            "city": destination.lower(),
-            "data": municipality_data
-        })
-    """
+   
     combined_result = {
         "user_name": user_name,
         "destination": destination.lower(),
