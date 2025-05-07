@@ -208,3 +208,4 @@ declare interface NewTripScreenProps {
   originGroup?: any,
   userInterests?: InterestsDictionary,
 }
+

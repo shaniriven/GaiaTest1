@@ -21,9 +21,9 @@ import { useUser } from "@clerk/clerk-expo";
 
 const NewPlan = () => {
   const { user } = useUser(); 
-  console.log(user.id);
   const api_url = config.api_url;
   const router = useRouter();
+
   const [activeIndex, setActiveIndex] = useState(0);
   const isLastScreen = activeIndex === screens.length - 1;
   const [selectedCountries, setSelectedCountries] = useState<{ name: string; code: string }[]>([]);
@@ -39,23 +39,21 @@ const NewPlan = () => {
     {
       start: startDate,
       end: endDate,
-      location: [] as string[],
+      location: ['New York'] as string[],
       groupType: group.type,
       adults: group.adults,
       children: group.children,
       interestsList: interestsList,
-      includeRestaurants: '',
+      includeRestaurants: 'this is a test',
       includeFlights: '',
     }
   );
 
-  const translateX = useSharedValue(0);
-  const previousIndex = useSharedValue(activeIndex);
+  const translateX = useSharedValue(300);
 
   useEffect(() => {
-    translateX.value = 300;
-    translateX.value = withTiming(0, { duration: 1000 }); 
-    previousIndex.value = activeIndex;
+    translateX.value =  300;
+    translateX.value = withTiming(0, { duration: 1000 });
   }, [activeIndex]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -71,39 +69,33 @@ const NewPlan = () => {
     }));
   };
 
-  const submitField = async (fieldData: any, fieldName: 'location' | 'start' | 'end' | 'group' | 'interests') => {
-    try {
-      const response = await axios.post(`${api_url}/trip/submit/${fieldName}/`, { fieldData, user_id: user.id });
-      console.log(`Step '${fieldName}' submitted successfully:`);
-      console.log(response.data);
-    } catch (error) {
-      console.error(`Error submitting step ${fieldName}:`, error);
+  const renderScreen = () => {
+    switch (activeIndex) {
+      case 0:
+        return <LocationScreen handleSelect={handleSelectCountry} currentValue={selectedCountries} />;
+      case 1:
+        return <DatesScreen startDate={startDate} endDate={endDate} onChangeStart={onChangeStart} onChangeEnd={onChangeEnd} />;
+      case 2:
+        return <TravelersScreen handleSelect={handleChangeNumberOfPeople} onChangeGroupType={onChangeGroupType} currentGroupValue={group} />;
+      case 3:
+        return <InterestScreen handleSelect={onChangeInterests} userInterests={interestsList} />;
+      default:
+        return null;
     }
-  }
+  };
 
-  useEffect(() => {
-    submitField({ ['location']: selectedCountries }, 'location')
-  }, [form.location]);
-
-  useEffect(() => {
-    submitField({ ['start']: startDate }, 'start')
-  }, [form.start]);
-
-  useEffect(() => {
-    submitField({ ['end']: endDate }, 'end')
-  }, [form.end]);
-
-  useEffect(() => {
-    submitField({ ['end']: endDate }, 'end')
-  }, [form.end]);
-
-  useEffect(() => {
-    submitField({ ['group']: group }, 'group')
-  }, [group]);
-
-  useEffect(() => {
-    submitField({ ['interests']: interestsList }, 'interests')
-  }, [form.interestsList]);
+  const submitForm = async () => {
+    try {
+      const response = await axios.post(`${api_url}/trip/submitForm/`, { form, user_id: user.id });
+      if (response.status === 200) {
+        console.log("Form submitted successfully:", response.data);
+      } else {
+        console.error("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+    }
+  };
 
   const handleSelectCountry = (country: { name: string; code: string }) => {
     setSelectedCountries((prevSelected) => {
@@ -160,6 +152,7 @@ const NewPlan = () => {
   };
   
   const askAgent = async () => {
+    submitForm();
     try {
       const response = await axios.post(`${api_url}/trip/askAgent/`);
       if (response.status === 200) {
@@ -199,23 +192,13 @@ const NewPlan = () => {
         ))}
       </View>
 
-      {/* filled data list */}
-      {/* <View className="flex flex-row flex-wrap gap-4 justify-between mb-5 mt-3">
-        <TouchableOpacity
-          className="p-2 flex-1  justify-center items-center shadow-md shadow-netural-400/70 bg-gaiaGreen-100"
-          style={{ minHeight: 35 }}
-        >
-          <Text className="text-m font-bold text-center text-black">Date</Text>
-        </TouchableOpacity>
-      </View> */}
+
 
       {/* Animated Screen Content */}
-      <Animated.View style={animatedStyle} className="flex-1 items-center justify-between bg-white" key={`content-${activeIndex}`}>
-        {activeIndex === 0 && <LocationScreen handleSelect={handleSelectCountry} currentValue={selectedCountries} />}
-        {activeIndex === 1 && <DatesScreen startDate={startDate} endDate={endDate} onChangeStart={onChangeStart} onChangeEnd={onChangeEnd} />}
-        {activeIndex === 2 && <TravelersScreen handleSelect={handleChangeNumberOfPeople} onChangeGroupType={onChangeGroupType} currentGroupValue={group} />}
-        {activeIndex === 3 && <InterestScreen handleSelect={onChangeInterests} userInterests={interestsList} />}
+      <Animated.View style={animatedStyle} className="flex-1 items-center justify-between bg-white">
+        {renderScreen()}
       </Animated.View>
+
       
       <View className="absolute bottom-10 left-0 right-0 items-center">
         <CustomButton
@@ -235,7 +218,42 @@ const NewPlan = () => {
   );
 }
 
+// ----------------------------------------------------------------------
+// DONT DELETE THIS CODE - UPDATING EACH FIELD TO THE BACKEND
+  // const submitField = async (fieldData: any, fieldName: 'location' | 'start' | 'end' | 'group' | 'interests') => {
+  //   try {
+  //     const response = await axios.post(`${api_url}/trip/submit/${fieldName}/`, { fieldData, user_id: user.id });
+  //     console.log(`Step '${fieldName}' submitted successfully:`);
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error(`Error submitting step ${fieldName}:`, error);
+  //   }
+  // }
 
+ // useEffect(() => {
+  //   submitField({ ['location']: selectedCountries }, 'location')
+  // }, [form.location]);
+
+  // useEffect(() => {
+  //   submitField({ ['start']: startDate }, 'start')
+  // }, [form.start]);
+
+  // useEffect(() => {
+  //   submitField({ ['end']: endDate }, 'end')
+  // }, [form.end]);
+
+  // useEffect(() => {
+  //   submitField({ ['end']: endDate }, 'end')
+  // }, [form.end]);
+
+  // useEffect(() => {
+  //   submitField({ ['group']: group }, 'group')
+  // }, [group]);
+
+  // useEffect(() => {
+  //   submitField({ ['interests']: interestsList }, 'interests')
+  // }, [form.interestsList]);
+// ----------------------------------------------------------------------
       // {/* screens */}
       // <Animated.View
       //   style={animatedStyle}

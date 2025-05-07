@@ -2,24 +2,70 @@
 import React from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import config from '../config';
+import { View } from 'react-native';
 
 const GooglePlacesInput = () => {
-    
     const googlePlacesApiKey = config.googlePlacesApiKey;
-    
+    console.log("Google Places API Key:", googlePlacesApiKey);
     return (
         <GooglePlacesAutocomplete
+                // Required props
+                query={{
+                  key: googlePlacesApiKey, // REPLACE WITH YOUR ACTUAL API KEY
+                  language: 'en',
+                  types: 'geocode',
+                }}
+                // All other default props explicitly defined
+                autoFillOnNotFound={false}
+                currentLocation={false}
+                currentLocationLabel="Current location"
+                debounce={0}
+                disableScroll={false}
+                enableHighAccuracyLocation={true}
+                enablePoweredByContainer={true}
+                filterReverseGeocodingByTypes={[]}
+                GooglePlacesDetailsQuery={{}}
+                GooglePlacesSearchQuery={{
+                  rankby: 'distance',
+                  type: 'restaurant',
+                }}
+                GoogleReverseGeocodingQuery={{}}
+                isRowScrollable={true}
+                keyboardShouldPersistTaps="always"
+                listUnderlayColor="#c8c7cc"
+                listViewDisplayed="auto"
+                keepResultsAfterBlur={false}
+                minLength={1}
+                nearbyPlacesAPI="GooglePlacesSearch"
+                numberOfLines={1}
+                onNotFound={() => {}}
+                onPress={(data, details = null) => {
+                  // Handle selection
+                  console.log(data, details);
+                }}
+                onTimeout={() =>
+                  console.warn('google places autocomplete: request timeout')
+                }
+                predefinedPlacesAlwaysVisible={false}
+                suppressDefaultStyles={false}
+                textInputHide={false}
+                timeout={20000}
+
+            fetchDetails={true}
+            predefinedPlaces={[]}
             textInputProps={{ placeholderTextColor: 'grey' }}
             placeholder='search location'
-
-            onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
-                console.log(data, details);
-            }}
-            query={{
-                key: googlePlacesApiKey,
-                language: 'en',
-            }}
+            // onPress={(data, details = null) => {
+            //     if (!data || !details) {
+            //         console.error('Data or details are undefined:', { data, details });
+            //         return;
+            //     }
+            //     console.log('Selected location:', data, details);
+            // }}
+            // onPress={(data, details = null) => {
+            //     // 'details' is provided when fetchDetails = true
+            //     console.log(data, details);
+            // }}
             styles={{
                 container: {
                     width: '90%',
@@ -79,6 +125,9 @@ const GooglePlacesInput = () => {
                     justifyContent: 'flex-end',
                     height: 200,
                 },
+            }}
+            onFail={(error) => {
+                console.error('Google Places API Error:', error);
             }}
         />
     );

@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Stack } from "expo-router";
 import { Modal, View, Text, Button, StyleSheet } from "react-native";
 import axios from "axios";
-import config from '../../config';
+import config from "../../config";
 import { useUser } from "@clerk/clerk-expo";
 const api_url = config.api_url;
 
 const Layout = () => {
-  const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false);
-  const { user } = useUser(); 
+  const [isConfirmationModalVisible, setConfirmationModalVisible] =
+    useState(false);
+  const { user } = useUser();
 
   const handleModalClose = () => {
     setConfirmationModalVisible(true);
@@ -60,7 +61,9 @@ const Layout = () => {
         >
           <View className="flex-1 justify-center items-center bg-black/50">
             <View className="w-72 p-5 bg-white rounded-lg items-center">
-              <Text className="text-lg font-semibold mb-4">Do you want to save or delete?</Text>
+              <Text className="text-lg font-semibold mb-4">
+                Do you want to save or delete?
+              </Text>
               <View className="flex-row justify-between w-full">
                 <Button title="Save" onPress={handleSave} />
                 <Button title="Delete" onPress={handleDelete} color="red" />
