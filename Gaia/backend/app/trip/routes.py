@@ -37,6 +37,7 @@ def convert_objectids(obj):
 def submitForm():
     data = request.json
     user_id = data.get("user_id")
+    print("user id:", user_id)
     if not user_id:
         return jsonify({"error": "user_id is required"}), 400
 
@@ -85,11 +86,39 @@ def deleteTrip():
 
 @bp.route('askAgent/', methods=['POST'])
 def askAgent():
+    data = request.get_json()
+    start = data.get("start")
+    end = data.get("end")
+    # location = ", ".join(data.get("location", []))
+    location = data.get("location")
+    # Map location to name for better readability in the prompt
+    print(location)
+    group_type = data.get("groupType")
+    adults = data.get("adults")
+    children = data.get("children")
+    interests = ", ".join(data.get("interestsList", []))
+    include_restaurants = data.get("includeRestaurants")
+    include_flights = data.get("includeFlights")
     try:
-        print("askAgent")
+        prompt = f"""
+        Plan a trip for the following details:
+
+        - Dates: {start} to {end}
+        - Destination(s): {location}
+        - Group Type: {group_type}
+        - Number of Adults: {adults}
+        - Number of Children: {children}
+        - Interests: {interests}
+        - Include Restaurants: {include_restaurants}
+        - Include Flights: {include_flights}
+
+        Generate a day-by-day itinerary with activities, food suggestions, and any travel tips. 
+        Include estimated daily costs if possible.
+        """
+
         client = genai.Client(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
-            model="gemini-2.0-flash", contents="Explain how AI works in a few words"
+            model="gemini-2.0-flash", contents=prompt
         )
         print(response.text)
         return jsonify({"response": response.text}), 200

@@ -11,7 +11,7 @@ import { screens } from "../../../constants/index";
 import LocationScreen from "@/components/NewTripScreens/LocationScreen";
 import DatesScreen from "@/components/NewTripScreens/DatesScreen";
 import TravelersScreen from "@/components/NewTripScreens/TravelersScreen";
-import { UserInterestesSelections } from "@/declarations";
+import { UserInterestesSelections, Locations,  } from "@/declarations";
 import InterestScreen from "@/components/NewTripScreens/InterestsScreen";
 import Animated from 'react-native-reanimated';
 import { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
@@ -26,7 +26,9 @@ const NewPlan = () => {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const isLastScreen = activeIndex === screens.length - 1;
-  const [selectedCountries, setSelectedCountries] = useState<{ name: string; code: string }[]>([]);
+
+  const [locations, setLocations] = useState<Locations>({}); 
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [group, setGroup] = useState({ adults: 1, children: 0, total: 1, type: 'solo' });
@@ -39,7 +41,7 @@ const NewPlan = () => {
     {
       start: startDate,
       end: endDate,
-      location: ['New York'] as string[],
+      location: locations,
       groupType: group.type,
       adults: group.adults,
       children: group.children,
@@ -67,12 +69,18 @@ const NewPlan = () => {
       ...prevForm,
       [field]: Array.isArray(prevForm[field]) ? [...prevForm[field], value] : value,
     }));
+  console.log('Selected place 222:', form);    
   };
+  
+  const handleSelectLocation = (locations: Locations) => {
+    setLocations(locations);
+    updateField('location', locations)
+  }
 
   const renderScreen = () => {
     switch (activeIndex) {
       case 0:
-        return <LocationScreen handleSelect={handleSelectCountry} currentValue={selectedCountries} />;
+        return <LocationScreen handleSelect={handleSelectLocation} locationList={locations} />;
       case 1:
         return <DatesScreen startDate={startDate} endDate={endDate} onChangeStart={onChangeStart} onChangeEnd={onChangeEnd} />;
       case 2:
@@ -88,27 +96,15 @@ const NewPlan = () => {
     try {
       const response = await axios.post(`${api_url}/trip/submitForm/`, { form, user_id: user.id });
       if (response.status === 200) {
-        console.log("Form submitted successfully:", response.data);
+        console.log("newPlan.tsx submitForm(): Form submitted successfully:", response.data);
       } else {
-        console.error("Unexpected response status:", response.status);
+        console.error("newPlan.tsx submitForm(): Unexpected response status:", response.status);
       }
     } catch (error) {
-      console.error("Error submitting the form:", error);
+      console.error("newPlan.tsx submitForm(): Error submitting the form:", error);
     }
   };
 
-  const handleSelectCountry = (country: { name: string; code: string }) => {
-    setSelectedCountries((prevSelected) => {
-      const alreadySelected = prevSelected.find((c) => c.code === country.code);
-      if (alreadySelected) {
-        return prevSelected.filter((c) => c.code !== country.code);
-      } else {
-        return [...prevSelected, country];
-      }
-    });
-
-    updateField('location', country.name)
-  }
 
   const onChangeStart = (event: Event, selectedDate?: Date | undefined) => {
     const pickedDate = selectedDate || startDate;
@@ -154,16 +150,16 @@ const NewPlan = () => {
   const askAgent = async () => {
     submitForm();
     try {
-      const response = await axios.post(`${api_url}/trip/askAgent/`);
+      const response = await axios.post(`${api_url}/trip/askAgent/`, form);
       if (response.status === 200) {
-          console.log("Agent response:", response.data.response); // Log the response from the backend
+          console.log("newPlan.tsx askAgent(): Agent response:", response.data.response); // Log the response from the backend
       } else {
-          console.error("Unexpected response status:", response.status);
+          console.error("newPlan.tsx askAgent(): Unexpected response status:", response.status);
       }
     } catch (error) {
-        console.error("Error asking agent:", error);
+        console.error("newPlan.tsx askAgent(): Error asking agent:", error);
     }
-    console.log("Agent asked for help");
+    console.log("newPlan.tsx askAgent(): Agent asked for help");
   };
 
   return (
@@ -254,168 +250,5 @@ const NewPlan = () => {
   //   submitField({ ['interests']: interestsList }, 'interests')
   // }, [form.interestsList]);
 // ----------------------------------------------------------------------
-      // {/* screens */}
-      // <Animated.View
-      //   style={animatedStyle}
-      //   className="flex items-center justify-between bg-white"
-      //   key={`content-${activeIndex}`}
-      // >
-      //   {/* locations */}
-      //   {activeIndex === 0 && <LocationScreen handleSelect={handleSelectCountry} currentValue={selectedCountries} />}
-
-      //   {/* dates */}
-      //   {activeIndex === 1 &&
-      //     <DatesScreen
-      //       startDate={startDate}
-      //       endDate={endDate}
-      //       onChangeStart={onChangeStart}
-      //       onChangeEnd={onChangeEnd}
-      //     />
-      //   }
-
-      //   {/* travelers */}
-      //   {activeIndex === 2 && <TravelersScreen handleSelect={handleChangeNumberOfPeople} onChangeGroupType={onChangeGroupType} currentValue={group}/>}
-
-      //   {/* interests */}
-      //   {activeIndex === 3 && <InterestScreen handleSelect={onChangeInterests} currentValue={interestsList}/>}
-      
-      //   </Animated.View>
-
-//
-// animated version 
-// {/* Sticky Headers */}
-// <View className="absolute top-10 left-5 w-full">
-//   {headers.map((title, index) => (
-//     <TouchableOpacity key={index} onPress={handleBack}>
-//     <Text className="text-lg font-bold">{title}</Text>
-//   </TouchableOpacity>
-//   ))}
-// </View>
-
-// {/* Animated Screens */}
-// <Animated.View style={{ transform: [{ translateY }] }} className="mt-20 flex-1">
-//   <View className="p-5">
-//     <Text className="text-2xl font-bold">{screens[activeIndex].title}</Text>
-//     {screens[activeIndex].fields.map((field, index) => (
-//       <TextInput key={index} placeholder={field} className="w-80 border-b-2 p-2 mt-4" />
-//     ))}
-//     {activeIndex < screens.length - 1 && (
-//       <TouchableOpacity onPress={handleNext} className="mt-5 p-3 bg-green-600 rounded-lg">
-//         <Text className="text-white">Next</Text>
-//       </TouchableOpacity>
-//     )}
-//   </View>
-// </Animated.View>
-//  const swiperRef = useRef<Swiper>(null);
-// <SafeAreaView className="flex-1 bg-white">
-
-//   <View className="flex-row justify-end pr-5 pt-5">
-//     <TouchableOpacity onPress={() => router.back()}>
-//       <FontAwesome name="close" size={22} />
-//     </TouchableOpacity>
-//   </View>
-
-//   <Swiper
-//     ref={swiperRef}
-//     loop={false}
-//     dot={<View className="w-[32px] h-[6px] mx-1 bg-[#9aa19d] rounded-full" />}
-//     activeDot={<View className="w-[32px] h-[6px] mx-1 bg-[#13875b] rounded-full" />}
-//     onIndexChanged={(index) => setActiveIndex(index)}
-//   >
-//     {/* Page 1 */}
-//     <View className="flex-1 items-center mt-10">
-
-//       <Text className="text-3xl font-JakartaExtraBold">Where would you like to go?</Text>
-//       <FontAwesome name="globe" size={100} />
-//       <View className="w-full items-center mt-5">
-//         {/* Set InputField to full width */}
-//         <InputField
-//           label="Dates"
-//           placeholder="Enter Dates:"
-//           icon={icons.person}
-//           value={form.dates}
-//           onChangeText={(value: string) =>
-//             setForm({
-//               ...form,
-//               dates: value,
-//             })
-//           }
-//           className="w-full"
-//         />
-//         <InputField
-//           label="Location"
-//           placeholder="Where would you want to go?"
-//           icon={icons.email}
-//           value={form.location}
-//           onChangeText={(value: string) =>
-//             setForm({
-//               ...form,
-//               location: value,
-//             })
-//           }
-//           className="w-full"
-//         />
-//       </View>
-//     </View>
-
-
-//     {/* Page 1 */}
-//     <View className="flex items-center justify-center p-6">
-//       <View className="flex flex-row items-center justify-center w-full mt-5">
-//         <View className="ml-5 mr-5">
-//           <InputField
-//             label="Dates"
-//             placeholder="Enter Dates:"
-//             icon={icons.person}
-//             value={form.dates}
-//             onChangeText={(value: string) =>
-//               setForm({
-//                 ...form,
-//                 dates: value,
-//               })
-//             }
-//           />
-//           <InputField
-//             label="Location"
-//             placeholder="Where would you want to go?"
-//             icon={icons.email}
-//             value={form.location}
-//             onChangeText={(value: string) =>
-//               setForm({
-//                 ...form,
-//                 location: value,
-//               })
-//             }
-//           />
-//         </View>
-//       </View>
-//     </View>
-
-
-//     <View className="flex items-center justify-center p-1">
-//       <View className="flex flex-row items-center justify-center w-full mt-5">
-//         <Text className="text-black text-3xl font-bold mx-10 text-center">
-//           Date
-//         </Text>
-//       </View>
-//     </View>
-//     <View className="flex items-center justify-center p-1">
-//       <View className="flex flex-row items-center justify-center w-full mt-5">
-//         <Text className="text-black text-3xl font-bold mx-10 text-center">
-//           Date
-//         </Text>
-//       </View>
-//     </View>
-//   </Swiper>
-//   <CustomButton
-//     title={isLastSlide ? 'Get Started' : 'Next'}
-//     className="w-[130px] mt-10 mb-10"
-//     bgVariant="gray-vibe"
-//     textVariant="primary"
-
-//     onPress={() => isLastSlide
-//       ? router.replace('/(auth)/sign-up')
-//       : swiperRef.current?.scrollBy(1)} IconLeft={undefined} IconRight={undefined} />
-// </SafeAreaView>
 
 export default NewPlan;
