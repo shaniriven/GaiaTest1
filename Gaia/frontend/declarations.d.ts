@@ -181,14 +181,19 @@ type InterestsDictionary = {
   [key in Categories]?: Labels[];
 };
 
+
 type UserInterestesSelections = {
   [key in Categories]?: Labels[];
 };
 
+
 type Locations = {
-  name: string;
-  code: string;
-}[];
+  [id: string]: { name: string; }
+};
+
+// type LocationsList = {
+//   data: Location[];
+// }
 
 type GroupDetails = {
   adults: number;
@@ -197,8 +202,8 @@ type GroupDetails = {
   type: string;
 }
 declare interface NewTripScreenProps {
-  handleSelect?: any,
-  currentValue?: Locations | UserInterestesSelections,
+  handleSelect?: any | function,
+  currentValue?: UserInterestesSelections,
   currentGroupValue?: GroupDetails,
   startDate?: Date,
   endDate?: Date,
@@ -207,4 +212,5 @@ declare interface NewTripScreenProps {
   onChangeGroupType?: any,
   originGroup?: any,
   userInterests?: InterestsDictionary,
+  locationList?: Locations,
 }

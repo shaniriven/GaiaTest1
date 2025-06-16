@@ -32,7 +32,21 @@ def convert_objectids(obj):
         return new_obj
     else:
         return obj
-    
+
+@bp.route('submitForm/', methods=['POST'])
+def submitForm():
+    data = request.json
+    user_id = data.get("user_id")
+    print("user id:", user_id)
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+
+    db = mongo.get_db("Users")
+    trips_collection = db.get_collection("planned_trips")
+    data["user_id"] = user_id
+    insert_result = trips_collection.insert_one(data)
+    return jsonify({"message": "Form submitted successfully", "inserted_id": str(insert_result.inserted_id)}), 200
+
 @bp.route('submit/<string:fieldName>/', methods=['POST'])
 def submitField(fieldName): 
     data = request.json
@@ -72,11 +86,44 @@ def deleteTrip():
 
 @bp.route('askAgent/', methods=['POST'])
 def askAgent():
-    client = genai.Client(api_key=GOOGLE_API_KEY)
-    response = client.models.generate_content(
-    model="gemini-2.0-flash", contents="Explain how AI works in a few words"
-    )
-    print(response.text)
+    data = request.get_json()
+    start = data.get("start")
+    end = data.get("end")
+    # location = ", ".join(data.get("location", []))
+    location = data.get("location")
+    # Map location to name for better readability in the prompt
+    print(location)
+    group_type = data.get("groupType")
+    adults = data.get("adults")
+    children = data.get("children")
+    interests = ", ".join(data.get("interestsList", []))
+    include_restaurants = data.get("includeRestaurants")
+    include_flights = data.get("includeFlights")
+    try:
+        prompt = f"""
+        Plan a trip for the following details:
+
+        - Dates: {start} to {end}
+        - Destination(s): {location}
+        - Group Type: {group_type}
+        - Number of Adults: {adults}
+        - Number of Children: {children}
+        - Interests: {interests}
+        - Include Restaurants: {include_restaurants}
+        - Include Flights: {include_flights}
+
+        Generate a day-by-day itinerary with activities, food suggestions, and any travel tips. 
+        Include estimated daily costs if possible.
+        """
+
+        client = genai.Client(api_key=GOOGLE_API_KEY)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash", contents=prompt
+        )
+        print(response.text)
+        return jsonify({"response": response.text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # check if needed
