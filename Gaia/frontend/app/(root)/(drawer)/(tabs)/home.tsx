@@ -6,19 +6,22 @@ import { Text, View, Dimensions, Animated, Pressable, FlatList, TouchableOpacity
 import { useClerk } from '@clerk/clerk-react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ScreenHeader from '@/components/ScreenHeader';
-import {  useEffect, useRef, useState } from 'react';
-import {  Full_Trip } from '@/declarations';
+import { useEffect, useRef, useState } from 'react';
+import { Full_Trip } from '@/types/declarations';
 import { icons } from '@/constants';
 import TripSwiper from '@/components/TripSwiper';
-
+import { colors } from '@/constants/index';
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 4;
 const squareSize = screenWidth / numColumns - 20;
 
 
 export default function Page() {
+
+
+  const { user } = useUser()
   const [fullTripList, setFullTripList] = useState([test_trip_I, test_trip_II]);
-  const color = "#13875b";
+  const color = colors.primary;
   const [selectedScreen, setSelectedScreen] = useState<Full_Trip | null>(null,);
   const [fullTripListCopy, setFullTripListCopy] = useState([...fullTripList])
   const screenWidth = Dimensions.get("window").width;
@@ -87,10 +90,11 @@ export default function Page() {
   }, [selectedScreen]);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View className="flex-1 bg-white">
+      <SignedIn>
 
-      {/* header and back arrow */}
-      <View className="flex-row items-center justify-between">
+        {/* header and back arrow */}
+        {/* <View className="flex-row items-center justify-between">
         {selectedScreen && (
           <TouchableOpacity onPress={handleClosePanel} className="absolute left-4 pt-2">
             <Animated.Image
@@ -103,51 +107,64 @@ export default function Page() {
         <View className="flex-1 items-center">
           <ScreenHeader text="Planned Trips" />
         </View>
-      </View>
+      </View> */}
 
-      <View className="flex-1 p-4">
+        <View className="flex-1 p-4">
 
-        {/* planned trips list */}
-        <FlatList data={fullTripListCopy} keyExtractor={(item) => item.id.toString()} numColumns={numColumns}
-          renderItem={({ item }) => (
-            <TouchableOpacity className={`bg-gaiaGreen-100 justify-center items-center m-2 rounded-lg`} style={{ width: squareSize, height: squareSize }} onPress={() => openPanel(item)} >
-              <Text className="text-white text-lg font-JakartaMedium">{item.title}</Text>
-            </TouchableOpacity>
+          {/* planned trips list */}
+          <FlatList data={fullTripListCopy} keyExtractor={(item) => item.id.toString()} numColumns={numColumns}
+            renderItem={({ item }) => (
+              <TouchableOpacity className={`bg-gaiaGreen-100 justify-center items-center m-2 rounded-lg`} style={{ width: squareSize, height: squareSize }} onPress={() => openPanel(item)} >
+                <Text className="text-white text-lg font-JakartaMedium">{item.title}</Text>
+              </TouchableOpacity>
+            )}
+          />
+
+          {/* selected trip modal */}
+          {selectedScreen && (
+            <Animated.View
+              className="absolute top-2 bottom-0 bg-white shadow-lg bg-tabs-400 self-center rounded-xl p-2"
+              style={{
+                width: screenWidth - 20, 
+                transform: [{ translateX: slideAnim }],
+              }}
+            >
+              <View className="flex-1 mt-4">
+                <View className="flex-row justify-between items-end">
+
+                  {/* trip name (selected screen title) */}
+                  <View className="flex-row items-end ml-2">
+                    <TouchableOpacity onPress={handleClosePanel} >
+                      <Animated.Image
+                        source={icons.backArrow}
+                        className="w-[24px] h-[24px] mr-2"
+                        style={{ opacity: arrowOpacity }}
+                      />
+                    </TouchableOpacity>
+                    <Text className="text-3xl font-JakartaMedium">{selectedScreen.title}</Text>
+                  </View>
+
+                  {/* dates above progress bar */}
+                  <View className="flex-row items-end mr-2">
+                    <Text className="text-lg font-JakartaMedium">{formatDateRange(selectedScreen.startDate, selectedScreen.endDate)}</Text>
+                  </View>
+                </View>
+
+                {/* trip swiper */}
+                <View className="flex-1 m-2 ">
+                  <TripSwiper dayTrips={selectedScreen.dayTrips} color={color} />
+                </View>
+              </View>
+            </Animated.View>
           )}
-        />
-
-        {/* selected trip modal */}
-        {selectedScreen && (
-          <Animated.View
-            className="absolute top-0 bottom-0 bg-white shadow-lg bg-tabs-400 self-center rounded-xl p-2"
-            style={{
-              width: screenWidth - 20, // Adjust width to account for the margins
-              transform: [{ translateX: slideAnim }],
-            }}
-          >
-            <View className="flex-1 mt-4">
-              <View className="flex-row justify-between items-end">
-
-                {/* trip name (selected screen title) */}
-                <View className="flex-row items-end ml-2">
-                  <Text className="text-3xl font-JakartaMedium">{selectedScreen.title}</Text>
-                </View>
-
-                {/* dates above progress bar */}
-                <View className="flex-row items-end mr-2">
-                  <Text className="text-lg font-JakartaMedium">{formatDateRange(selectedScreen.startDate, selectedScreen.endDate)}</Text>
-                </View>
-              </View>
-              
-              {/* trip swiper */}
-              <View className="flex-1 m-2 ">
-                <TripSwiper dayTrips={selectedScreen.dayTrips} color={color} />
-              </View>
-            </View>
-          </Animated.View>
-        )}
-      </View>
-    </SafeAreaView>
+        </View>
+      </SignedIn>
+      <SignedOut>
+        <View className="flex-1 items-center justify-center">
+          <Text>sing out view</Text>
+        </View>
+      </SignedOut>
+    </View>
   );
 }
 

@@ -2,7 +2,7 @@ import ob1 from "@/assets/images/ob1.png";
 import ob2 from "@/assets/images/NatureOrCity.png";
 import ob3 from "@/assets/images/groupIcons.png";
 import singUp from "@/assets/images/logo.png";
-import check from "@/assets/images/check.png"
+import check from "@/assets/images/check.png";
 import arrowDown from "@/assets/icons/arrow-down.png";
 import arrowUp from "@/assets/icons/arrow-up.png";
 import backArrow from "@/assets/icons/back-arrow.png";
@@ -29,11 +29,16 @@ import star from "@/assets/icons/star.png";
 import target from "@/assets/icons/target.png";
 import to from "@/assets/icons/to.png";
 
+export const colors = {
+  primary: "#13875b",
+};
+
 export const onboarding = [
   {
     id: 1,
     title: "The journey begins\nwith Gaia",
-    description: "The perfect trip is just a tap away\n Turn a dream into reality",
+    description:
+      "The perfect trip is just a tap away\n Turn a dream into reality",
     image: ob1,
   },
   {
@@ -49,10 +54,7 @@ export const onboarding = [
   },
 ];
 
-
-export const newTripPlanningScreens = [
-
-];
+export const newTripPlanningScreens = [];
 
 export const singUpImage = singUp;
 export const checkVerification = check;
@@ -83,32 +85,31 @@ export const icons = {
   star,
   target,
   to,
-}
-
+};
 
 export const screens = [
   {
     id: 0,
     title: "location",
     icon: "location",
-    fields: ["location"]
+    fields: ["location"],
   },
   {
     id: 1,
     title: "dates",
     icon: "calendar",
-    fields: ["dates"]
+    fields: ["dates"],
   },
   {
     id: 2,
     title: "travelers",
     icon: "user",
-    fields: ["adults", "children"]
+    fields: ["adults", "children"],
   },
   {
     id: 3,
     title: "interests",
     icon: "plus",
-    fields: ["interests"]
+    fields: ["interests"],
   },
-]
+];

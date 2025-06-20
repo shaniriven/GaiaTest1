@@ -7,8 +7,6 @@ import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import OAuth from "@/components/OAuth";
 import { ReactNativeModal } from "react-native-modal";
-
-// clerk
 import { useSignUp } from "@clerk/clerk-expo";
 
 const SignUp = () => {

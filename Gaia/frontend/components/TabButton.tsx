@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { TouchableOpacity, Text } from "react-native";
-import { TabButtonProps } from "@/declarations";
+import { TabButtonProps } from "@/types/declarations";
 
 const TabButton = ({ onPress, title, className, bgColor, textColor, isActive, ...props }: TabButtonProps &
 { isActive: boolean }) => (

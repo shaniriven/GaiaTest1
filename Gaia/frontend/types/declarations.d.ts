@@ -1,32 +1,16 @@
 /* eslint-disable prettier/prettier */
+import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
 import { DraggableFlatListProps } from "react-native-draggable-flatlist";
 import { CheckboxProps } from "react-native-paper";
 import { View } from "react-native-reanimated/lib/typescript/Animated";
 import { SwiperProps } from "react-native-swiper";
 
-declare module "*.png" {
-  const value: string;
-  export default value;
-}
 
-declare module "*.jpg" {
-  const value: string;
-  export default value;
-}
-
-declare module "*.jpeg" {
-  const value: string;
-  export default value;
-}
-
-declare module "*.gif" {
-  const value: string;
-  export default value;
-}
-
-declare module "*.svg" {
-  const value: string;
-  export default value;
+declare interface BouncyCheckboxClassicProps extends BouncyCheckboxProps {
+  state: boolean,
+  setState: any,
+  label: string
+  className?: string;
 }
 
 // custom components
@@ -48,7 +32,7 @@ declare interface ButtonProps extends TouchableOpacityProps {
 }
 
 // country search bar
-interface CountrySearchBarProps {
+declare interface CountrySearchBarProps {
   onSelect: (country: { name: string; code: string }) => void;
 }
 
@@ -91,7 +75,7 @@ declare interface InputFieldProps extends TextInputProps {
 }
 
 // checkbox
-interface Checkbox1Props {
+declare interface Checkbox1Props {
   icon: keyof typeof FontAwesome.glyphMap;
   label: string;
   value: string;
@@ -134,7 +118,7 @@ declare interface DaysSwiperProps extends SwiperProps {
 
 // trip tests -------------------------------
 // full trip
-export interface Full_Trip {
+declare interface Full_Trip {
   id: number;
   title: string;
   dayTrips: Day_Trip[];
@@ -142,7 +126,7 @@ export interface Full_Trip {
   endDate: string;
 }
 // one day of the trip
-export interface Day_Trip {
+declare interface Day_Trip {
   day: string;
   date: string;
   description: string;
@@ -159,48 +143,7 @@ declare interface Destination {
   ages: string,
   
 }
-// -------------------------------
 
-// type declerations
-type Options = 'solo' | 'friends' | 'couple' | 'family';
-type GroupPeopleOptions = 'adults' | 'children';
-
-type Categories = 'Rooms' | 'Food & Drinks' | 'Music & Concerts' | 'Activities' | 'Traveling Style' | 'Art & Culture' | 'Entertainment' | 'Shopping' | 'Wellness';
-type Labels = |'Hotels' | 'Apartments' | 'Airbnb' | 'Hostels' | 'Resorts' | 'Camping'
-              | 'Restaurants' | 'Bars' | 'Cafes' | 'Wine Bars' | 'Fast Food' | 'Local Food' 
-              | 'Concerts' | 'Festivals' | 'Orchestra' | 'Musicals' | 'Music Bars' | 'Local Music'
-              | 'Skydiving' | 'Snow Sports' | 'Diving' | 'Surf' | 'Camping' | 'Zoo & Safari' | 'Guided Tours'
-              | 'Short Hikings' | 'Trekking' | 'Road Tripping'  | 'Urban Exploration' | 'Beaches' | 'Nature'
-              | 'Museums' | 'Galleries' | 'National Parks' | 'Monuments' | 'Sightseeing' | 'Marketplace' | 'Cultural Landmarks'
-              | 'Movies' | 'Theatre' | 'Comedy Shows' | 'Dance' | 'Opera' | 'Sport Events' | 'Nightlife'
-              | 'Malls' | 'Outlets' | 'Supermarket' | 'Artisan Workshops'
-              | 'Spas' | 'Gyms' | 'Pool' | 'Parks' ;
-
-
-type InterestsDictionary = {
-  [key in Categories]?: Labels[];
-};
-
-
-type UserInterestesSelections = {
-  [key in Categories]?: Labels[];
-};
-
-
-type Locations = {
-  [id: string]: { name: string; }
-};
-
-// type LocationsList = {
-//   data: Location[];
-// }
-
-type GroupDetails = {
-  adults: number;
-  children: number;
-  total: number;
-  type: string;
-}
 declare interface NewTripScreenProps {
   handleSelect?: any | function,
   currentValue?: UserInterestesSelections,
@@ -213,4 +156,19 @@ declare interface NewTripScreenProps {
   originGroup?: any,
   userInterests?: InterestsDictionary,
   locationList?: Locations,
+  locationOptions?: LocationOptions,
+  handleLocationOptionsSelect?: any | function,
+  handleOptimizedDatesSelect?: any | function,
+  optimizDates?: boolean,
+  budgetOptions?: BudgetOptions,
+}
+
+declare interface SectionProps {
+  budgetOptions: BudgetOptions,
+  onOptionsChange: function,
+}
+
+declare interface RangePickerProps {
+  range: number[],
+  setRange: function,
 }

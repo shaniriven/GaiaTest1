@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import config from '../config';
 import { Text, TouchableOpacity } from 'react-native';
-import { NewTripScreenProps } from '@/declarations';
+import { NewTripScreenProps } from '@/types/declarations';
 
 const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
   const googlePlacesApiKey = config.googlePlacesApiKey;
@@ -11,6 +11,7 @@ const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
 
   return (
     <GooglePlacesAutocomplete
+
       ref={ref}
       query={{
         key: googlePlacesApiKey,
@@ -77,6 +78,7 @@ const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
         container: {
           width: '90%',
           marginTop: 20,
+          // height: 300,
         },
         textInputContainer: {
           backgroundColor: 'white',
@@ -84,7 +86,6 @@ const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
           borderWidth: 1,
           borderRadius: 8,
           padding: 1,
-
         },
         textInput: {
           backgroundColor: '#FFFFFF',
@@ -106,7 +107,7 @@ const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
           borderTopWidth: 0,
           borderBottomLeftRadius: 8,
           borderBottomRightRadius: 8,
-          maxHeight: 150,
+          maxHeight: 200,
           showsVerticalScrollIndicator: true,
           paddingRight: 10,
 

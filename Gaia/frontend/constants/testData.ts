@@ -1,4 +1,4 @@
-import { Destination, Full_Trip } from "@/declarations";
+import { Destination, Full_Trip } from "@/types/declarations";
 
 export const greek_trips: Destination[] = [
   {

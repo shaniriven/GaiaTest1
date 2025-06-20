@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Categories, InterestsDictionary, NewTripScreenProps, Labels, UserInterestesSelections } from "@/declarations";
+import { Categories, InterestsDictionary, NewTripScreenProps, Labels, UserInterestesSelections } from "@/types/declarations";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";

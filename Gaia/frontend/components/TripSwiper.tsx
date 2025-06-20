@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Dimensions, TouchableOpacity, ActivityIndicator, Image } from "react-native";
 import * as Progress from "react-native-progress";
-import { Day_Trip, Destination, TripSwiperProps } from "@/declarations";
+import { Day_Trip, Destination, TripSwiperProps } from "@/types/declarations";
 import Swiper from "react-native-swiper";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import CustomDragList from "./CustomDragList";
