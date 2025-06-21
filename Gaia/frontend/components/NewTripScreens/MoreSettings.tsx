@@ -12,12 +12,15 @@ import {
   Easing,
 } from "react-native";
 import { useEffect, useState, useRef } from "react";
-import { SectionType } from "@/types/type";
+import { DetailsCheckboxes, SectionType, BudgetOptions } from "@/types/type";
 import Budget from "./Budget";
+import Details from "./Details";
+import { defaultDetailsCheckboxes } from "@/constants/index";
+import Interests from "./Interests";
 
 const MoreSettings = ({
   handleSelect,
-  userInterests,
+  detailsCheckboxes = defaultDetailsCheckboxes,
   budgetOptions = {
     budgetPerNight: false,
     includeMeals: false,
@@ -37,7 +40,12 @@ const MoreSettings = ({
     budgetPerPerson: budgetOptions.budgetPerPerson,
     range: budgetOptions.range,
   });
+  const [checkboxSelection, setcheckboxSelection] =
+    useState<DetailsCheckboxes>(detailsCheckboxes);
 
+  const saveCheckboxesSelection = (details: DetailsCheckboxes) => {
+    setcheckboxSelection(details);
+  };
   const animations = useRef<Record<SectionType, Animated.Value>>({
     budget: new Animated.Value(0),
     "trip details and content": new Animated.Value(0),
@@ -87,16 +95,24 @@ const MoreSettings = ({
     }
   };
 
+  const handleBudgetOptionsChange = (options: BudgetOptions) => {
+    setBudgetOptions(options);
+    console.log(options.range);
+  };
+
   const renderContent = (section: SectionType) => {
     switch (section) {
       case "budget":
         return (
-          <Budget budgetOptions={options} setBudgetOptions={setBudgetOptions} />
+          <Budget
+            budgetOptions={options}
+            onOptionsChange={handleBudgetOptionsChange}
+          />
         );
       case "trip details and content":
-        return <Text>Accommodation & activities checkboxes</Text>;
-      case "interests":
-        return <Text>Interests list goes here</Text>;
+        return <Details onOptionsChange={saveCheckboxesSelection} />;
+      case "personal interests":
+        return <Interests onOptionsChange={saveCheckboxesSelection} />;
       default:
         return null;
     }
@@ -114,7 +130,7 @@ const MoreSettings = ({
         <View key={section} className="mb-0 w-[320px]">
           <TouchableOpacity
             onPress={() => handleToggle(section)}
-            className={`flex-row justify-between p-4 ${
+            className={`flex-row justify-between p-3 ${
               section === "budget"
                 ? "bg-cardsGreen-100"
                 : section === "trip details and content"
@@ -144,7 +160,7 @@ const MoreSettings = ({
               }}
             >
               <View
-                className={`p-4 h-[230px] rounded-b-xl ${
+                className={`p-3 h-[300px] rounded-b-xl ${
                   section === "budget"
                     ? "bg-cardsGreen-100"
                     : section === "trip details and content"

@@ -4,7 +4,7 @@ import { DraggableFlatListProps } from "react-native-draggable-flatlist";
 import { CheckboxProps } from "react-native-paper";
 import { View } from "react-native-reanimated/lib/typescript/Animated";
 import { SwiperProps } from "react-native-swiper";
-
+import { defaultDetailsCheckboxes } from "@/constants/index";
 
 declare interface BouncyCheckboxClassicProps extends BouncyCheckboxProps {
   state: boolean,
@@ -154,7 +154,7 @@ declare interface NewTripScreenProps {
   onChangeEnd?: any,
   onChangeGroupType?: any,
   originGroup?: any,
-  userInterests?: InterestsDictionary,
+  detailsCheckboxes?: typeof defaultDetailsCheckboxes;
   locationList?: Locations,
   locationOptions?: LocationOptions,
   handleLocationOptionsSelect?: any | function,
@@ -164,7 +164,8 @@ declare interface NewTripScreenProps {
 }
 
 declare interface SectionProps {
-  budgetOptions: BudgetOptions,
+  budgetOptions?: BudgetOptions,
+  detailsOptions?: DetailsCheckboxes,
   onOptionsChange: function,
 }
 

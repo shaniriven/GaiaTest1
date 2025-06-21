@@ -1,9 +1,16 @@
+import { defaultDetailsCheckboxes } from "@/constants/index";
 // type declerations
 type Options = "solo" | "friends" | "couple" | "family";
 
 type GroupPeopleOptions = "adults" | "children";
 
-type SectionType = "budget" | "trip details and content" | "interests";
+type SectionType = "budget" | "trip details and content" | "personal interests";
+
+type InterestsSectionType =
+  | "restaurant and nightlife"
+  | "entertainment"
+  | "extreme sports"
+  | "wellness";
 
 type FormFields =
   | "start"
@@ -19,9 +26,9 @@ type FormFields =
   | "optimizedDates";
 
 type Categories =
-  | "Rooms"
-  | "Food & Drinks"
-  | "Music & Concerts"
+  | "accommodation"
+  | "activities"
+  | "settings"
   | "Activities"
   | "Traveling Style"
   | "Art & Culture"
@@ -89,6 +96,7 @@ type LocationOptions = {
   suggestFlights: boolean;
   isOptimized: boolean;
 };
+type DetailsCheckboxes = typeof defaultDetailsCheckboxes;
 
 type BudgetOptions = {
   budgetPerNight: boolean;

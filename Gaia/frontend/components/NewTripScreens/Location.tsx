@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
 import GooglePlacesInput from "../GooglePlaceInput";
+import { LocationOptions } from "@/types/type";
 
 const Location = ({
   handleSelect,
