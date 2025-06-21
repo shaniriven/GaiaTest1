@@ -89,15 +89,23 @@ def deleteTrip():
 @bp.route('askAgent/', methods=['POST'])
 def askAgent():
     data = request.get_json()
-    start = data.get("start")
-    end = data.get("end")
+
+    start = data.get("startDate")
+    end = data.get("endDate")
+    group_type = data.get("groupType")
+    adults = data.get("adults")
+    children = data.get("children")
+    budget = data.get("budget")
+    is_optimized = data.get("isOptimized")
+    multiple = data.get("multipleDestinations")
+    suggest_flights = data.get("suggestFlights")
+    optimized_dates = data.get("optimizedDates")
+                               
     # location = ", ".join(data.get("location", []))
     location = data.get("location")
     # Map location to name for better readability in the prompt
     print(location)
-    group_type = data.get("groupType")
-    adults = data.get("adults")
-    children = data.get("children")
+
     interests = ", ".join(data.get("interestsList", []))
     include_restaurants = data.get("includeRestaurants")
     include_flights = data.get("includeFlights")
