@@ -1,40 +1,43 @@
 import { NewTripScreenProps } from "@/types/declarations";
+import { View, Text, Animated, TouchableOpacity, Easing } from "react-native";
+import { useState, useRef, useEffect } from "react";
 import {
-  Keyboard,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Animated,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableOpacity,
-  Alert,
-  Easing,
-} from "react-native";
-import { useEffect, useState, useRef } from "react";
-import { DetailsCheckboxes, SectionType, BudgetOptions } from "@/types/type";
+  DetailsCheckboxes,
+  SectionType,
+  BudgetOptions,
+  UserInterestsList,
+} from "@/types/type";
 import Budget from "./Budget";
 import Details from "./Details";
-import { defaultDetailsCheckboxes } from "@/constants/index";
+import {
+  defaultDetailsCheckboxes,
+  defaultInterestsLabels,
+} from "@/constants/index";
 import Interests from "./Interests";
 
 const MoreSettings = ({
   handleSelect,
   detailsCheckboxes = defaultDetailsCheckboxes,
+  interestsOptions = defaultInterestsLabels,
   budgetOptions = {
     budgetPerNight: false,
     includeMeals: false,
     budgetPerPerson: false,
     range: [0, 200],
   },
-}: NewTripScreenProps) => {
+}: Omit<NewTripScreenProps, "handleSelect"> & {
+  handleSelect: (
+    key: "BudgetOptions" | "UserInterestsList" | "DetailsCheckboxes",
+    value: BudgetOptions | UserInterestsList | DetailsCheckboxes,
+  ) => void;
+}) => {
   const sections: SectionType[] = [
     "budget",
     "trip details and content",
     "personal interests",
   ];
   const [openSection, setOpenSection] = useState<SectionType | null>(null);
-  const [options, setBudgetOptions] = useState<BudgetOptions>({
+  const [budget, setBudgetOptions] = useState<BudgetOptions>({
     budgetPerNight: budgetOptions.budgetPerNight,
     includeMeals: budgetOptions.includeMeals,
     budgetPerPerson: budgetOptions.budgetPerPerson,
@@ -42,10 +45,8 @@ const MoreSettings = ({
   });
   const [checkboxSelection, setcheckboxSelection] =
     useState<DetailsCheckboxes>(detailsCheckboxes);
-
-  const saveCheckboxesSelection = (details: DetailsCheckboxes) => {
-    setcheckboxSelection(details);
-  };
+  const [interestsList, setInterestsList] =
+    useState<UserInterestsList>(interestsOptions);
   const animations = useRef<Record<SectionType, Animated.Value>>({
     budget: new Animated.Value(0),
     "trip details and content": new Animated.Value(0),
@@ -95,9 +96,31 @@ const MoreSettings = ({
     }
   };
 
+  // fix form
+  // -> budget
+  useEffect(() => {
+    handleSelect("BudgetOptions", budget);
+  }, [budget]);
   const handleBudgetOptionsChange = (options: BudgetOptions) => {
     setBudgetOptions(options);
-    console.log(options.range);
+    handleSelect("BudgetOptions", options);
+  };
+
+  // -> details
+  useEffect(() => {
+    handleSelect("DetailsCheckboxes", checkboxSelection);
+  }, [checkboxSelection]);
+
+  const saveCheckboxesSelection = (details: DetailsCheckboxes) => {
+    setcheckboxSelection(details);
+  };
+  // -> interests
+  useEffect(() => {
+    handleSelect("UserInterestsList", interestsList);
+  }, [interestsList]);
+
+  const saveInterestsSelection = (interests: UserInterestsList) => {
+    setInterestsList(interests);
   };
 
   const renderContent = (section: SectionType) => {
@@ -105,14 +128,24 @@ const MoreSettings = ({
       case "budget":
         return (
           <Budget
-            budgetOptions={options}
+            budgetOptions={budget}
             onOptionsChange={handleBudgetOptionsChange}
           />
         );
       case "trip details and content":
-        return <Details onOptionsChange={saveCheckboxesSelection} />;
+        return (
+          <Details
+            detailsOptions={checkboxSelection}
+            onOptionsChange={saveCheckboxesSelection}
+          />
+        );
       case "personal interests":
-        return <Interests onOptionsChange={saveCheckboxesSelection} />;
+        return (
+          <Interests
+            interestsOptions={interestsOptions}
+            onOptionsChange={saveInterestsSelection}
+          />
+        );
       default:
         return null;
     }

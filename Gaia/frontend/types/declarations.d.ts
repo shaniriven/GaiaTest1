@@ -1,30 +1,85 @@
-/* eslint-disable prettier/prettier */
 import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
 import { DraggableFlatListProps } from "react-native-draggable-flatlist";
 import { CheckboxProps } from "react-native-paper";
 import { View } from "react-native-reanimated/lib/typescript/Animated";
 import { SwiperProps } from "react-native-swiper";
-import { defaultDetailsCheckboxes } from "@/constants/index";
+import {
+  defaultDetailsCheckboxes,
+  defaultInterestsLabels,
+} from "@/constants/index";
+import {
+  Locations,
+  LocationOptions,
+  GroupDetails,
+  BudgetOptions,
+  DetailsCheckboxes,
+} from "./type";
 
-declare interface BouncyCheckboxClassicProps extends BouncyCheckboxProps {
-  state: boolean,
-  setState: any,
-  label: string
-  className?: string;
+// new trip interfaces
+declare interface NewTripScreenProps {
+  handleSelect?: any | function;
+  handleLocationOptionsSelect?: any | function;
+  locationList?: Locations;
+  locationOptions?: LocationOptions;
+  startDate?: Date;
+  endDate?: Date;
+  onChangeStart?: any;
+  onChangeEnd?: any;
+  handleOptimizedDatesSelect?: any | function;
+  optimizDates?: boolean;
+  onChangeGroupType?: any;
+  currentGroupValue?: GroupDetails;
+  detailsCheckboxes?: typeof defaultDetailsCheckboxes;
+  interestsOptions?: typeof defaultInterestsLabels;
+  budgetOptions?: BudgetOptions;
+  onChangeInterests?: any;
+}
+declare interface SectionProps {
+  budgetOptions?: BudgetOptions;
+  detailsOptions?: DetailsCheckboxes;
+  onOptionsChange: function;
+  interestsOptions?: typeof defaultInterestsLabels;
 }
 
+// components
+// -> checkbox
+declare interface BouncyCheckboxClassicProps extends BouncyCheckboxProps {
+  state: boolean;
+  setState: any;
+  label: string;
+  className?: string;
+}
+// -> floating eliptic tab button
+declare interface TabButtonProps extends TouchableOpacityProps {
+  bgColor: string;
+  textColor: string;
+  title: string;
+  className?: string;
+  style?: any;
+  onPress?: (event: GestureResponderEvent) => void | Promise<void>;
+  activeStyle?: string;
+}
+
+// not checked
 // custom components
 // Button
 declare interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  bgVariant?: "default" | "primary" | "gray-vibe" | "secondary" | "danger" | "outline" | "success";
+  bgVariant?:
+    | "default"
+    | "primary"
+    | "gray-vibe"
+    | "secondary"
+    | "danger"
+    | "outline"
+    | "success";
   textVariant?:
-  | "primary"
-  | "default"
-  | "secondary"
-  | "danger"
-  | "success"
-  | "gray-vibe";
+    | "primary"
+    | "default"
+    | "secondary"
+    | "danger"
+    | "success"
+    | "gray-vibe";
   IconLeft?: React.ComponentType<any>;
   IconRight?: React.ComponentType<any>;
   className?: string;
@@ -34,16 +89,6 @@ declare interface ButtonProps extends TouchableOpacityProps {
 // country search bar
 declare interface CountrySearchBarProps {
   onSelect: (country: { name: string; code: string }) => void;
-}
-
-// tab button
-declare interface TabButtonProps extends TouchableOpacityProps {
-  bgColor: string;
-  textColor: string;
-  title: string;
-  className?: string;
-  style?: any;
-  onPress?: (event: GestureResponderEvent) => void | Promise<void>;
 }
 
 // tab icon
@@ -107,7 +152,6 @@ declare interface TripSwiperProps extends ViewProps {
   color: string;
   className?: string;
   handleSave?: any;
-
 }
 
 // days swiper
@@ -135,41 +179,15 @@ declare interface Day_Trip {
 
 declare interface Destination {
   id: string;
-  name: string,
-  country: string,
-  type: string,
-  time_hours: string,
-  level: string,
-  ages: string,
-  
-}
-
-declare interface NewTripScreenProps {
-  handleSelect?: any | function,
-  currentValue?: UserInterestesSelections,
-  currentGroupValue?: GroupDetails,
-  startDate?: Date,
-  endDate?: Date,
-  onChangeStart?: any,
-  onChangeEnd?: any,
-  onChangeGroupType?: any,
-  originGroup?: any,
-  detailsCheckboxes?: typeof defaultDetailsCheckboxes;
-  locationList?: Locations,
-  locationOptions?: LocationOptions,
-  handleLocationOptionsSelect?: any | function,
-  handleOptimizedDatesSelect?: any | function,
-  optimizDates?: boolean,
-  budgetOptions?: BudgetOptions,
-}
-
-declare interface SectionProps {
-  budgetOptions?: BudgetOptions,
-  detailsOptions?: DetailsCheckboxes,
-  onOptionsChange: function,
+  name: string;
+  country: string;
+  type: string;
+  time_hours: string;
+  level: string;
+  ages: string;
 }
 
 declare interface RangePickerProps {
-  range: number[],
-  setRange: function,
+  range: number[];
+  setRange: function;
 }

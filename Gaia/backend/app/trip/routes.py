@@ -35,6 +35,7 @@ def convert_objectids(obj):
 
 @bp.route('submitForm/', methods=['POST'])
 def submitForm():
+    print("submitField")
     data = request.json
     user_id = data.get("user_id")
     print("user id:", user_id)
@@ -49,12 +50,13 @@ def submitForm():
 
 @bp.route('submit/<string:fieldName>/', methods=['POST'])
 def submitField(fieldName): 
+    print("submitField")
     data = request.json
     db = mongo.get_db("Users")
     trips_collection = db.get_collection("planned_trips")
     open_trip = trips_collection.find_one({"user_id": data.get("user_id")})
-    if fieldName == "start":
-        data["type"] = "start"
+    if fieldName == "startDate":
+        data["type"] = "startDate"
     elif fieldName == "end":
         data["type"] = "end"
         

@@ -14,27 +14,34 @@ const Dates = ({
   onChangeEnd,
   handleOptimizedDatesSelect,
   optimizDates = false,
-  locationList = {},
+  locationList,
+  handleSelect,
 }: NewTripScreenProps) => {
-  const [destinationNumber, setDestinationNumber] = useState(
-    Object.keys(locationList).length || 1,
-  );
   const [tripDeparture, setTripDeparture] = useState(startDate);
+
+  const [optimized, setOptimized] = useState(optimizDates);
+  const initialPlaces = Object.entries(locationList || {}).map(
+    ([id, value]) => ({
+      id,
+      name: value.name,
+      startDate: value.startDate || tripDeparture,
+      endDate: value.endDate || tripDeparture,
+    }),
+  );
+  const [destinationNumber, setDestinationNumber] = useState(
+    Object.keys(locationList || {}).length || 1,
+  );
   const [tripReturn, setTripReturn] = useState(
     addDays(startDate, destinationNumber),
   );
-
-  const [optimized, setOptimized] = useState(optimizDates);
-  const initialPlaces = Object.entries(locationList).map(([id, value]) => ({
-    id,
-    name: value.name,
-    startDate: value.startDate || tripDeparture,
-    endDate: value.endDate || tripReturn,
-  }));
   const [selectedPlaces, setSelectedPlaces] =
     useState<{ id: string; name: string; startDate: Date; endDate: Date }[]>(
       initialPlaces,
     );
+
+  useEffect(() => {
+    handleSelect(selectedPlaces);
+  }, [selectedPlaces]);
 
   // returns trip length based on tripReturn tripDeparture
   const calculateTripLength = () => {
@@ -53,25 +60,27 @@ const Dates = ({
   }, [optimized]);
 
   const initDaysPerDestination = () => {
-    for (let i = 0; i < selectedPlaces.length; i++) {
+    const copiedPlaces = selectedPlaces.map((place) => ({ ...place }));
+    for (let i = 0; i < copiedPlaces.length; i++) {
       if (i === 0) {
-        selectedPlaces[i].startDate = tripDeparture;
-        selectedPlaces[i].endDate = addDays(
+        copiedPlaces[i].startDate = tripDeparture;
+        copiedPlaces[i].endDate = addDays(
           tripDeparture,
           tripLength / destinationNumber,
         );
       } else {
-        selectedPlaces[i].startDate = selectedPlaces[i - 1].endDate;
-        selectedPlaces[i].endDate = addDays(
-          selectedPlaces[i].startDate,
+        copiedPlaces[i].startDate = copiedPlaces[i - 1].endDate;
+        copiedPlaces[i].endDate = addDays(
+          copiedPlaces[i].startDate,
           tripLength / destinationNumber,
         );
       }
     }
-    const len = selectedPlaces.length;
-    if (selectedPlaces[len - 1].endDate < tripReturn) {
-      selectedPlaces[selectedPlaces.length - 1].endDate = tripReturn;
+    const len = copiedPlaces.length;
+    if (copiedPlaces[len - 1].endDate < tripReturn) {
+      copiedPlaces[copiedPlaces.length - 1].endDate = tripReturn;
     }
+    setSelectedPlaces(copiedPlaces);
   };
 
   const onChangeDeparture = (event: any, selectedDate: Date | undefined) => {

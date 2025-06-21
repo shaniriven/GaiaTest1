@@ -29,6 +29,90 @@ import star from "@/assets/icons/star.png";
 import target from "@/assets/icons/target.png";
 import to from "@/assets/icons/to.png";
 
+// More Settings
+// interests key to label and save active
+export const defaultInterestsLabels = [
+  {
+    key: "restaurant and nightlife",
+    labels: [
+      "local food",
+      "bars",
+      "caffes",
+      "wine bars",
+      "fast food",
+      "local food",
+    ],
+    activeLabels: [""],
+  },
+  {
+    key: "entertainment",
+    labels: [
+      "concerts",
+      "museums",
+      "live showa",
+      "theatre",
+      "sport events",
+      "shopping",
+    ],
+    activeLabels: [""],
+  },
+  {
+    key: "extreme sports",
+    labels: ["skydiving", "snow sports", "diving", "surfing", "Safari"],
+    activeLabels: [""],
+  },
+  {
+    key: "extreme sports",
+    labels: ["Spas", "Gyms", "Pool", "Parks"],
+    activeLabels: [""],
+  },
+];
+// -> details checkboxes
+export const defaultDetailsCheckboxes = {
+  hotels: false,
+  hostels: false,
+  resorts: false,
+  rentals: false,
+  camping: false,
+  dorms: false,
+  guidedTours: false,
+  trails: false,
+  urbanTrip: false,
+  sightseeing: false,
+  dayTrip: false,
+  includeFlights: false,
+  includeMeals: false,
+  includeTransport: false,
+  includeEvents: false,
+};
+// checkboxes key to label
+// -> settings
+export const settingsLabels = [
+  { key: "includeFlights", label: "include flights" },
+  { key: "includeMeals", label: "include meals" },
+  { key: "includeTransport", label: "include public transport" },
+  { key: "includeEvents", label: "include seasonal and local events" },
+] as const;
+// -> activities
+export const activitiesLabels = [
+  { key: "guidedTours", label: "guided tours" },
+  { key: "trails", label: "trails" },
+  { key: "urbanTrip", label: "urban trip" },
+  { key: "sightseeing", label: "sightseeing" },
+  { key: "dayTrip", label: "day trip" },
+] as const;
+// -> accommodationLabels
+export const accommodationLabels = [
+  { key: "hotels", label: "hotels" },
+  { key: "hostels", label: "hostels" },
+  { key: "resorts", label: "resorts" },
+  { key: "rentals", label: "rentals" },
+  { key: "camping", label: "camping" },
+  { key: "dorms", label: "dorms" },
+] as const;
+
+// not tested
+
 export const colors = {
   primary: "#13875b",
 };
@@ -53,48 +137,6 @@ export const onboarding = [
     image: ob3,
   },
 ];
-
-export const accommodationLabels = [
-  { key: "hotels", label: "hotels" },
-  { key: "hostels", label: "hostels" },
-  { key: "resorts", label: "resorts" },
-  { key: "rentals", label: "rentals" },
-  { key: "camping", label: "camping" },
-  { key: "dorms", label: "dorms" },
-] as const;
-
-export const activitiesLabels = [
-  { key: "guidedTours", label: "guided tours" },
-  { key: "trails", label: "trails" },
-  { key: "urbanTrip", label: "urban trip" },
-  { key: "sightseeing", label: "sightseeing" },
-  { key: "dayTrip", label: "day trip" },
-] as const;
-
-export const settingsLabels = [
-  { key: "includeFlights", label: "include flights" },
-  { key: "includeMeals", label: "include meals" },
-  { key: "includeTransport", label: "include public transport" },
-  { key: "includeEvents", label: "include seasonal and local events" },
-] as const;
-
-export const defaultDetailsCheckboxes = {
-  hotels: false,
-  hostels: false,
-  resorts: false,
-  rentals: false,
-  camping: false,
-  dorms: false,
-  guidedTours: false,
-  trails: false,
-  urbanTrip: false,
-  sightseeing: false,
-  dayTrip: false,
-  includeFlights: false,
-  includeMeals: false,
-  includeTransport: false,
-  includeEvents: false,
-};
 
 export const newTripPlanningScreens = [];
 

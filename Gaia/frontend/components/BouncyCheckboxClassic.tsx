@@ -1,3 +1,4 @@
+// using
 import { BouncyCheckboxClassicProps } from "@/types/declarations";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 

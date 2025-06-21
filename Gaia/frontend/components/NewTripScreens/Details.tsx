@@ -1,12 +1,7 @@
-import { NewTripScreenProps, SectionProps } from "@/types/declarations";
-import { addDays, differenceInDays } from "date-fns";
-import { View, Text, ScrollView } from "react-native";
+import { SectionProps } from "@/types/declarations";
+import { View, Text } from "react-native";
 import { useEffect, useState } from "react";
 import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Fontisto from "@expo/vector-icons/Fontisto";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import BudgetPicker from "../BudgetPicker";
 import { DetailsCheckboxes } from "@/types/type";
 import {
   defaultDetailsCheckboxes,

@@ -1,44 +1,16 @@
-import { NewTripScreenProps, SectionProps } from "@/types/declarations";
-import { addDays, differenceInDays } from "date-fns";
-import {
-  View,
-  Text,
-  ScrollView,
-  Animated,
-  Easing,
-  TouchableOpacity,
-} from "react-native";
-import { useEffect, useRef, useState } from "react";
-import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Fontisto from "@expo/vector-icons/Fontisto";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import BudgetPicker from "../BudgetPicker";
-import { DetailsCheckboxes, InterestsSectionType } from "@/types/type";
-import {
-  defaultDetailsCheckboxes,
-  settingsLabels,
-  activitiesLabels,
-  accommodationLabels,
-} from "@/constants/index";
+import { SectionProps } from "@/types/declarations";
+import { View, Text, Animated, Easing, TouchableOpacity } from "react-native";
+import { useRef, useState } from "react";
+import { UserInterestsList, InterestsSectionType } from "@/types/type";
+import { defaultInterestsLabels } from "@/constants/index";
+import TabButton from "../TabButton";
 
 const Interests = ({
   onOptionsChange,
-  detailsOptions = defaultDetailsCheckboxes,
+  interestsOptions = defaultInterestsLabels,
 }: SectionProps) => {
-  //   const [detailsCheckboxes, setDetailsCheckboxes] =
-  //     useState<DetailsCheckboxes>(detailsOptions);
-
-  //   const toggleCheckbox = (key: keyof DetailsCheckboxes) => {
-  //     setDetailsCheckboxes((prev) => ({
-  //       ...prev,
-  //       [key]: !prev[key],
-  //     }));
-  //   };
-
-  //   useEffect(() => {
-  //     onOptionsChange(detailsCheckboxes);
-  //   }, [detailsCheckboxes]);
+  const [interestsList, setInterestsList] =
+    useState<UserInterestsList>(interestsOptions);
 
   const sections: InterestsSectionType[] = [
     "restaurant and nightlife",
@@ -58,12 +30,12 @@ const Interests = ({
     wellness: new Animated.Value(0),
   }).current;
 
-  const contentHeights = useRef<Record<InterestsSectionType, number>>({
-    "restaurant and nightlife": 0,
-    entertainment: 0,
-    "extreme sports": 0,
-    wellness: 0,
-  }).current;
+  //   const contentHeights = useRef<Record<InterestsSectionType, number>>({
+  //     "restaurant and nightlife": 0,
+  //     entertainment: 0,
+  //     "extreme sports": 0,
+  //     wellness: 0,
+  //   }).current;
 
   const handleToggle = (section: InterestsSectionType) => {
     if (openSection === section) {
@@ -102,23 +74,53 @@ const Interests = ({
     }
   };
 
+  const getInterestsByKey = (key: string) => {
+    return interestsList.find((item) => item.key === key);
+  };
+
+  const isLabelActive = (key: string, label: string): boolean => {
+    const category = getInterestsByKey(key);
+    return category?.activeLabels.includes(label) ?? false;
+  };
+
+  const handleSubPress = (key: string, label: string) => {
+    setInterestsList((prev) =>
+      prev.map((category) => {
+        if (category.key !== key) return category;
+        const isActive = isLabelActive(key, label);
+        return {
+          ...category,
+          activeLabels: isActive
+            ? category.activeLabels.filter((l) => l !== label)
+            : [...category.activeLabels, label],
+        };
+      }),
+    );
+
+    onOptionsChange();
+  };
   const renderContent = (section: InterestsSectionType) => {
     switch (section) {
       case "restaurant and nightlife":
         return (
           <View className="flex text-center flex-row flex-wrap justify-center items-center gap-5 mt-10 w-full">
-            {activeLabels.map((label, index) => (
-              <TabButton
-                key={index}
-                title={label}
-                bgColor="bg-grayTab"
-                textColor="text-primary"
-                isActive={isLabelIncluded(label)}
-                onPress={() => handleSubPress(label)}
-                className="mt-2"
-                style={{ minWidth: 100, maxWidth: 150, textAlign: "center" }}
-              />
-            ))}
+            {getInterestsByKey("restaurant and nightlife")?.labels.map(
+              (label, index) => (
+                <TabButton
+                  key={index}
+                  title={label}
+                  bgColor="bg-[#919191]"
+                  textColor="text-primary"
+                  activeStyle="bg-[#D2D2D2]"
+                  isActive={isLabelActive("restaurant and nightlife", label)}
+                  onPress={() =>
+                    handleSubPress("restaurant and nightlife", label)
+                  }
+                  className="mt-2"
+                  style={{ minWidth: 100, maxWidth: 150, textAlign: "center" }}
+                />
+              ),
+            )}
           </View>
         );
       case "entertainment":
@@ -168,16 +170,20 @@ const Interests = ({
                 overflow: "hidden",
                 height: animations[section].interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, contentHeights[section] || 1],
+                  outputRange: [0, 150], // 👈 use a fixed height here
                 }),
+                // height: animations[section].interpolate({
+                //   inputRange: [0, 1],
+                //   outputRange: [0, contentHeights[section] || 1],
+                // }),
               }}
             >
               <View
-                className={`p-3 h-[200px] rounded-b-xl  ${openSection === section ? "opacity-90" : "opacity-100"}`}
-                onLayout={(event) => {
-                  const height = event.nativeEvent.layout.height;
-                  contentHeights[section] = height;
-                }}
+                className={`p-3 rounded-b-xl  ${openSection === section ? "opacity-90" : "opacity-100"}`}
+                // onLayout={(event) => {
+                //   const height = event.nativeEvent.layout.height;
+                //   contentHeights[section] = height;
+                // }}
               >
                 {renderContent(section)}
               </View>

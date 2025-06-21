@@ -12,7 +12,7 @@ import { NewTripScreenProps } from "@/types/declarations";
 import React, { useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Checkbox1 from "../Checkbox1";
+import Checkbox1 from "../Checkbox1"; // change it
 
 const Travelers = ({
   handleSelect,

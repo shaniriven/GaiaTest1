@@ -1,6 +1,8 @@
+// using
 import React, { useState } from "react";
 import { View, Text } from "react-native";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { BudgetRange } from "@/types/type";
 
 export default function BudgetPicker({
   range = [100, 400],
