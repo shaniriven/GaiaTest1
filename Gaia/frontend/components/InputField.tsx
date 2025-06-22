@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { InputFieldProps } from "@/declarations";
+import { InputFieldProps } from "@/types/declarations";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react";
 import { View, Text, Image, TextInput } from "react-native";

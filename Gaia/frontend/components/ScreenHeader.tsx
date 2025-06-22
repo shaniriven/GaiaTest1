@@ -1,9 +1,9 @@
-import { ScreenHeaderProps } from "@/declarations";
+import { ScreenHeaderProps } from "@/types/declarations";
 import { View, Text } from "react-native";
 
 const ScreenHeader = ({ text, ...props }: ScreenHeaderProps) => (
-  <View className="flex flex-row items-center justify-between my-5 px-5">
-    <Text className="text-3xl font-JakartaSemiBold">{text}</Text>
+  <View className="flex flex-row items-center justify-between">
+    <Text className="text-2xl font-JakartaSemiBold">{text}</Text>
   </View>
 );
 

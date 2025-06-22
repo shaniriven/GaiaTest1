@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { TouchableOpacity, Text } from "react-native";
-import { ButtonProps } from "@/declarations";
+import { ButtonProps } from "@/types/declarations";
 
 const getBgVariantStyle = (variant:ButtonProps['bgVariant']) => {
     switch (variant) {

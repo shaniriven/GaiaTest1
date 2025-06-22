@@ -37,6 +37,7 @@ def convert_objectids(obj):
 
 @bp.route('submitForm/', methods=['POST'])
 def submitForm():
+    print("submitField")
     data = request.json
     user_id = data.get("user_id")
     print("user id:", user_id)
@@ -72,13 +73,14 @@ def update_user(user_id):
         return jsonify({"message": "User not found or no changes applied"}), 404
 
 @bp.route('submit/<string:fieldName>/', methods=['POST'])
-def submitField(fieldName):
+def submitField(fieldName): 
+    print("submitField")
     data = request.json
     db = mongo.get_db("Users")
     trips_collection = db.get_collection("planned_trips")
     open_trip = trips_collection.find_one({"user_id": data.get("user_id")})
-    if fieldName == "start":
-        data["type"] = "start"
+    if fieldName == "startDate":
+        data["type"] = "startDate"
     elif fieldName == "end":
         data["type"] = "end"
         
@@ -111,15 +113,23 @@ def deleteTrip():
 @bp.route('askAgent/', methods=['POST'])
 def askAgent():
     data = request.get_json()
-    start = data.get("start")
-    end = data.get("end")
+
+    start = data.get("startDate")
+    end = data.get("endDate")
+    group_type = data.get("groupType")
+    adults = data.get("adults")
+    children = data.get("children")
+    budget = data.get("budget")
+    is_optimized = data.get("isOptimized")
+    multiple = data.get("multipleDestinations")
+    suggest_flights = data.get("suggestFlights")
+    optimized_dates = data.get("optimizedDates")
+                               
     # location = ", ".join(data.get("location", []))
     location = data.get("location")
     # Map location to name for better readability in the prompt
     print(location)
-    group_type = data.get("groupType")
-    adults = data.get("adults")
-    children = data.get("children")
+
     interests = ", ".join(data.get("interestsList", []))
     include_restaurants = data.get("includeRestaurants")
     include_flights = data.get("includeFlights")

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Full_Trip, TripsFlatListProps } from "@/declarations";
+import { Full_Trip, TripsFlatListProps } from "@/types/declarations";
 import { useEffect, useRef, useState } from "react";
 import { icons } from "@/constants/index";
 import TripSwiper from "./TripSwiper";

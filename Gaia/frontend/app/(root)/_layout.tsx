@@ -35,9 +35,9 @@ const Layout = () => {
   return (
     <>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(modals)/newPlan"
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+        {/* <Stack.Screen
+          name="(modals)"
           options={{
             headerShown: false,
             presentation: "modal",
@@ -48,7 +48,7 @@ const Layout = () => {
             // Trigger when the modal is closed
             beforeRemove: handleModalClose,
           }}
-        />
+        /> */}
       </Stack>
 
       {/* Confirmation Modal */}

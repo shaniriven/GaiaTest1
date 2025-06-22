@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
-import { CustomDragListProps, Destination, } from "@/declarations";
+import { CustomDragListProps, Destination, } from "@/types/declarations";
 import { memo, useEffect, useState } from "react";
 import { TouchableOpacity, Text, View, Image, Pressable, StyleSheet, ListRenderItemInfo } from "react-native";
 import { singUpImage, icons } from "@/constants/index";

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { getCodeList } from "country-list";
 import Flag from "react-native-flags";
-import { CountrySearchBarProps } from "@/declarations";
+import { CountrySearchBarProps } from "@/types/declarations";
 import InputField from "@/components/InputField";
 
 const CountrySearchBar = ({ onSelect }: CountrySearchBarProps) => {
