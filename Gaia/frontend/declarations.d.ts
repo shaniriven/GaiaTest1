@@ -1,12 +1,36 @@
+import { LinkProps } from 'expo-router';
+
+declare module 'expo-router' {
+  export interface LinkProps {
+    href:
+      | "/editUser"
+      | "/settings"
+      | "/likedPlaces"
+      | "/documents"
+      | "/savedChats"
+      | "/contactUs"
+      | "/todoLists"
+      | string;
+  }
+}
 /* eslint-disable prettier/prettier */
 import { DraggableFlatListProps } from "react-native-draggable-flatlist";
 import { CheckboxProps } from "react-native-paper";
 import { View } from "react-native-reanimated/lib/typescript/Animated";
 import { SwiperProps } from "react-native-swiper";
-
+import { ImageSourcePropType } from 'react-native';
+/*
 declare module "*.png" {
   const value: string;
   export default value;
+}
+*/
+
+
+declare module '*.png' {
+  import { ImageSourcePropType } from 'react-native';
+  const content: ImageSourcePropType;
+  export default content;
 }
 
 declare module "*.jpg" {

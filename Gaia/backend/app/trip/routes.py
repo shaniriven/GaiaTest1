@@ -9,7 +9,9 @@ from bson import ObjectId  # To help with ObjectId conversion
 from .ai_module import generate_query_for_hobby
 from .scraper import scrape_municipality_open_data
 from .new_trip_creation import save_location, save_start, save_end, save_group, save_interests
-from google import genai
+
+from google import generativeai as genai
+print(genai.__file__)
 
 # Google Places API base URL and key from the environment
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
@@ -47,8 +49,30 @@ def submitForm():
     insert_result = trips_collection.insert_one(data)
     return jsonify({"message": "Form submitted successfully", "inserted_id": str(insert_result.inserted_id)}), 200
 
+@bp.route('/user/<string:user_id>/', methods=['GET'])
+def get_user(user_id):
+    db = mongo.get_db("Users")
+    users_collection = db.get_collection("users")
+    user = users_collection.find_one({"user_id": user_id})
+    if user:
+        user = convert_objectids(user)
+        return jsonify(user), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
+
+@bp.route('/user/<string:user_id>/', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+    db = mongo.get_db("Users")
+    users_collection = db.get_collection("users")
+    result = users_collection.update_one({"user_id": user_id}, {"$set": data})
+    if result.modified_count > 0:
+        return jsonify({"message": "User updated successfully"}), 200
+    else:
+        return jsonify({"message": "User not found or no changes applied"}), 404
+
 @bp.route('submit/<string:fieldName>/', methods=['POST'])
-def submitField(fieldName): 
+def submitField(fieldName):
     data = request.json
     db = mongo.get_db("Users")
     trips_collection = db.get_collection("planned_trips")
@@ -116,7 +140,7 @@ def askAgent():
         Include estimated daily costs if possible.
         """
 
-        client = genai.Client(api_key=GOOGLE_API_KEY)
+        client = genai.configure(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
             model="gemini-2.0-flash", contents=prompt
         )
