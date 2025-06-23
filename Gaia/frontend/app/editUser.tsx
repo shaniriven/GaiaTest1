@@ -33,7 +33,7 @@ const EditUser = () => {
     }
 
     try {
-      // ✅ Update name in unsafeMetadata
+     
       if (name && name !== user.unsafeMetadata?.name) {
         await user.update({
           unsafeMetadata: {
@@ -43,7 +43,7 @@ const EditUser = () => {
         console.log("✅ Name updated:", name);
       }
 
-      // ✅ Update password if requested
+      
       if (newPassword) {
         if (!currentPassword) {
           Alert.alert("Current password is required");
@@ -96,7 +96,7 @@ const EditUser = () => {
           style={styles.eyeButton}
           onPress={() => setShowCurrentPassword(!showCurrentPassword)}
         >
-          <Text style={styles.eyeIcon}>{showCurrentPassword ? '👁️' : '🙈'}</Text>
+          <Text style={styles.eyeIcon}>{showCurrentPassword ? '👁️' : ''}</Text>
         </TouchableOpacity>
       </View>
 
@@ -113,7 +113,7 @@ const EditUser = () => {
           style={styles.eyeButton}
           onPress={() => setShowNewPassword(!showNewPassword)}
         >
-          <Text style={styles.eyeIcon}>{showNewPassword ? '👁️' : '🙈'}</Text>
+          <Text style={styles.eyeIcon}>{showNewPassword ? '👁️' : ''}</Text>
         </TouchableOpacity>
       </View>
 
@@ -130,7 +130,7 @@ const EditUser = () => {
           style={styles.eyeButton}
           onPress={() => setShowConfirmPassword(!showConfirmPassword)}
         >
-          <Text style={styles.eyeIcon}>{showConfirmPassword ? '👁️' : '🙈'}</Text>
+          <Text style={styles.eyeIcon}>{showConfirmPassword ? '👁️' : ''}</Text>
         </TouchableOpacity>
       </View>
 

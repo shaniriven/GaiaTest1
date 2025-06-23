@@ -80,4 +80,4 @@ def delete_document(doc_id):
 def serve_uploaded_file(user_id, filename):
     return send_from_directory(os.path.join(UPLOAD_FOLDER, user_id), filename)
 
-print("✅ documents_bp ROUTES LOADED")
+

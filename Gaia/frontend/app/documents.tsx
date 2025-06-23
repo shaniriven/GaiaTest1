@@ -86,7 +86,7 @@ const Documents = () => {
 
       const data = await response.json();
       Alert.alert('Upload', data.message);
-      fetchDocuments(userId); // Refresh list
+      fetchDocuments(userId); 
     } catch (err) {
       Alert.alert('Error', 'Upload failed');
       console.error(err);
