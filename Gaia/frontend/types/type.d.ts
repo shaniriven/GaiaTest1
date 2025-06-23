@@ -4,30 +4,30 @@ import {
 } from "@/constants/index";
 
 // new trip - types not in use yet
-type FormFields =
-  | "locations"
-  | "multipleDestinations"
-  | "suggestFlights"
-  | "isOptimized"
-  | "startDate"
-  | "endDate"
-  | "optimizedDates"
-  | "adults"
-  | "children"
-  | "groupType"
-  | "budget"
-  | "interestsList"
-  | "detailsList";
+// type FormFields =
+//   | "locations"
+//   | "multipleDestinations"
+//   | "suggestFlights"
+//   | "isOptimized"
+//   | "startDate"
+//   | "endDate"
+//   | "optimizedDates"
+//   | "adults"
+//   | "children"
+//   | "groupType"
+//   | "budget"
+//   | "interestsList"
+//   | "detailsList";
 
-type FormValues =
-  | Locations
-  | LocationOptions
-  | Date
-  | boolean
-  | { adults: number; children: number; total: number; type: string }
-  | BudgetOptions
-  | UserInterestsList
-  | DetailsCheckboxes;
+// type FormValues =
+//   | Locations
+//   | LocationOptions
+//   | Date
+//   | boolean
+//   | { adults: number; children: number; total: number; type: string }
+//   | BudgetOptions
+//   | UserInterestsList
+//   | DetailsCheckboxes;
 
 // ----------------------
 

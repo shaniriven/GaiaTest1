@@ -29,7 +29,7 @@ const DetailsContent = ({
   }, [detailsCheckboxes]);
 
   return (
-    <View className="flex flex-col  items-center">
+    <View className="flex-1 flex-col  items-center">
       <View className="flex-row justify-between">
         {/* accomodation checkboxes */}
         <View className="flex-1  mr-2 gap-1">
@@ -87,7 +87,7 @@ const DetailsContent = ({
           ))}
         </View>
       </View>
-      <View className="flex items-center">
+      <View className="flex items-center mt-3">
         <Text className="text-white font-JakartaSemiBold mb-1 text-xl flex items-center">
           settings
         </Text>

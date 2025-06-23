@@ -1,5 +1,12 @@
 import { SectionProps } from "@/types/declarations";
-import { View, Text, Animated, Easing, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Animated,
+  Easing,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useRef, useState } from "react";
 import { UserInterestsList, InterestsSectionType } from "@/types/type";
 import { defaultInterestsLabels } from "@/constants/index";
@@ -29,13 +36,6 @@ const Interests = ({
     "extreme sports": new Animated.Value(0),
     wellness: new Animated.Value(0),
   }).current;
-
-  //   const contentHeights = useRef<Record<InterestsSectionType, number>>({
-  //     "restaurant and nightlife": 0,
-  //     entertainment: 0,
-  //     "extreme sports": 0,
-  //     wellness: 0,
-  //   }).current;
 
   const handleToggle = (section: InterestsSectionType) => {
     if (openSection === section) {
@@ -103,7 +103,7 @@ const Interests = ({
     switch (section) {
       case "restaurant and nightlife":
         return (
-          <View className="flex text-center flex-row flex-wrap justify-center items-center gap-5 mt-10 w-full">
+          <View className="flex flex-row flex-wrap justify-center items-start gap-1 w-full ">
             {getInterestsByKey("restaurant and nightlife")?.labels.map(
               (label, index) => (
                 <TabButton
@@ -116,7 +116,7 @@ const Interests = ({
                   onPress={() =>
                     handleSubPress("restaurant and nightlife", label)
                   }
-                  className="mt-2"
+                  className="mt-2 mx-2"
                   style={{ minWidth: 100, maxWidth: 150, textAlign: "center" }}
                 />
               ),
@@ -125,20 +125,56 @@ const Interests = ({
         );
       case "entertainment":
         return (
-          <View>
-            <Text>2</Text>
+          <View className="flex flex-row flex-wrap justify-center items-start gap-1 w-full ">
+            {getInterestsByKey("entertainment")?.labels.map((label, index) => (
+              <TabButton
+                key={index}
+                title={label}
+                bgColor="bg-[#919191]"
+                textColor="text-primary"
+                activeStyle="bg-[#D2D2D2]"
+                isActive={isLabelActive("entertainment", label)}
+                onPress={() => handleSubPress("entertainment", label)}
+                className="mt-2 mx-2"
+                style={{ minWidth: 100, maxWidth: 150, textAlign: "center" }}
+              />
+            ))}
           </View>
         );
       case "extreme sports":
         return (
-          <View>
-            <Text>3</Text>
+          <View className="flex flex-row flex-wrap justify-center items-start gap-1 w-full ">
+            {getInterestsByKey("extreme sports")?.labels.map((label, index) => (
+              <TabButton
+                key={index}
+                title={label}
+                bgColor="bg-[#919191]"
+                textColor="text-primary"
+                activeStyle="bg-[#D2D2D2]"
+                isActive={isLabelActive("extreme sports", label)}
+                onPress={() => handleSubPress("extreme sports", label)}
+                className="mt-2 mx-2"
+                style={{ minWidth: 100, maxWidth: 150, textAlign: "center" }}
+              />
+            ))}
           </View>
         );
       case "wellness":
         return (
-          <View>
-            <Text>4</Text>
+          <View className="flex flex-row flex-wrap justify-center items-start gap-1 w-full ">
+            {getInterestsByKey("wellness")?.labels.map((label, index) => (
+              <TabButton
+                key={index}
+                title={label}
+                bgColor="bg-[#919191]"
+                textColor="text-primary"
+                activeStyle="bg-[#D2D2D2]"
+                isActive={isLabelActive("wellness", label)}
+                onPress={() => handleSubPress("wellness", label)}
+                className="mt-2 mx-2"
+                style={{ minWidth: 100, maxWidth: 150, textAlign: "center" }}
+              />
+            ))}
           </View>
         );
       default:
@@ -147,13 +183,19 @@ const Interests = ({
   };
 
   return (
-    <View className="flex flex-col  items-center">
+    <ScrollView
+      contentContainerStyle={{
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+      className="top-0"
+    >
       {/* acordion view */}
       {sections.map((section) => (
         <View key={section} className="mb-0 w-[320px]">
           <TouchableOpacity
             onPress={() => handleToggle(section)}
-            className={`flex-row justify-between p-3 ${openSection === section ? "opacity-90 rounded-t-xl" : "opacity-100 rounded-xl"}`}
+            className={`flex-row justify-between p-3 ${openSection === section ? "opacity-70 rounded-t-xl" : "opacity-100 rounded-xl"}`}
           >
             <Text className="text-xl text-white text-base font-JakartaLight">
               {section}
@@ -170,20 +212,12 @@ const Interests = ({
                 overflow: "hidden",
                 height: animations[section].interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, 150], // 👈 use a fixed height here
+                  outputRange: [0, 150],
                 }),
-                // height: animations[section].interpolate({
-                //   inputRange: [0, 1],
-                //   outputRange: [0, contentHeights[section] || 1],
-                // }),
               }}
             >
               <View
                 className={`p-3 rounded-b-xl  ${openSection === section ? "opacity-90" : "opacity-100"}`}
-                // onLayout={(event) => {
-                //   const height = event.nativeEvent.layout.height;
-                //   contentHeights[section] = height;
-                // }}
               >
                 {renderContent(section)}
               </View>
@@ -191,7 +225,7 @@ const Interests = ({
           )}
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

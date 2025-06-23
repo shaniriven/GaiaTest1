@@ -53,12 +53,6 @@ const MoreSettings = ({
     "personal interests": new Animated.Value(0),
   }).current;
 
-  const contentHeights = useRef<Record<SectionType, number>>({
-    budget: 0,
-    "trip details and content": 0,
-    "personal interests": 0,
-  }).current;
-
   const handleToggle = (section: SectionType) => {
     if (openSection === section) {
       Animated.timing(animations[section], {
@@ -188,7 +182,7 @@ const MoreSettings = ({
                 overflow: "hidden",
                 height: animations[section].interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, contentHeights[section] || 1],
+                  outputRange: [0, 250],
                 }),
               }}
             >
@@ -202,10 +196,6 @@ const MoreSettings = ({
                         ? "bg-cardsGreen-300"
                         : "bg-gray-500"
                 } ${openSection === section ? "opacity-90" : "opacity-100"}`}
-                onLayout={(event) => {
-                  const height = event.nativeEvent.layout.height;
-                  contentHeights[section] = height;
-                }}
               >
                 {renderContent(section)}
               </View>

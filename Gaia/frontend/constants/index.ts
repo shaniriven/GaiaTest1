@@ -34,14 +34,7 @@ import to from "@/assets/icons/to.png";
 export const defaultInterestsLabels = [
   {
     key: "restaurant and nightlife",
-    labels: [
-      "local food",
-      "bars",
-      "caffes",
-      "wine bars",
-      "fast food",
-      "local food",
-    ],
+    labels: ["local food", "bars", "caffes", "wine bars", "fast food"],
     activeLabels: [""],
   },
   {
@@ -62,8 +55,8 @@ export const defaultInterestsLabels = [
     activeLabels: [""],
   },
   {
-    key: "extreme sports",
-    labels: ["Spas", "Gyms", "Pool", "Parks"],
+    key: "wellness",
+    labels: ["spas", "gyms", "pool", "parks"],
     activeLabels: [""],
   },
 ];
@@ -99,16 +92,14 @@ export const activitiesLabels = [
   { key: "trails", label: "trails" },
   { key: "urbanTrip", label: "urban trip" },
   { key: "sightseeing", label: "sightseeing" },
-  { key: "dayTrip", label: "day trip" },
+  // { key: "dayTrip", label: "day trip" },
 ] as const;
 // -> accommodationLabels
 export const accommodationLabels = [
   { key: "hotels", label: "hotels" },
-  { key: "hostels", label: "hostels" },
+  { key: "hostels", label: "hostels/dorms" },
   { key: "resorts", label: "resorts" },
-  { key: "rentals", label: "rentals" },
   { key: "camping", label: "camping" },
-  { key: "dorms", label: "dorms" },
 ] as const;
 
 // not tested
