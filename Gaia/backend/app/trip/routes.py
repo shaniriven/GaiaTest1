@@ -125,7 +125,7 @@ def askAgent():
         prompt = generate_prompt(data)
         # print (prompt)
 
-        client = genai.configure(api_key=GOOGLE_API_KEY)
+        client = genai.Client(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
             model="gemini-2.0-flash", contents=prompt
         )
