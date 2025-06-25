@@ -7,8 +7,15 @@ import requests
 from app.extensions import mongo
 from app.trip import bp
 from bson import ObjectId  # To help with ObjectId conversion
+from google import generativeai as genai
+
+from .ai_module import generate_query_for_hobby
+from .new_trip_creation import (save_end, save_group, save_interests,
+                                save_location, save_start)
+from .scraper import scrape_municipality_open_data
+
+print(genai.__file__)
 from flask import Flask, current_app, jsonify, logging, request
-from google import genai
 
 from .ai_module import (generate_prompt, generate_query_for_hobby,
                         save_plan_mongo)
@@ -51,6 +58,53 @@ def submitFormData():
     insert_result = trips_collection.insert_one(data)
     return jsonify({"message": "Form submitted successfully", "inserted_id": str(insert_result.inserted_id)}), 200
 
+@bp.route('/user/<string:user_id>/', methods=['GET'])
+def get_user(user_id):
+    db = mongo.get_db("Users")
+    users_collection = db.get_collection("users")
+    user = users_collection.find_one({"user_id": user_id})
+    if user:
+        user = convert_objectids(user)
+        return jsonify(user), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
+
+@bp.route('/user/<string:user_id>/', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+    db = mongo.get_db("Users")
+    users_collection = db.get_collection("users")
+    result = users_collection.update_one({"user_id": user_id}, {"$set": data})
+    if result.modified_count > 0:
+        return jsonify({"message": "User updated successfully"}), 200
+    else:
+        return jsonify({"message": "User not found or no changes applied"}), 404
+
+@bp.route('submit/<string:fieldName>/', methods=['POST'])
+def submitField(fieldName): 
+    print("submitField")
+    data = request.json
+    db = mongo.get_db("Users")
+    trips_collection = db.get_collection("planned_trips")
+    open_trip = trips_collection.find_one({"user_id": data.get("user_id")})
+    if fieldName == "startDate":
+        data["type"] = "startDate"
+    elif fieldName == "end":
+        data["type"] = "end"
+        
+    handlers = {
+        'location': save_location,
+        'start': save_start,
+        'end': save_end,
+        'group': save_group,
+        'interests': save_interests,
+    }
+
+    if fieldName in handlers:
+        return handlers[fieldName](trips_collection, data, open_trip)
+    
+    return jsonify({"error": "Invalid field name"}), 400
+
 @bp.route('delete/', methods=['POST'])
 def deleteTrip():
     db = mongo.get_db("Users")
@@ -75,7 +129,7 @@ def askAgent():
         prompt = generate_prompt(data)
         # print (prompt)
 
-        client = genai.Client(api_key=GOOGLE_API_KEY)
+        client = genai.configure(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
             model="gemini-2.0-flash", contents=prompt
         )

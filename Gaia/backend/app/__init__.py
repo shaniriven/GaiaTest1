@@ -16,4 +16,8 @@ def create_app(config_class=Config):
     from app.trip import bp as trip_bp
     app.register_blueprint(trip_bp, url_prefix='/trip')
 
+    from app.documents import documents_bp
+    app.register_blueprint(documents_bp)
+
+
     return app
