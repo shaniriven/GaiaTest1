@@ -1,15 +1,20 @@
-from app.trip import bp
-from app.extensions import mongo
-from flask import jsonify, logging, request, Flask
-import os
 import json
+import os
+import re
+import traceback
+
 import requests
-from flask import request, jsonify, current_app
+from app.extensions import mongo
+from app.trip import bp
 from bson import ObjectId  # To help with ObjectId conversion
-from .ai_module import generate_query_for_hobby
-from .scraper import scrape_municipality_open_data
-from .new_trip_creation import save_location, save_start, save_end, save_group, save_interests
+from flask import Flask, current_app, jsonify, logging, request
 from google import genai
+
+from .ai_module import (generate_prompt, generate_query_for_hobby,
+                        save_plan_mongo)
+from .new_trip_creation import (save_end, save_group, save_interests,
+                                save_location, save_start)
+from .scraper import scrape_municipality_open_data
 
 # Google Places API base URL and key from the environment
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
@@ -35,11 +40,8 @@ def convert_objectids(obj):
 
 @bp.route('submitFormData/', methods=['POST'])
 def submitFormData():
-    print("submitField")
     data = request.json
     user_id = data.get("user_id")
-    print("user id:", user_id)
-    print(data)
     if not user_id:
         return jsonify({"error": "user_id is required"}), 400
 
@@ -48,48 +50,6 @@ def submitFormData():
     data["user_id"] = user_id
     insert_result = trips_collection.insert_one(data)
     return jsonify({"message": "Form submitted successfully", "inserted_id": str(insert_result.inserted_id)}), 200
-
-
-@bp.route('submitForm/', methods=['POST'])
-def submitForm():
-    print("submitField")
-    data = request.json
-    user_id = data.get("user_id")
-    print("user id:", user_id)
-    print(data)
-    if not user_id:
-        return jsonify({"error": "user_id is required"}), 400
-
-    db = mongo.get_db("Users")
-    trips_collection = db.get_collection("planned_trips")
-    data["user_id"] = user_id
-    insert_result = trips_collection.insert_one(data)
-    return jsonify({"message": "Form submitted successfully", "inserted_id": str(insert_result.inserted_id)}), 200
-
-@bp.route('submit/<string:fieldName>/', methods=['POST'])
-def submitField(fieldName): 
-    print("submitField")
-    data = request.json
-    db = mongo.get_db("Users")
-    trips_collection = db.get_collection("planned_trips")
-    open_trip = trips_collection.find_one({"user_id": data.get("user_id")})
-    if fieldName == "startDate":
-        data["type"] = "startDate"
-    elif fieldName == "end":
-        data["type"] = "end"
-        
-    handlers = {
-        'location': save_location,
-        'start': save_start,
-        'end': save_end,
-        'group': save_group,
-        'interests': save_interests,
-    }
-
-    if fieldName in handlers:
-        return handlers[fieldName](trips_collection, data, open_trip)
-    
-    return jsonify({"error": "Invalid field name"}), 400
 
 @bp.route('delete/', methods=['POST'])
 def deleteTrip():
@@ -105,63 +65,38 @@ def deleteTrip():
          return jsonify({"message": "no trips for user {user_id}"}), 200
 
 @bp.route('askAgent/', methods=['POST'])
-def askAgent():
-    data = request.get_json()
-
-    start = data.get("startDate")
-    end = data.get("endDate")
-    group_type = data.get("groupType")
-    adults = data.get("adults")
-    children = data.get("children")
-    budget = data.get("budget")
-    is_optimized = data.get("isOptimized")
-    multiple = data.get("multipleDestinations")
-    suggest_flights = data.get("suggestFlights")
-    optimized_dates = data.get("optimizedDates")
-
-    # check 
-    # Flatten the list of lists
-    locations_raw = data.get("form", {}).get("locations", [])
-    flattened_locations = [loc for sublist in locations_raw for loc in sublist]
-    location_names = [loc.get("name", "Unknown") for loc in flattened_locations]
-    print(location_names)
-    interests_list = data.get("interestsList", [])
-    interests = []
-    for category in interests_list:
-        interests.extend(category.get("activeLabels", []))
-    interests = ", ".join(interests)
-    details_list = data.get("detailsList", {})
-    included_details = [k.replace("_", " ") for k, v in details_list.items() if v]
-    details_text = ", ".join(included_details)
-    
+def askAgent():   
     try:
-        prompt = f"""
-        Plan a trip with the following preferences:
+        data = request.get_json()
+        user_id = data.get("user_id")
+        # db = mongo.get_db("Users")
+        # plans_collection = db.get_collection("plans")
 
-        - Dates: {start} to {end}
-        - Locations: {', '.join(location_names)}
-        - Multiple Destinations: {'Yes' if multiple else 'No'}
-        - Optimize Route: {'Yes' if is_optimized else 'No'}
-        - Flexible Dates: {'Yes' if optimized_dates else 'No'}
-        - Group Type: {group_type}
-        - Adults: {adults}, Children: {children}
-        - Budget: {budget}
-        - Interests: {interests}
-        - Special Requests: {details_text}
-        - Suggest Flights: {'Yes' if suggest_flights else 'No'}
-
-        Provide a day-by-day itinerary with activities, restaurants, tips, and estimated costs.
-        """
+        prompt = generate_prompt(data)
+        # print (prompt)
 
         client = genai.Client(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
             model="gemini-2.0-flash", contents=prompt
         )
-        return jsonify({"response": response.text}), 200
+
+        generated_text = response.text
+        plan_id = save_plan_mongo(generated_text, user_id)
+
+        # json_str = re.search(r'\{.*\}', generated_text, re.DOTALL).group()
+        # plan = json.loads(json_str)
+        # _id = ObjectId()
+        # plan["_id"] = str(_id)
+        # plans_collection.insert_one()
+
+
+        return jsonify({"response": str(plan_id)}), 200
     except Exception as e:
+        print("An error occurred in /askAgent route:")
+        traceback.print_exc() 
         return jsonify({"error": str(e)}), 500
 
-# check if needed
+# # check if needed
 @bp.route('newTrip/', methods=['POST'])
 def newTrip():
     print("newTrip")

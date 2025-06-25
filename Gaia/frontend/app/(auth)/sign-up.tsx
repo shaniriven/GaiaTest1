@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Text, ScrollView, View, Image, Alert, } from "react-native";
+import { Text, ScrollView, View, Image, Alert, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Keyboard, } from "react-native";
 import { Link, router } from "expo-router";
 import { singUpImage, icons, checkVerification } from "../../constants/index";
 import InputField from "@/components/InputField";
@@ -72,7 +72,14 @@ const onVerifyPress = async () => {
 }
 
   return (
-    <ScrollView className="flex-1 bg-white">
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1 }}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+  >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView className="flex-1 bg-white"         keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 }}>
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px] mt-6">
           <Image source={singUpImage} className="z-0 w-full h-[250px]" />
@@ -190,7 +197,9 @@ const onVerifyPress = async () => {
             </View>
         </ReactNativeModal>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </TouchableWithoutFeedback>
+  </KeyboardAvoidingView>
   );
 };
 

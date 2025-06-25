@@ -1,22 +1,11 @@
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { View } from "react-native";
 import CustomButton from "@/components/CustomButton";
-import TabButton from "@/components/TabButton";
-import { screens } from "@/constants/index";
-import Location from "@/components/NewTripScreens/Location";
-import Animated from "react-native-reanimated";
-import {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import axios from "axios";
-import config from "@/config";
-import { useUser } from "@clerk/clerk-expo";
 import Dates from "@/components/NewTripScreens/Dates";
-import Travelers from "@/components/NewTripScreens/Travelers";
+import Location from "@/components/NewTripScreens/Location";
 import MoreSettings from "@/components/NewTripScreens/MoreSettings";
+import Travelers from "@/components/NewTripScreens/Travelers";
+import TabButton from "@/components/TabButton";
+import config from "@/config";
+import { accommodationLabels, activitiesLabels, defaultDetailsCheckboxes, defaultInterestsLabels, screens, settingsLabels } from "@/constants/index";
 import {
   BudgetOptions,
   DetailsCheckboxes,
@@ -24,12 +13,17 @@ import {
   Locations,
   UserInterestsList,
 } from "@/types/type";
-import {
-  defaultInterestsLabels,
-  defaultDetailsCheckboxes,
-} from "@/constants/index";
+import { useUser } from "@clerk/clerk-expo";
+import axios from "axios";
 import { addDays } from "date-fns";
-
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 const NewPlan = () => {
   const { user } = useUser();
   const api_url = config.api_url;
@@ -226,24 +220,44 @@ const NewPlan = () => {
   };
 
   const askAgent = async () => {
-    submitForm();
-    // try {
-    //   const response = await axios.post(`${api_url}/trip/askAgent/`, form);
-    //   if (response.status === 200) {
-    //     console.log(
-    //       "newPlan.tsx askAgent(): Agent response:",
-    //       response.data.response,
-    //     ); // Log the response from the backend
-    //   } else {
-    //     console.error(
-    //       "newPlan.tsx askAgent(): Unexpected response status:",
-    //       response.status,
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("newPlan.tsx askAgent(): Error asking agent:", error);
-    // }
-    // console.log("newPlan.tsx askAgent(): Agent asked for help");
+    try {
+      //submitForm();
+      const interests_keys_activeLavels = defaultInterestsLabels.map(
+        ({ key, activeLabels }) => ({
+          key,
+          activeLabels,
+        }),
+      );
+      const response = await axios.post(`${api_url}/trip/askAgent/`, {
+        locations,
+        locationOptions,
+        startDate,
+        endDate,
+        optimizedDates,
+        group,
+        budget,
+        details,
+        settingsLabels,
+        activitiesLabels,
+        accommodationLabels,
+        interestsKeysAndActiveLabels: interests_keys_activeLavels,
+        user_id: user?.id,
+      });
+      if (response.status === 200) {
+        console.log(
+          "newPlan.tsx askAgent(): Agent response:",
+          response.data.response,
+        ); // Log the response from the backend
+      } else {
+        console.error(
+          "newPlan.tsx askAgent(): Unexpected response status:",
+          response.status,
+        );
+      }
+    } catch (error) {
+      console.error("newPlan.tsx askAgent(): Error asking agent:", error);
+    }
+    console.log("newPlan.tsx askAgent(): Agent asked for help");
   };
 
   return (
