@@ -7,21 +7,17 @@ import requests
 from app.extensions import mongo
 from app.trip import bp
 from bson import ObjectId  # To help with ObjectId conversion
-from google import generativeai as genai
-
-from .ai_module import generate_query_for_hobby
-from .new_trip_creation import (save_end, save_group, save_interests,
-                                save_location, save_start)
-from .scraper import scrape_municipality_open_data
-
-print(genai.__file__)
 from flask import Flask, current_app, jsonify, logging, request
+from google import genai
 
 from .ai_module import (generate_prompt, generate_query_for_hobby,
                         save_plan_mongo)
 from .new_trip_creation import (save_end, save_group, save_interests,
                                 save_location, save_start)
 from .scraper import scrape_municipality_open_data
+
+# from google import generativeai as genai
+
 
 # Google Places API base URL and key from the environment
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
