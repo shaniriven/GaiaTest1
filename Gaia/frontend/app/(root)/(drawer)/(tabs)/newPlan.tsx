@@ -5,7 +5,14 @@ import MoreSettings from "@/components/NewTripScreens/MoreSettings";
 import Travelers from "@/components/NewTripScreens/Travelers";
 import TabButton from "@/components/TabButton";
 import config from "@/config";
-import { accommodationLabels, activitiesLabels, defaultDetailsCheckboxes, defaultInterestsLabels, screens, settingsLabels } from "@/constants/index";
+import {
+  accommodationLabels,
+  activitiesLabels,
+  defaultDetailsCheckboxes,
+  defaultInterestsLabels,
+  screens,
+  settingsLabels,
+} from "@/constants/index";
 import {
   BudgetOptions,
   DetailsCheckboxes,
@@ -244,10 +251,7 @@ const NewPlan = () => {
         user_id: user?.id,
       });
       if (response.status === 200) {
-        console.log(
-          "newPlan.tsx askAgent(): Agent response:",
-          response.data.response,
-        ); // Log the response from the backend
+        console.log("newPlan.tsx askAgent(): Agent response:", response.data); // Log the response from the backend
       } else {
         console.error(
           "newPlan.tsx askAgent(): Unexpected response status:",

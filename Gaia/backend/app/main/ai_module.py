@@ -1,7 +1,8 @@
 # backend/app/main/ai_module.py
 
-import os
 import json
+import os
+
 import openai
 from dotenv import load_dotenv
 

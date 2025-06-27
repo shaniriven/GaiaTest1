@@ -2,6 +2,7 @@ import json
 import os
 import re
 import traceback
+from datetime import datetime
 
 import requests
 from app.extensions import mongo
@@ -11,7 +12,7 @@ from flask import Flask, current_app, jsonify, logging, request
 from google import genai
 
 from .ai_module import (generate_prompt, generate_query_for_hobby,
-                        save_plan_mongo)
+                        save_plan_in_mongo)
 from .new_trip_creation import (save_end, save_group, save_interests,
                                 save_location, save_start)
 from .scraper import scrape_municipality_open_data
@@ -119,20 +120,29 @@ def askAgent():
     try:
         data = request.get_json()
         user_id = data.get("user_id")
+
+        # # save labels for button display
+        # trip_startDate = data.get("startDate")
+        # start_date = datetime.fromisoformat(trip_startDate.replace("Z", "+00:00"))
+        # formatted_date = start_date.strftime("%B, %Y")
+        # print(formatted_date)
+
         # db = mongo.get_db("Users")
         # plans_collection = db.get_collection("plans")
 
         prompt = generate_prompt(data)
         # print (prompt)
 
-        client = genai.configure(api_key=GOOGLE_API_KEY)
+        client = genai.Client(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
             model="gemini-2.0-flash", contents=prompt
         )
-
+        # print(repr(response.text))
         generated_text = response.text
-        plan_id = save_plan_mongo(generated_text, user_id)
-
+        print(generated_text)
+        plan_id = save_plan_in_mongo(generated_text, user_id)
+        return jsonify({"plan saved": str(plan_id)}), 200
+    
         # json_str = re.search(r'\{.*\}', generated_text, re.DOTALL).group()
         # plan = json.loads(json_str)
         # _id = ObjectId()
@@ -140,7 +150,7 @@ def askAgent():
         # plans_collection.insert_one()
 
 
-        return jsonify({"response": str(plan_id)}), 200
+        # return jsonify({"response": str(plan_id)}), 200
     except Exception as e:
         print("An error occurred in /askAgent route:")
         traceback.print_exc() 
