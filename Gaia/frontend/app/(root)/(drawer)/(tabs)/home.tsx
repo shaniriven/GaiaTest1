@@ -1,11 +1,11 @@
 import CustomTripButton from "@/components/CustomTripButton";
-import TripSwiper from "@/components/TripSwiper";
 import config from "@/config";
 import { icons } from "@/constants";
 import { colors } from "@/constants/index";
-import { Full_Trip } from "@/types/declarations";
+import { AgentPlan } from "@/types/type";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import axios from "axios";
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -31,7 +31,8 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   // -> on check
-  const [selectedScreen, setSelectedScreen] = useState<Full_Trip | null>(null);
+  // const [selectedScreen, setSelectedScreen] = useState<Full_Trip | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<AgentPlan | null>(null);
 
   // -> to check
   const color = colors.primary;
@@ -72,8 +73,9 @@ export default function Page() {
   }, [user_id]);
   const arrowOpacity = useRef(new Animated.Value(0)).current;
 
+  // plan screen animation
   useEffect(() => {
-    if (selectedScreen) {
+    if (currentPlan) {
       // fade in
       setTimeout(() => {
         Animated.timing(arrowOpacity, {
@@ -90,7 +92,7 @@ export default function Page() {
         useNativeDriver: true,
       }).start();
     }
-  }, [selectedScreen]);
+  }, [currentPlan]);
 
   const { width } = useWindowDimensions();
   const itemWidth = 140; // you can make this relative to screen width if needed
@@ -108,9 +110,9 @@ export default function Page() {
 
   //
 
-  // check
-  const openPanel = (screen: Full_Trip) => {
-    setSelectedScreen(screen);
+  // open plan screen
+  const openPanel = (screen: AgentPlan) => {
+    setCurrentPlan(screen);
     Animated.timing(slideAnim, {
       toValue: 0, // Slide in
       duration: 300,
@@ -123,7 +125,7 @@ export default function Page() {
       toValue: screenWidth, // Slide out
       duration: 300,
       useNativeDriver: true,
-    }).start(() => setSelectedScreen(null));
+    }).start(() => setCurrentPlan(null));
   };
 
   const handleClosePanel = () => {
@@ -137,6 +139,7 @@ export default function Page() {
     });
   };
 
+  // check
   const formatDateRange = (startDate: string, endDate: string) => {
     const [day1, month1, year1] = startDate.split("-").map(Number);
     const [day2, month2, year2] = endDate.split("-").map(Number);
@@ -154,34 +157,29 @@ export default function Page() {
         <View className="flex-1 p-4">
           <View className="flex-row flex-wrap justify-center">
             {userData ? (
-              plansLabels.map(
-                (
-                  plan: {
-                    name: string;
-                    formatted_date: string;
-                    is_past: boolean;
-                  },
-                  index,
-                ) => (
-                  <CustomTripButton
-                    title={plan.name}
-                    onPress={() => {}}
-                    key={index}
-                    pastTripButton={plan.is_past}
-                    tripDate={plan.formatted_date}
-                    className="rounded-lg m-2 w-[160px] h-[90px] "
-                    textClassName="text-white text-lg font-JakartaMedium "
-                  ></CustomTripButton>
-                ),
-              )
+              plansLabels.map((plan: AgentPlan, index) => (
+                <CustomTripButton
+                  title={plan.name}
+                  // onPress={() => openPanel(plan)}
+                  onPress={() =>
+                    router.push("/(root)/(drawer)/(tabs)/planModal")
+                  }
+                  key={index}
+                  pastTripButton={plan.is_past}
+                  tripDate={plan.formatted_date}
+                  className="rounded-lg m-2 w-[160px] h-[90px] "
+                  textClassName="text-white text-lg font-JakartaMedium "
+                ></CustomTripButton>
+              ))
             ) : (
               <Text className="text-xl font-JakartaMedium text-center">
                 add additional info to plan your ideal trip
               </Text>
             )}
           </View>
+
           {/* selected trip modal */}
-          {selectedScreen && (
+          {currentPlan && (
             <Animated.View
               className="absolute top-2 bottom-0 bg-white shadow-lg bg-tabs-400 self-center rounded-xl p-2"
               style={{
@@ -191,8 +189,9 @@ export default function Page() {
             >
               <View className="flex-1 mt-4">
                 <View className="flex-row justify-between items-end">
-                  {/* trip name (selected screen title) */}
+                  {/* header  */}
                   <View className="flex-row items-end ml-2">
+                    {/* back arrow  */}
                     <TouchableOpacity onPress={handleClosePanel}>
                       <Animated.Image
                         source={
@@ -205,28 +204,28 @@ export default function Page() {
                       />
                     </TouchableOpacity>
                     <Text className="text-3xl font-JakartaMedium">
-                      {selectedScreen.title}
+                      trip to {currentPlan.name}
                     </Text>
                   </View>
 
                   {/* dates above progress bar */}
-                  <View className="flex-row items-end mr-2">
+                  {/* <View className="flex-row items-end mr-2">
                     <Text className="text-lg font-JakartaMedium">
                       {formatDateRange(
                         selectedScreen.startDate,
                         selectedScreen.endDate,
                       )}
                     </Text>
-                  </View>
+                  </View> */}
                 </View>
 
                 {/* trip swiper */}
-                <View className="flex-1 m-2 ">
+                {/* <View className="flex-1 m-2 ">
                   <TripSwiper
                     dayTrips={selectedScreen.dayTrips}
                     color={color}
                   />
-                </View>
+                </View> */}
               </View>
             </Animated.View>
           )}

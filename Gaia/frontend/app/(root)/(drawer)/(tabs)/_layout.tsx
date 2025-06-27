@@ -1,13 +1,11 @@
-/* eslint-disable prettier/prettier */
-import { router, Tabs } from "expo-router";
-import { Platform, TouchableOpacity, View, Text } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { TabIconProps } from "@/types/declarations";
-import { DrawerToggleButton } from "@react-navigation/drawer";
 import ScreenHeader from "@/components/ScreenHeader";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import 'react-native-get-random-values';
-
+import { TabIconProps } from "@/types/declarations";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { DrawerToggleButton } from "@react-navigation/drawer";
+import { router, Tabs } from "expo-router";
+import { Platform, TouchableOpacity, View } from "react-native";
+import "react-native-get-random-values";
 
 const TabIcon = ({ source, focused }: TabIconProps) => {
   const color = "#13875b";
@@ -15,8 +13,9 @@ const TabIcon = ({ source, focused }: TabIconProps) => {
     return (
       <View className="flex flex-row justify-center items-center rounded-full">
         <View
-          className={`w-14 h-14 rounded-full justify-center items-center mb-${Platform.OS === "android" ? "12" : "7"
-            }`}
+          className={`w-14 h-14 rounded-full justify-center items-center mb-${
+            Platform.OS === "android" ? "12" : "7"
+          }`}
           style={{ backgroundColor: color }}
         >
           <FontAwesome name="plus" size={22} color="white" />
@@ -27,9 +26,11 @@ const TabIcon = ({ source, focused }: TabIconProps) => {
 
   return (
     <View className="rounded-full justify-center items-center top-2">
-      {focused
-        ? (<FontAwesome name={source} size={30} color={color} />)
-        : (<FontAwesome name={source} size={27} color="black" />)}
+      {focused ? (
+        <FontAwesome name={source} size={30} color={color} />
+      ) : (
+        <FontAwesome name={source} size={27} color="black" />
+      )}
     </View>
   );
 };
@@ -41,7 +42,7 @@ export default function Layout() {
         initialRouteName="home"
         screenOptions={{
           headerShown: true,
-          headerLeft: () => (<DrawerToggleButton tintColor='#000' />),
+          headerLeft: () => <DrawerToggleButton tintColor="#000" />,
           tabBarActiveTintColor: "white",
           tabBarInactiveTintColor: "white",
           tabBarShowLabel: false,
@@ -70,72 +71,114 @@ export default function Layout() {
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => (
-              <ScreenHeader text="Planned Trips" />
+            headerTitle: () => <ScreenHeader text="Planned Trips" />,
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="home" focused={focused} />
             ),
-            tabBarIcon: ({ focused }) => (<TabIcon source="home" focused={focused} />),
           }}
         />
-        <Tabs.Screen name="user"
+        <Tabs.Screen
+          name="user"
           options={{
             headerShown: true,
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => (
-              <ScreenHeader text="Profile" />
+            headerTitle: () => <ScreenHeader text="Profile" />,
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="user" focused={focused} />
             ),
-            tabBarIcon: ({ focused }) => (<TabIcon source="user" focused={focused} />),
           }}
         />
-        <Tabs.Screen name="newPlan"
+        <Tabs.Screen
+          name="newPlan"
           options={{
             headerShown: true,
             headerStyle: {
               height: 110,
-              
             },
-            headerTitle: () => (
-              <ScreenHeader text="New Trip" />
-            ),
+            headerTitle: () => <ScreenHeader text="New Trip" />,
             headerRight: () => (
-
-
               <TouchableOpacity
                 onPress={() => {
                   // Your action here
-                  console.log('location delete button press');
+                  console.log("location delete button press");
                 }}
-                className="w-full flex-row justify-end items-end p-5">
-                  <AntDesign name="delete" size={20} color="black" className="mr-1"/>
-
+                className="w-full flex-row justify-end items-end p-5"
+              >
+                <AntDesign
+                  name="delete"
+                  size={20}
+                  color="black"
+                  className="mr-1"
+                />
               </TouchableOpacity>
             ),
-            tabBarIcon: ({ focused }) => (<TabIcon source="plus" focused={focused} />),
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="plus" focused={focused} />
+            ),
           }}
         />
-        <Tabs.Screen name="search"
+        <Tabs.Screen
+          name="search"
           options={{
             headerShown: true,
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => (
-              <ScreenHeader text="Search" />
+            headerTitle: () => <ScreenHeader text="Search" />,
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="search" focused={focused} />
             ),
-            tabBarIcon: ({ focused }) => (<TabIcon source="search" focused={focused} />),
           }}
         />
-        <Tabs.Screen name="chat"
+        <Tabs.Screen
+          name="chat"
           options={{
             headerShown: true,
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => (
-              <ScreenHeader text="Chat" />
+            headerTitle: () => <ScreenHeader text="Chat" />,
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className="pl-4 pr-2"
+              >
+                <AntDesign name="arrowleft" size={24} color="black" />
+              </TouchableOpacity>
             ),
-            tabBarIcon: ({ focused }) => (<TabIcon source="wechat" focused={focused} />),
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="wechat" focused={focused} />
+            ),
+            tabBarStyle: {
+              display: "none",
+            },
+          }}
+        />
+        <Tabs.Screen
+          name="planModal"
+          options={{
+            href: null,
+            headerShown: true,
+            headerStyle: {
+              height: 110,
+            },
+            headerTitle: () => <ScreenHeader text="planModal" />,
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className="pl-4 pr-2"
+              >
+                <AntDesign name="arrowleft" size={24} color="black" />
+              </TouchableOpacity>
+            ),
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="wechat" focused={focused} />
+            ),
+            tabBarStyle: {
+              display: "none",
+            },
           }}
         />
       </Tabs>

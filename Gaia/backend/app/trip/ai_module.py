@@ -119,7 +119,7 @@ def save_plan_in_mongo(data: str, user_id: any):
         start_date = datetime.fromisoformat(start_str)
         formatted_date = start_date.strftime("%B, %Y")
         today = datetime.today().date()
-        
+
         locations = plan.get("locations", "")
         name = locations.split(",")[0].strip() if "," in locations else locations.strip()
 
@@ -141,6 +141,8 @@ def save_plan_in_mongo(data: str, user_id: any):
 
 
 
+
+# check if needed for the app. from prev versions 
 
 def generate_query_for_hobby(destination: str, hobby: str) -> str:
     """
