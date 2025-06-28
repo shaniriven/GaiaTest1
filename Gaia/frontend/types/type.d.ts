@@ -29,10 +29,16 @@ import {
 //   | UserInterestsList
 //   | DetailsCheckboxes;
 
-// ----------------------
-
+// new trip types
+// -> interests
 type SectionType = "budget" | "trip details and content" | "personal interests";
-type Options = "solo" | "friends" | "couple" | "family";
+type DetailsCheckboxes = typeof defaultDetailsCheckboxes;
+type UserInterestsList = typeof defaultInterestsLabels;
+type InterestsSectionType =
+  | "restaurant and nightlife"
+  | "entertainment"
+  | "extreme sports"
+  | "wellness";
 
 // -> budget
 type BudgetOptions = {
@@ -45,14 +51,6 @@ type BudgetRange = {
   range: number[];
   onRangeChange?: function;
 };
-// -> interests
-type DetailsCheckboxes = typeof defaultDetailsCheckboxes;
-type UserInterestsList = typeof defaultInterestsLabels;
-type InterestsSectionType =
-  | "restaurant and nightlife"
-  | "entertainment"
-  | "extreme sports"
-  | "wellness";
 
 // -> location
 type Locations = {
@@ -62,7 +60,6 @@ type Locations = {
     endDate?: Date;
   };
 };
-
 type LocationOptions = {
   multiple: boolean;
   suggestFlights: boolean;
@@ -75,7 +72,36 @@ type GroupDetails = {
   total: number;
   type: string;
 };
-///
+type Options = "solo" | "friends" | "couple" | "family";
+// ---------------------------------------------------------------
+
+// plan types
+type Activity = {
+  time: string;
+  description: string;
+  cost: string;
+  notes: string;
+};
+type DayPlan = {
+  date: string;
+  day: string;
+  theme: string;
+  activities: Activity[];
+  food: string;
+};
+
+type AgentPlan = {
+  trip_dates: string;
+  locations: string;
+  group_size: number;
+  budget: string;
+  itinerary: DayPlan[];
+  creator: string;
+  formatted_date: string;
+  name: string;
+  is_past: boolean;
+  id: string;
+};
 
 // to check
 

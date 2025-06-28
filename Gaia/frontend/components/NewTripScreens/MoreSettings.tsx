@@ -1,18 +1,18 @@
-import { NewTripScreenProps } from "@/types/declarations";
-import { View, Text, Animated, TouchableOpacity, Easing } from "react-native";
-import { useState, useRef, useEffect } from "react";
-import {
-  DetailsCheckboxes,
-  SectionType,
-  BudgetOptions,
-  UserInterestsList,
-} from "@/types/type";
-import Budget from "./Budget";
-import Details from "./Details";
 import {
   defaultDetailsCheckboxes,
   defaultInterestsLabels,
 } from "@/constants/index";
+import { NewTripScreenProps } from "@/types/declarations";
+import {
+  BudgetOptions,
+  DetailsCheckboxes,
+  SectionType,
+  UserInterestsList,
+} from "@/types/type";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Easing, Text, TouchableOpacity, View } from "react-native";
+import Budget from "./Budget";
+import Details from "./Details";
 import Interests from "./Interests";
 
 const MoreSettings = ({

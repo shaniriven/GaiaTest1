@@ -3,11 +3,13 @@
 import json
 import os
 import re
+from datetime import datetime
 
 import openai
 from app.extensions import mongo
 from bson import ObjectId
 from dotenv import load_dotenv
+from flask import jsonify
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -68,6 +70,7 @@ def generate_prompt(data: any ) -> str:
         Provide a day-by-day itinerary. return a json.
         Heres the required format:
             {{
+            
                 "trip_dates": "<start date> to <end date>",
                 "locations": "<city, country> // list of all the locations",
                 "group_size": <number>,
@@ -94,25 +97,52 @@ def generate_prompt(data: any ) -> str:
     """
     return prompt
 
-def save_plan_mongo(data: str, user_id: any):
+
+# convert str agent response to json and store in mongo
+def save_plan_in_mongo(data: str, user_id: any):
     db = mongo.get_db("Users")
     plans_collection = db.get_collection("plans")
     users_collection = db.get_collection("user_profile")
     json_str = re.search(r'\{.*\}', data, re.DOTALL).group()
-    plan = json.loads(json_str)
-    _id = ObjectId()
-    plan["_id"] = str(_id)
-    plan["creator"] = user_id
-    plans_collection.insert_one(plan)
-    users_collection.update_one(
-        { "userId": user_id },
-        { "$push": { "plans": str(_id) } },
-        upsert=True  # set to True if you want to create the field if not found
-    )
-    return _id
+    try:
+        plan = json.loads(json_str)
+        _id = ObjectId()
+        
+        # save labels for button display
+        trip_dates  = plan.get("trip_dates")
+        if not trip_dates or "to" not in trip_dates:
+            return jsonify({"error": "Invalid or missing 'trip_dates' format"}), 400
+        start_str = trip_dates.split("to")[0].strip()
+        end_str = trip_dates.split("to")[1].strip()
+        end_date = datetime.strptime(end_str, "%Y-%m-%d").date()
+
+        start_date = datetime.fromisoformat(start_str)
+        formatted_date = start_date.strftime("%B, %Y")
+        today = datetime.today().date()
+
+        locations = plan.get("locations", "")
+        name = locations.split(",")[0].strip() if "," in locations else locations.strip()
+
+        plan["_id"] = str(_id)
+        plan["creator"] = user_id
+        plan["formatted_date"] = formatted_date
+        plan["name"] = name
+        plan["is_past"] = end_date < today
+
+        plans_collection.insert_one(plan)
+        users_collection.update_one(
+            { "userId": user_id },
+            { "$push": { "plans": str(_id) } },
+            upsert=True  # set to True if you want to create the field if not found
+        )
+        return jsonify({"id": str(_id), "name": name})
+    except json.JSONDecodeError:
+        return jsonify({"error": "AI response was not valid JSON"}), 500
 
 
 
+
+# check if needed for the app. from prev versions 
 
 def generate_query_for_hobby(destination: str, hobby: str) -> str:
     """

@@ -1,18 +1,16 @@
-import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
-import { DraggableFlatListProps } from "react-native-draggable-flatlist";
-import { CheckboxProps } from "react-native-paper";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
-import { SwiperProps } from "react-native-swiper";
 import {
   defaultDetailsCheckboxes,
   defaultInterestsLabels,
 } from "@/constants/index";
+import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
+import { DraggableFlatListProps } from "react-native-draggable-flatlist";
+import { SwiperProps } from "react-native-swiper";
 import {
-  Locations,
-  LocationOptions,
-  GroupDetails,
   BudgetOptions,
   DetailsCheckboxes,
+  GroupDetails,
+  LocationOptions,
+  Locations,
 } from "./type";
 
 // new trip interfaces
@@ -83,6 +81,9 @@ declare interface ButtonProps extends TouchableOpacityProps {
   IconLeft?: React.ComponentType<any>;
   IconRight?: React.ComponentType<any>;
   className?: string;
+  textClassName?: string;
+  pastTripButton?: boolean;
+  tripDate?: string;
   onPress?: (event: GestureResponderEvent) => void | Promise<void>;
 }
 
@@ -161,14 +162,15 @@ declare interface DaysSwiperProps extends SwiperProps {
 }
 
 // trip tests -------------------------------
-// full trip
-declare interface Full_Trip {
-  id: number;
-  title: string;
-  dayTrips: Day_Trip[];
-  startDate: string;
-  endDate: string;
-}
+// // full trip
+// declare interface Full_Trip {
+//   id: number;
+//   title: string;
+//   dayTrips: Day_Trip[];
+//   startDate: string;
+//   endDate: string;
+// }
+
 // one day of the trip
 declare interface Day_Trip {
   day: string;
