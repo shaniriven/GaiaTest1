@@ -54,10 +54,12 @@ export default function Page() {
               name: string;
               formatted_date: string;
               is_past: boolean;
+              _id: string;
             }) => ({
               name: plan.name,
               formatted_date: plan.formatted_date,
               is_past: plan.is_past,
+              id: plan._id,
             }),
           );
           setPlansLabels(plansData);
@@ -162,7 +164,7 @@ export default function Page() {
                   title={plan.name}
                   // onPress={() => openPanel(plan)}
                   onPress={() =>
-                    router.push("/(root)/(drawer)/(tabs)/planModal")
+                    router.push(`/(plans)/${plan.id}?name=${plan.name}`)
                   }
                   key={index}
                   pastTripButton={plan.is_past}

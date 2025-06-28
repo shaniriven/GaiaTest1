@@ -51,8 +51,8 @@ def askAgent():
         )
         generated_text = response.text
         user_id = data.get("user_id")
-        plan_id = save_plan_in_mongo(generated_text, user_id)
-        return jsonify({"plan saved": str(plan_id)}), 200
+        plan_id_json = save_plan_in_mongo(generated_text, user_id)
+        return plan_id_json, 200
     except Exception as e:
         print("An error occurred in /askAgent route:")
         traceback.print_exc() 

@@ -3,6 +3,7 @@ import Dates from "@/components/NewTripScreens/Dates";
 import Location from "@/components/NewTripScreens/Location";
 import MoreSettings from "@/components/NewTripScreens/MoreSettings";
 import Travelers from "@/components/NewTripScreens/Travelers";
+import ScreenHeader from "@/components/ScreenHeader";
 import TabButton from "@/components/TabButton";
 import config from "@/config";
 import {
@@ -25,7 +26,7 @@ import axios from "axios";
 import { addDays } from "date-fns";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -35,8 +36,7 @@ const NewPlan = () => {
   const { user } = useUser();
   const api_url = config.api_url;
   const router = useRouter();
-
-  // -> add loading of exsisting plan instead of always creating a new one
+  const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState<Locations>();
   const [locationOptions, setLocationOptions] = useState<LocationOptions>({
     multiple: false,
@@ -142,6 +142,14 @@ const NewPlan = () => {
   };
 
   const renderScreen = () => {
+    if (loading) {
+      return (
+        <View className="flex-1 justify-center items-center bg-white">
+          <ActivityIndicator size="large" color="#13875B" />
+          <ScreenHeader text={"creating your new trip"} />
+        </View>
+      );
+    }
     switch (activeIndex) {
       case 0:
         return (
@@ -227,6 +235,7 @@ const NewPlan = () => {
   };
 
   const askAgent = async () => {
+    setLoading(true);
     try {
       //submitForm();
       const interests_keys_activeLavels = defaultInterestsLabels.map(
@@ -251,7 +260,9 @@ const NewPlan = () => {
         user_id: user?.id,
       });
       if (response.status === 200) {
+        setLoading(false);
         console.log("newPlan.tsx askAgent(): Agent response:", response.data); // Log the response from the backend
+        router.push(`/(plans)/${response.data.id}?name=${response.data.name}`);
       } else {
         console.error(
           "newPlan.tsx askAgent(): Unexpected response status:",
@@ -261,7 +272,6 @@ const NewPlan = () => {
     } catch (error) {
       console.error("newPlan.tsx askAgent(): Error asking agent:", error);
     }
-    console.log("newPlan.tsx askAgent(): Agent asked for help");
   };
 
   return (

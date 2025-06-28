@@ -135,7 +135,7 @@ def save_plan_in_mongo(data: str, user_id: any):
             { "$push": { "plans": str(_id) } },
             upsert=True  # set to True if you want to create the field if not found
         )
-        return _id
+        return jsonify({"id": str(_id), "name": name})
     except json.JSONDecodeError:
         return jsonify({"error": "AI response was not valid JSON"}), 500
 

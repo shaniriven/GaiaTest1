@@ -1,13 +1,28 @@
 import ScreenHeader from "@/components/ScreenHeader";
-import { TabIconProps } from "@/types/declarations";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DrawerToggleButton } from "@react-navigation/drawer";
-import { router, Tabs } from "expo-router";
+import { Tabs, useLocalSearchParams, useRouter } from "expo-router";
 import { Platform, TouchableOpacity, View } from "react-native";
 import "react-native-get-random-values";
 
-const TabIcon = ({ source, focused }: TabIconProps) => {
+const validFontAwesomeIcons = [
+  "home",
+  "user",
+  "plus",
+  "search",
+  "wechat",
+  // add any other icon names you use here
+] as const;
+
+type FontAwesomeIconName = (typeof validFontAwesomeIcons)[number];
+
+interface TabIconPropsFixed {
+  source: FontAwesomeIconName;
+  focused: boolean;
+}
+
+const TabIcon = ({ source, focused }: TabIconPropsFixed) => {
   const color = "#13875b";
   if (source === "plus") {
     return (
@@ -36,6 +51,9 @@ const TabIcon = ({ source, focused }: TabIconProps) => {
 };
 
 export default function Layout() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+
   return (
     <View className="flex-1">
       <Tabs
@@ -49,10 +67,10 @@ export default function Layout() {
           tabBarStyle: {
             backgroundColor: "#D9D9D9",
             position: "absolute",
-            bottom: 42,
-            marginHorizontal: 15,
-            height: 55,
-            borderRadius: 5,
+            bottom: 0,
+            marginHorizontal: 0,
+            height: 70,
+            borderRadius: 0,
             shadowColor: "#000",
             shadowOpacity: 0.3,
             shadowOffset: {
@@ -157,14 +175,14 @@ export default function Layout() {
           }}
         />
         <Tabs.Screen
-          name="planModal"
+          name="(plans)/[id]"
           options={{
             href: null,
             headerShown: true,
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => <ScreenHeader text="planModal" />,
+            headerTitle: () => <ScreenHeader text="plan" />,
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => router.back()}
@@ -173,12 +191,25 @@ export default function Layout() {
                 <AntDesign name="arrowleft" size={24} color="black" />
               </TouchableOpacity>
             ),
-            tabBarIcon: ({ focused }) => (
-              <TabIcon source="wechat" focused={focused} />
-            ),
-            tabBarStyle: {
-              display: "none",
+          }}
+        />
+        <Tabs.Screen
+          name="(plans)/planModal"
+          options={{
+            href: null,
+            headerShown: true,
+            headerStyle: {
+              height: 110,
             },
+            headerTitle: () => <ScreenHeader text="plan" />,
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.back()}
+                className="pl-4 pr-2"
+              >
+                <AntDesign name="arrowleft" size={24} color="black" />
+              </TouchableOpacity>
+            ),
           }}
         />
       </Tabs>

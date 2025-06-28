@@ -100,6 +100,7 @@ type AgentPlan = {
   formatted_date: string;
   name: string;
   is_past: boolean;
+  id: string;
 };
 
 // to check
