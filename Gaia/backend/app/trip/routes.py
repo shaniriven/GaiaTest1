@@ -110,42 +110,6 @@ def deleteTrip():
     else:
          return jsonify({"message": "no trips for user {user_id}"}), 200
 
-<<<<<<< HEAD
-@bp.route('askAgent/', methods=['POST'])
-def askAgent():   
-    try:
-        data = request.get_json()
-        user_id = data.get("user_id")
-        # db = mongo.get_db("Users")
-        # plans_collection = db.get_collection("plans")
-
-        prompt = generate_prompt(data)
-        # print (prompt)
-
-        client = genai.Client(api_key=GOOGLE_API_KEY)
-        response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=prompt
-        )
-
-        generated_text = response.text
-        plan_id = save_plan_mongo(generated_text, user_id)
-
-        # json_str = re.search(r'\{.*\}', generated_text, re.DOTALL).group()
-        # plan = json.loads(json_str)
-        # _id = ObjectId()
-        # plan["_id"] = str(_id)
-        # plans_collection.insert_one()
-
-
-        return jsonify({"response": str(plan_id)}), 200
-    except Exception as e:
-        print("An error occurred in /askAgent route:")
-        traceback.print_exc() 
-        return jsonify({"error": str(e)}), 500
-
-# # check if needed
-=======
->>>>>>> shani
 @bp.route('newTrip/', methods=['POST'])
 def newTrip():
     print("newTrip")
