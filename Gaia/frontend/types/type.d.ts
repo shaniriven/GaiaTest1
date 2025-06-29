@@ -3,32 +3,6 @@ import {
   defaultInterestsLabels,
 } from "@/constants/index";
 
-// new trip - types not in use yet
-// type FormFields =
-//   | "locations"
-//   | "multipleDestinations"
-//   | "suggestFlights"
-//   | "isOptimized"
-//   | "startDate"
-//   | "endDate"
-//   | "optimizedDates"
-//   | "adults"
-//   | "children"
-//   | "groupType"
-//   | "budget"
-//   | "interestsList"
-//   | "detailsList";
-
-// type FormValues =
-//   | Locations
-//   | LocationOptions
-//   | Date
-//   | boolean
-//   | { adults: number; children: number; total: number; type: string }
-//   | BudgetOptions
-//   | UserInterestsList
-//   | DetailsCheckboxes;
-
 // new trip types
 // -> interests
 type SectionType = "budget" | "trip details and content" | "personal interests";
@@ -75,13 +49,16 @@ type GroupDetails = {
 type Options = "solo" | "friends" | "couple" | "family";
 // ---------------------------------------------------------------
 
-// plan types
+// plan: basic types
+// -> activities in a day
 type Activity = {
+  title: string;
   time: string;
   description: string;
   cost: string;
   notes: string;
 };
+// -> daily plan
 type DayPlan = {
   date: string;
   day: string;
@@ -89,7 +66,7 @@ type DayPlan = {
   activities: Activity[];
   food: string;
 };
-
+// -> Agent request type
 type AgentPlan = {
   trip_dates: string;
   locations: string;
@@ -101,79 +78,17 @@ type AgentPlan = {
   name: string;
   is_past: boolean;
   id: string;
+  value?: string;
 };
+// ---------------------------------------------------------------
+// plan: dates types
+// -> dates swiper buttons
+type DateLabel = { day: string; value: string };
 
+// ---------------------------------------------------------------
 // to check
 
-//////
-
 type GroupPeopleOptions = "adults" | "children";
-
-// type Categories =
-//   | "accommodation"
-//   | "activities"
-//   | "settings"
-//   | "Activities"
-//   | "Traveling Style"
-//   | "Art & Culture"
-//   | "Entertainment"
-//   | "Shopping"
-//   | "Wellness";
-
-// type Labels =
-//   | "Hotels"
-//   | "Apartments"
-//   | "Airbnb"
-//   | "Hostels"
-//   | "Resorts"
-//   | "Camping"
-//   | "Restaurants"
-//   | "Bars"
-//   | "Cafes"
-//   | "Wine Bars"
-//   | "Fast Food"
-//   | "Local Food"
-//   | "Concerts"
-//   | "Festivals"
-//   | "Orchestra"
-//   | "Musicals"
-//   | "Music Bars"
-//   | "Local Music"
-//   | "Skydiving"
-//   | "Snow Sports"
-//   | "Diving"
-//   | "Surf"
-//   | "Camping"
-//   | "Zoo & Safari"
-//   | "Guided Tours"
-//   | "Short Hikings"
-//   | "Trekking"
-//   | "Road Tripping"
-//   | "Urban Exploration"
-//   | "Beaches"
-//   | "Nature"
-//   | "Museums"
-//   | "Galleries"
-//   | "National Parks"
-//   | "Monuments"
-//   | "Sightseeing"
-//   | "Marketplace"
-//   | "Cultural Landmarks"
-//   | "Movies"
-//   | "Theatre"
-//   | "Comedy Shows"
-//   | "Dance"
-//   | "Opera"
-//   | "Sport Events"
-//   | "Nightlife"
-//   | "Malls"
-//   | "Outlets"
-//   | "Supermarket"
-//   | "Artisan Workshops"
-//   | "Spas"
-//   | "Gyms"
-//   | "Pool"
-//   | "Parks";
 
 type InterestsDictionary = {
   [key in Categories]?: Labels[];

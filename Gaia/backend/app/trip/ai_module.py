@@ -81,7 +81,8 @@ def generate_prompt(data: any ) -> str:
                         "theme": "<Summary or main theme of the day>",
                         "activities": [
                             {{
-                                "time": "<Time of day>",
+                                "title": "<short title for the UI>",
+                                time: "<recommended time of day>",
                                 "description": "<Short description of the activity>",
                                 "cost": "<Estimated cost in local currency>",
                                 "notes": "<Optional notes or tips>"

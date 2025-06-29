@@ -48,7 +48,6 @@ export default function Page() {
           params: { user_id },
         });
         setUserData(response.data);
-        console.log(userData);
         if (userData) {
           const plansData = response.data.map(
             (plan: {

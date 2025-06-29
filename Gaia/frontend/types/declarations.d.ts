@@ -6,14 +6,17 @@ import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
 import { DraggableFlatListProps } from "react-native-draggable-flatlist";
 import { SwiperProps } from "react-native-swiper";
 import {
+  AgentPlan,
   BudgetOptions,
+  DateLabel,
+  DayPlan,
   DetailsCheckboxes,
   GroupDetails,
   LocationOptions,
   Locations,
 } from "./type";
 
-// new trip interfaces
+// -> new trip screens
 declare interface NewTripScreenProps {
   handleSelect?: any | function;
   handleLocationOptionsSelect?: any | function;
@@ -32,12 +35,15 @@ declare interface NewTripScreenProps {
   budgetOptions?: BudgetOptions;
   onChangeInterests?: any;
 }
+
+// -> new trip -> intrests menu options
 declare interface SectionProps {
   budgetOptions?: BudgetOptions;
   detailsOptions?: DetailsCheckboxes;
   onOptionsChange: function;
   interestsOptions?: typeof defaultInterestsLabels;
 }
+// ---------------------------------------------------------------
 
 // components
 // -> checkbox
@@ -57,7 +63,34 @@ declare interface TabButtonProps extends TouchableOpacityProps {
   onPress?: (event: GestureResponderEvent) => void | Promise<void>;
   activeStyle?: string;
 }
+// -> dates slider
+declare interface SliderItemProps {
+  item: DateLabel;
+  width: number;
+  index: number;
+  scrollX: SharedValue<number>;
+}
+declare interface SliderProps {
+  datesLabelList: DateLabel[];
+  width: number;
+  plan: AgentPlan;
+  generatedPlan: DayPlan[];
+}
+declare interface PaginationProps {
+  datesItems: DateLabel[];
+  paginationIndex: number;
+  scrollX: SharedValue<number>;
+  width: number;
+  plan: AgentPlan;
+  generatedPlan: DayPlan[];
+}
 
+declare interface DailyPlanProps {
+  item?: string;
+  daily_plan: DayPlan;
+}
+
+// ---------------------------------------------------------------
 // not checked
 // custom components
 // Button

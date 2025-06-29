@@ -24,9 +24,9 @@ const DrawerMenu = (props: DrawerContentComponentProps) => {
   const user_id = user?.id || "1";
   const pathname = usePathname();
 
-  useEffect(() => {
-    console.log(pathname);
-  }, [pathname]);
+  // useEffect(() => {
+  //   console.log(pathname);
+  // }, [pathname]);
 
   // fetch data when path changes
   useEffect(() => {

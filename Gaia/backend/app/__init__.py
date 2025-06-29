@@ -20,6 +20,9 @@ def create_app(config_class=Config):
 
     from app.home import bp as home_bp
     app.register_blueprint(home_bp, url_prefix='/home')
+    
+    from app.plan import bp as plan_bp
+    app.register_blueprint(plan_bp, url_prefix='/plan')
 
     from app.documents import documents_bp
     app.register_blueprint(documents_bp)
