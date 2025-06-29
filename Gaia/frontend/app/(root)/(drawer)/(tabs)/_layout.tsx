@@ -183,14 +183,6 @@ export default function Layout() {
               height: 110,
             },
             headerTitle: () => <ScreenHeader text="plan" />,
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => router.back()}
-                className="pl-4 pr-2"
-              >
-                <AntDesign name="arrowleft" size={24} color="black" />
-              </TouchableOpacity>
-            ),
           }}
         />
         <Tabs.Screen

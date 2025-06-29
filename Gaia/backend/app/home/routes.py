@@ -42,7 +42,8 @@ def fetchPlansLabels():
             plans_labels.append({
                 "_id": str(plan["_id"]),
                 "name": plan["name"],
-                "formatted_date": plan["formatted_date"]
+                "formatted_date": plan["formatted_date"],
+                "is_past": plan["is_past"]
             })
 
         return jsonify(plans_labels), 200

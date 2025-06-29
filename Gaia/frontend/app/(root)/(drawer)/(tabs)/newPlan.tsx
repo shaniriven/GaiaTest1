@@ -276,8 +276,8 @@ const NewPlan = () => {
 
   return (
     <View className="flex-1 bg-white p-5">
-      {/* Tab Buttons */}
       <View className="flex flex-row flex-wrap gap-4 justify-between mb-5 mt-3 z-500">
+        {/* Tab Buttons */}
         {screens.map((screen, index) => (
           <TabButton
             key={index}
@@ -301,18 +301,20 @@ const NewPlan = () => {
       </Animated.View>
 
       <View className="absolute bottom-[120px] left-0 right-0 items-center">
-        <CustomButton
-          title={isLastScreen ? "Get Started" : "Next"}
-          className="w-[130px]"
-          bgVariant="gray-vibe"
-          textVariant="primary"
-          onPress={() =>
-            isLastScreen ? askAgent() : setActiveIndex(activeIndex + 1)
-          }
-          // onPress={() => isLastScreen
-          //   ? router.replace('/')
-          //   : setActiveIndex(activeIndex + 1)}
-        />
+        {!loading && (
+          <CustomButton
+            title={isLastScreen ? "Get Started" : "Next"}
+            className="w-[130px]"
+            bgVariant="gray-vibe"
+            textVariant="primary"
+            onPress={() =>
+              isLastScreen ? askAgent() : setActiveIndex(activeIndex + 1)
+            }
+            // onPress={() => isLastScreen
+            //   ? router.replace('/')
+            //   : setActiveIndex(activeIndex + 1)}
+          />
+        )}
       </View>
     </View>
   );

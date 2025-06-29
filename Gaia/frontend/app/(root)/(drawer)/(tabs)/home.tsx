@@ -5,7 +5,7 @@ import { colors } from "@/constants/index";
 import { AgentPlan } from "@/types/type";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import axios from "axios";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -39,6 +39,7 @@ export default function Page() {
 
   const screenWidth = Dimensions.get("window").width;
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchPlansData = async (user_id: string) => {
@@ -72,7 +73,7 @@ export default function Page() {
     };
 
     fetchPlansData(user_id);
-  }, [user_id]);
+  }, [pathname]);
   const arrowOpacity = useRef(new Animated.Value(0)).current;
 
   // plan screen animation

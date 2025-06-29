@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert, ActivityIndicator, Image } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import * as Linking from 'expo-linking';
-import { useUser } from '@clerk/clerk-expo';
-import config from '../config';
+import { useUser } from "@clerk/clerk-expo";
+import * as DocumentPicker from "expo-document-picker";
+import * as Linking from "expo-linking";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import config from "../config";
 
 const api_url = config.api_url;
 
@@ -36,15 +45,15 @@ const Documents = () => {
       }));
       setDocuments(mappedDocs);
     } catch (error) {
-      console.error('Error fetching documents:', error);
-      Alert.alert('Error', 'Could not fetch documents.');
+      console.error("Error fetching documents:", error);
+      Alert.alert("Error", "Could not fetch documents.");
     }
   };
 
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
+        type: "*/*",
         multiple: false,
         copyToCacheDirectory: true,
       });
@@ -54,41 +63,44 @@ const Documents = () => {
         if (userId) {
           await uploadToServer(picked, userId);
         } else {
-          Alert.alert('Error', 'User not authenticated.');
+          Alert.alert("Error", "User not authenticated.");
         }
       }
     } catch (error) {
-      Alert.alert('Error', 'Could not pick document');
+      Alert.alert("Error", "Could not pick document");
       console.error(error);
     }
   };
 
-  const uploadToServer = async (doc: DocumentPicker.DocumentPickerAsset, userId: string) => {
+  const uploadToServer = async (
+    doc: DocumentPicker.DocumentPickerAsset,
+    userId: string,
+  ) => {
     setUploading(true);
     const formData = new FormData();
 
-    formData.append('file', {
+    formData.append("file", {
       uri: doc.uri,
       name: doc.name,
-      type: doc.mimeType || 'application/octet-stream',
+      type: doc.mimeType || "application/octet-stream",
     } as any);
 
-    formData.append('user_id', userId);
+    formData.append("user_id", userId);
 
     try {
       const response = await fetch(`${api_url}/upload_document`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
       const data = await response.json();
-      Alert.alert('Upload', data.message);
-      fetchDocuments(userId); 
+      Alert.alert("Upload", data.message);
+      fetchDocuments(userId);
     } catch (err) {
-      Alert.alert('Error', 'Upload failed');
+      Alert.alert("Error", "Upload failed");
       console.error(err);
     } finally {
       setUploading(false);
@@ -98,38 +110,45 @@ const Documents = () => {
   const deleteDocument = async (docId: string, uri: string) => {
     try {
       const response = await fetch(`${api_url}/documents/${docId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       const result = await response.json();
       if (response.ok) {
-        setDocuments(prev => prev.filter(doc => doc.uri !== uri));
-        Alert.alert('Deleted', result.message);
+        setDocuments((prev) => prev.filter((doc) => doc.uri !== uri));
+        Alert.alert("Deleted", result.message);
       } else {
         throw new Error(result.message);
       }
     } catch (error) {
-      console.error('Delete error:', error);
-      Alert.alert('Error', 'Could not delete document.');
+      console.error("Delete error:", error);
+      Alert.alert("Error", "Could not delete document.");
     }
   };
 
   const openDocument = async (uri: string) => {
-  const fullUrl = uri.startsWith('http') ? uri : `${api_url}${uri}`;
-  const supported = await Linking.canOpenURL(fullUrl);
-  if (supported) {
-    Linking.openURL(fullUrl);
-  } else {
-    Alert.alert('Cannot open file', 'Unsupported file type or path');
-  }
-};
+    const fullUrl = uri.startsWith("http") ? uri : `${api_url}${uri}`;
+    const supported = await Linking.canOpenURL(fullUrl);
+    if (supported) {
+      Linking.openURL(fullUrl);
+    } else {
+      Alert.alert("Cannot open file", "Unsupported file type or path");
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
         <Text style={styles.title}>Upload Documents</Text>
-          <TouchableOpacity onPress={() => Alert.alert("Info", "Here you can upload your tickets, passport scans, and every document necessary for your trip!")}>
-          < Text style={styles.infoIcon}>ℹ️</Text>
+        <TouchableOpacity
+          onPress={() =>
+            Alert.alert(
+              "Info",
+              "Here you can upload your tickets, passport scans, and every document necessary for your trip!",
+            )
+          }
+        >
+          <Text style={styles.infoIcon}>ℹ️</Text>
         </TouchableOpacity>
       </View>
 
@@ -137,29 +156,42 @@ const Documents = () => {
         <Text style={styles.uploadButtonText}>Choose Document</Text>
       </TouchableOpacity>
 
-      {uploading && <ActivityIndicator size="large" color="#49735A" style={{ marginBottom: 20 }} />}
+      {uploading && (
+        <ActivityIndicator
+          size="large"
+          color="#49735A"
+          style={{ marginBottom: 20 }}
+        />
+      )}
 
       <FlatList
         data={documents}
         numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => openDocument(item.uri)} style={styles.card}>
-            {
-              item.uri.match(/\.(jpg|jpeg|png)$/i) ? (
-                <Image source={{ uri: item.uri }} style={styles.thumbnail} />
-              ) : (
-                <Text style={styles.fileIcon}>📄</Text>
-              )
-            }
-            <Text style={styles.fileName} numberOfLines={1}>{item.name}</Text>
-            <TouchableOpacity onPress={() => deleteDocument(item._id, item.uri)}>
+          <TouchableOpacity
+            onPress={() => openDocument(item.uri)}
+            style={styles.card}
+          >
+            {item.uri.match(/\.(jpg|jpeg|png)$/i) ? (
+              <Image source={{ uri: item.uri }} style={styles.thumbnail} />
+            ) : (
+              <Text style={styles.fileIcon}>📄</Text>
+            )}
+            <Text style={styles.fileName} numberOfLines={1}>
+              {item.name}
+            </Text>
+            <TouchableOpacity
+              onPress={() => deleteDocument(item._id, item.uri)}
+            >
               <Text style={styles.deleteText}>Delete</Text>
             </TouchableOpacity>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>No documents uploaded.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No documents uploaded.</Text>
+        }
       />
     </View>
   );
@@ -170,37 +202,37 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   uploadButton: {
-    backgroundColor: '#49735A',
+    backgroundColor: "#49735A",
     padding: 12,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   uploadButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
   card: {
-    backgroundColor: '#F0F0F0',
-    width: '48%',
+    backgroundColor: "#F0F0F0",
+    width: "48%",
     borderRadius: 10,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 15,
   },
   thumbnail: {
     width: 60,
     height: 60,
-    resizeMode: 'cover',
+    resizeMode: "cover",
     marginBottom: 5,
     borderRadius: 4,
   },
@@ -210,33 +242,32 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: "600",
+    textAlign: "center",
     marginBottom: 5,
   },
   deleteText: {
-    color: 'red',
+    color: "red",
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   empty: {
-    textAlign: 'center',
-    color: '#aaa',
+    textAlign: "center",
+    color: "#aaa",
     marginTop: 20,
   },
 
   titleRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: 20,
-},
-infoIcon: {
-  fontSize: 18,
-  marginLeft: 10,
-  marginTop: -16,
-},
-
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  infoIcon: {
+    fontSize: 18,
+    marginLeft: 10,
+    marginTop: -16,
+  },
 });
 
 export default Documents;

@@ -1,8 +1,3 @@
-import ob1 from "@/assets/images/ob1.png";
-import ob2 from "@/assets/images/NatureOrCity.png";
-import ob3 from "@/assets/images/groupIcons.png";
-import singUp from "@/assets/images/logo.png";
-import check from "@/assets/images/check.png";
 import arrowDown from "@/assets/icons/arrow-down.png";
 import arrowUp from "@/assets/icons/arrow-up.png";
 import backArrow from "@/assets/icons/back-arrow.png";
@@ -28,6 +23,11 @@ import selectedMarker from "@/assets/icons/selected-marker.png";
 import star from "@/assets/icons/star.png";
 import target from "@/assets/icons/target.png";
 import to from "@/assets/icons/to.png";
+import ob2 from "@/assets/images/NatureOrCity.png";
+import check from "@/assets/images/check.png";
+import ob3 from "@/assets/images/groupIcons.png";
+import singUp from "@/assets/images/logo.png";
+import ob1 from "@/assets/images/ob1.png";
 
 // More Settings
 // interests key to label and save active
@@ -60,6 +60,7 @@ export const defaultInterestsLabels = [
     activeLabels: [""],
   },
 ];
+
 // -> details checkboxes
 export const defaultDetailsCheckboxes = {
   hotels: false,

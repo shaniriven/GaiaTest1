@@ -1,6 +1,6 @@
 // use
-import { TouchableOpacity, Text } from "react-native";
 import { TabButtonProps } from "@/types/declarations";
+import { Text, TouchableOpacity } from "react-native";
 
 const TabButton = ({
   onPress,
