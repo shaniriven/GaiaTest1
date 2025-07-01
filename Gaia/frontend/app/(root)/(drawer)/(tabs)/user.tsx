@@ -1,7 +1,7 @@
 import { useAuth } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import CustomButton from "@/components/CustomButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -84,10 +84,15 @@ const User = () => {
             className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
           />
         </Link>
-
-        <TouchableOpacity style={styles.signOutWrapper} onPress={handleSignOut}>
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
+        <View className="w-full rounded-[10px] items-center">
+          <CustomButton
+            title={"Sign Out"}
+            className="w-[130px] mt-10 mb-10 border border-gray-400"
+            bgVariant="gray-vibe"
+            textVariant="primary"
+            onPress={handleSignOut}
+          />
+        </View>
       </View>
     </View>
   );
