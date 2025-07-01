@@ -1,28 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { Stack } from "expo-router";
+import React, { useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const TodoLists = () => {
-  const [todos, setTodos] = useState<{ id: number; text: string; done: boolean }[]>([]);
-  const [input, setInput] = useState('');
+  const [todos, setTodos] = useState<
+    { id: number; text: string; done: boolean }[]
+  >([]);
+  const [input, setInput] = useState("");
 
   const addTodo = () => {
     if (!input.trim()) return;
-    setTodos(prev => [...prev, { id: Date.now(), text: input.trim(), done: false }]);
-    setInput('');
+    setTodos((prev) => [
+      ...prev,
+      { id: Date.now(), text: input.trim(), done: false },
+    ]);
+    setInput("");
   };
 
   const toggleTodo = (id: number) => {
-    setTodos(prev =>
-      prev.map(todo => todo.id === id ? { ...todo, done: !todo.done } : todo)
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo,
+      ),
     );
   };
 
   const removeTodo = (id: number) => {
-    setTodos(prev => prev.filter(todo => todo.id !== id));
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerTintColor: "black",
+          headerBackTitle: "back",
+        }}
+      />
       <Text style={styles.title}>Todo List</Text>
 
       <View style={styles.inputContainer}>
@@ -39,20 +61,14 @@ const TodoLists = () => {
 
       <FlatList
         data={todos}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => toggleTodo(item.id)}
             onLongPress={() => removeTodo(item.id)}
-            style={[
-              styles.todoItem,
-              item.done && styles.todoItemDone
-            ]}
+            style={[styles.todoItem, item.done && styles.todoItemDone]}
           >
-            <Text style={[
-              styles.todoText,
-              item.done && styles.todoTextDone
-            ]}>
+            <Text style={[styles.todoText, item.done && styles.todoTextDone]}>
               {item.text}
             </Text>
           </TouchableOpacity>
@@ -68,56 +84,56 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   inputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   input: {
     flex: 1,
-    borderColor: '#49735A',
+    borderColor: "#49735A",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 40,
   },
   addButton: {
-    backgroundColor: '#49735A',
+    backgroundColor: "#49735A",
     marginLeft: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   addButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
   todoItem: {
     padding: 12,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: "#F0F0F0",
     borderRadius: 8,
     marginBottom: 10,
   },
   todoItemDone: {
-    backgroundColor: '#C9EACD',
+    backgroundColor: "#C9EACD",
   },
   todoText: {
     fontSize: 16,
   },
   todoTextDone: {
-    textDecorationLine: 'line-through',
-    color: '#888',
+    textDecorationLine: "line-through",
+    color: "#888",
   },
   empty: {
-    textAlign: 'center',
-    color: '#aaa',
+    textAlign: "center",
+    color: "#aaa",
     marginTop: 20,
   },
 });

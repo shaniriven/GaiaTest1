@@ -1,9 +1,17 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import { Stack } from "expo-router";
+import React from "react";
+import { Text, View } from "react-native";
 
 const SavedChats = () => {
   return (
     <View>
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerTintColor: "black",
+          headerBackTitle: "back",
+        }}
+      />
       <Text>Saved Chats Screen</Text>
     </View>
   );

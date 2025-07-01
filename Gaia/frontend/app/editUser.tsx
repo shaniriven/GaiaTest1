@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useUser } from '@clerk/clerk-expo';
+import { useUser } from "@clerk/clerk-expo";
+import { Stack, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const EditUser = () => {
   const { user } = useUser();
   const userId = user?.id;
   const router = useRouter();
 
-  const [name, setName] = useState(user?.unsafeMetadata?.name || '');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState(user?.unsafeMetadata?.name || "");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -21,7 +28,10 @@ const EditUser = () => {
     if (user) {
       console.log("🧾 Current Clerk Info:");
       console.log("🧑 Name:", user.unsafeMetadata?.name || "(not set)");
-      console.log("📧 Email:", user.primaryEmailAddress?.emailAddress || "No email");
+      console.log(
+        "📧 Email:",
+        user.primaryEmailAddress?.emailAddress || "No email",
+      );
       console.log("🔒 Password: (not accessible)");
     }
   }, [user]);
@@ -33,7 +43,6 @@ const EditUser = () => {
     }
 
     try {
-     
       if (name && name !== user.unsafeMetadata?.name) {
         await user.update({
           unsafeMetadata: {
@@ -43,7 +52,6 @@ const EditUser = () => {
         console.log("✅ Name updated:", name);
       }
 
-      
       if (newPassword) {
         if (!currentPassword) {
           Alert.alert("Current password is required");
@@ -72,8 +80,14 @@ const EditUser = () => {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerTintColor: "black",
+          headerBackTitle: "back",
+        }}
+      />
       <Text style={styles.title}>Edit Profile</Text>
-     
 
       <Text style={styles.label}>Name:</Text>
       <TextInput
@@ -96,7 +110,7 @@ const EditUser = () => {
           style={styles.eyeButton}
           onPress={() => setShowCurrentPassword(!showCurrentPassword)}
         >
-          <Text style={styles.eyeIcon}>{showCurrentPassword ? '👁️' : ''}</Text>
+          <Text style={styles.eyeIcon}>{showCurrentPassword ? "👁️" : ""}</Text>
         </TouchableOpacity>
       </View>
 
@@ -113,7 +127,7 @@ const EditUser = () => {
           style={styles.eyeButton}
           onPress={() => setShowNewPassword(!showNewPassword)}
         >
-          <Text style={styles.eyeIcon}>{showNewPassword ? '👁️' : ''}</Text>
+          <Text style={styles.eyeIcon}>{showNewPassword ? "👁️" : ""}</Text>
         </TouchableOpacity>
       </View>
 
@@ -130,7 +144,7 @@ const EditUser = () => {
           style={styles.eyeButton}
           onPress={() => setShowConfirmPassword(!showConfirmPassword)}
         >
-          <Text style={styles.eyeIcon}>{showConfirmPassword ? '👁️' : ''}</Text>
+          <Text style={styles.eyeIcon}>{showConfirmPassword ? "👁️" : ""}</Text>
         </TouchableOpacity>
       </View>
 
@@ -145,11 +159,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   label: {
@@ -158,41 +172,41 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
   },
   inputWrapper: {
-    position: 'relative',
+    position: "relative",
     marginBottom: 15,
   },
   inputWithIcon: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     paddingRight: 40,
   },
   eyeButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 10,
-    top: '50%',
+    top: "50%",
     transform: [{ translateY: -12 }],
   },
   eyeIcon: {
     fontSize: 20,
   },
   button: {
-    backgroundColor: '#13875B',
+    backgroundColor: "#13875B",
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

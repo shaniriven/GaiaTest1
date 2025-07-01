@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/clerk-expo";
 import * as DocumentPicker from "expo-document-picker";
 import * as Linking from "expo-linking";
+import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -27,7 +28,7 @@ const Documents = () => {
   const [uploading, setUploading] = useState(false);
   const { user } = useUser();
   const userId = user?.id;
-
+  const router = useRouter();
   useEffect(() => {
     if (userId) {
       fetchDocuments(userId);
@@ -138,6 +139,13 @@ const Documents = () => {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerTintColor: "black",
+          headerBackTitle: "back",
+        }}
+      />
       <View style={styles.titleRow}>
         <Text style={styles.title}>Upload Documents</Text>
         <TouchableOpacity
