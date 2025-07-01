@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Text, ScrollView, View, Image, Alert, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Keyboard, } from "react-native";
-import { Link, router } from "expo-router";
-import { singUpImage, icons, checkVerification } from "../../constants/index";
-import InputField from "@/components/InputField";
-import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
+import InputField from "@/components/InputField";
 import OAuth from "@/components/OAuth";
-import { ReactNativeModal } from "react-native-modal";
 import { useSignUp } from "@clerk/clerk-expo";
+import { Link, router } from "expo-router";
+import { useState } from "react";
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableWithoutFeedback, View, } from "react-native";
+import { ReactNativeModal } from "react-native-modal";
+import { checkVerification, icons, singUpImage } from "../../constants/index";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -129,7 +129,7 @@ const onVerifyPress = async () => {
             }
           />
 
-          <CustomButton title="Sign Up" onPress={onSignUpPress} className="mt-10" bgVariant="primary" IconLeft={undefined} IconRight={undefined} />
+          <CustomButton title="Sign Up" onPress={onSignUpPress} className="mt-10" bgVariant="primary"/>
           
           <OAuth/>
           
@@ -171,7 +171,7 @@ const onVerifyPress = async () => {
               onPress={onVerifyPress}
               className="mt-5"
               bgVariant="gray-vibe"
-              textVariant="primary" IconLeft={undefined} IconRight={undefined}            />
+              textVariant="primary"             />
 
           </View>
         </ReactNativeModal>
@@ -193,7 +193,7 @@ const onVerifyPress = async () => {
               } }
               className="mt-10"
               bgVariant="gray-vibe"
-              textVariant="primary" IconLeft={undefined} IconRight={undefined}            />
+              textVariant="primary"            />
             </View>
         </ReactNativeModal>
       </View>

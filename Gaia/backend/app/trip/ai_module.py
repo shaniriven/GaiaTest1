@@ -5,14 +5,14 @@ import os
 import re
 from datetime import datetime
 
-import openai
+# import openai
 from app.extensions import mongo
 from bson import ObjectId
 from dotenv import load_dotenv
 from flask import jsonify
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_prompt(data: any ) -> str:
     locations = data.get("locations")

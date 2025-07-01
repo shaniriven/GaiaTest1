@@ -37,6 +37,12 @@ export default function PlanID() {
   }, [pathname]);
 
   useEffect(() => {
+    // const fetchImage = async () => {
+    //   const response = await axios.post(`${api_url}/plan/generate_image/`);
+    //   const { image_url } = response.data;
+    //   console.log(image_url);
+    // };
+
     const fetchPlanData = async (plan_id: string) => {
       try {
         setLoading(true);
@@ -58,6 +64,7 @@ export default function PlanID() {
     };
 
     fetchPlanData(id as string);
+    // fetchImage();
   }, [pathname]);
 
   // temp data for dates label

@@ -90,10 +90,7 @@ declare interface DailyPlanProps {
   daily_plan: DayPlan;
 }
 
-// ---------------------------------------------------------------
-// not checked
-// custom components
-// Button
+// -> Button
 declare interface ButtonProps extends TouchableOpacityProps {
   title: string;
   bgVariant?:
@@ -111,14 +108,16 @@ declare interface ButtonProps extends TouchableOpacityProps {
     | "danger"
     | "success"
     | "gray-vibe";
-  IconLeft?: React.ComponentType<any>;
-  IconRight?: React.ComponentType<any>;
+  IconLeft?: React.ReactNode;
+  IconRight?: React.ReactNode;
   className?: string;
   textClassName?: string;
   pastTripButton?: boolean;
   tripDate?: string;
   onPress?: (event: GestureResponderEvent) => void | Promise<void>;
 }
+// ---------------------------------------------------------------
+// not checked
 
 // country search bar
 declare interface CountrySearchBarProps {

@@ -17,6 +17,8 @@ pytest-mock = "*"
 flask-pymongo = "*"
 selenium = "*"
 flask_pymongo="*"
+google-generativeai = "*"
+
 [dev-packages]
 
 [requires]

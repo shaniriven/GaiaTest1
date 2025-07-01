@@ -1,10 +1,42 @@
+import config from "@/config";
 import { DailyPlanProps } from "@/types/declarations";
+import { Activity } from "@/types/type";
 import Feather from "@expo/vector-icons/Feather";
-import { Text, TouchableOpacity, View } from "react-native";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
+  const api_url = config.api_url;
+
+  const [loading, setLoading] = useState(false);
+  const [currentActivities, setCurrentActivities] = useState<Activity[]>();
+
+  useEffect(() => {
+    const fetchActivitiesImages = async (daily_plan_activities: Activity[]) => {
+      try {
+        setLoading(true);
+        setCurrentActivities([]);
+        const response = await axios.post(
+          `${api_url}/plan/fetchActivitiesImages/`,
+          { daily_plan_activities },
+        );
+        const { updatedActivities } = response.data;
+        setCurrentActivities(updatedActivities);
+        console.log("here");
+      } catch (error) {
+        console.error("error fetching user: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivitiesImages(daily_plan.activities);
+  }, []);
+
   console.log("\ndaily_plan: ", daily_plan.activities, "\n");
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -36,6 +68,7 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
           <Text className="text-black text-base font-JakartaExtraBold text-lg mx-4">
             {activity.title}
           </Text>
+          <Image source={{ uri: `data:image/png;base64,${activity.image}` }} />
         </View>
       ))}
     </ScrollView>

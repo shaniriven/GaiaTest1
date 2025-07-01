@@ -1,10 +1,11 @@
 import { ButtonProps } from "@/types/declarations";
+import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 
 const getBgVariantStyle = (variant: ButtonProps["bgVariant"]) => {
   switch (variant) {
     case "primary":
-      return "bg-[#13875B]";
+      return "bg-gaiaGreen-100";
     case "secondary":
       return "bg-neutral-300";
     case "danger":
@@ -53,13 +54,21 @@ const CustomButton = ({
     className={` rounded-full p-2 flex flex-row justify-center items-center shadow-md shadow-netural-400/70 ${getBgVariantStyle(bgVariant)} ${className}`}
     {...props}
   >
-    {IconLeft && <IconLeft />}
+    {React.isValidElement(IconLeft) ? (
+      IconLeft
+    ) : typeof IconLeft === "function" ? (
+      <IconLeft />
+    ) : null}
     <Text
-      className={`text-lg font-bold ${getTextVariantStyle(textVariant)} ${textClassName}`}
+      className={`text-lg font-bold mx-4 ${getTextVariantStyle(textVariant)} ${textClassName}`}
     >
       {title}
     </Text>
-    {IconRight && <IconRight />}
+    {React.isValidElement(IconRight) ? (
+      IconRight
+    ) : typeof IconRight === "function" ? (
+      <IconRight />
+    ) : null}
   </TouchableOpacity>
 );
 

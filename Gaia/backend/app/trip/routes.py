@@ -9,11 +9,14 @@ from app.extensions import mongo
 from app.trip import bp
 from bson import ObjectId  # To help with ObjectId conversion
 from flask import Flask, current_app, jsonify, logging, request
-from google import genai
 
 from .ai_module import (generate_prompt, generate_query_for_hobby,
                         save_plan_in_mongo)
-from .scraper import scrape_municipality_open_data
+
+# from google import genai
+
+
+# from .scraper import scrape_municipality_open_data
 
 # from google import generativeai as genai
 

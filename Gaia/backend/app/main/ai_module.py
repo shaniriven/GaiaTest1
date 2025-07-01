@@ -3,11 +3,11 @@
 import json
 import os
 
-import openai
+# import openai
 from dotenv import load_dotenv
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_query_for_hobby(destination: str, hobby: str) -> str:
     """

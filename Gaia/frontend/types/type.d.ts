@@ -57,6 +57,7 @@ type Activity = {
   description: string;
   cost: string;
   notes: string;
+  image?: any;
 };
 // -> daily plan
 type DayPlan = {

@@ -1,15 +1,12 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-import { useAuth } from '@clerk/clerk-expo';
+import { useAuth } from "@clerk/clerk-expo";
+import { Link, useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import SettingsIcon from '@/assets/icons/setting.png';
-import HeartIcon from '@/assets/icons/heart.png';
-import DocumentIcon from '@/assets/icons/google-docs.png';
-import ChatIcon from '@/assets/icons/bubble-chat.png';
-import ContactIcon from '@/assets/icons/phone-call.png';
-import ListIcon from '@/assets/icons/clipboard.png';
-
+import CustomButton from "@/components/CustomButton";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 const User = () => {
   const router = useRouter();
   const { signOut } = useAuth();
@@ -17,59 +14,75 @@ const User = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      router.replace('/sign-in'); 
+      router.replace("/sign-in");
     } catch (error) {
-      console.error('Failed to sign out:', error);
+      console.error("Failed to sign out:", error);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.header}>                Your Profile </Text>
-      </View>
-
-      <View style={styles.buttonGrid}>
+    <View className="flex-1 bg-white p-6">
+      <View className="flex-row flex-wrap justify-between gap-y-5">
         <Link href="/settings" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Image source={SettingsIcon} style={styles.icon} />
-            <Text style={styles.buttonText}>settings</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title={"Settings"}
+            IconLeft={<AntDesign name="setting" size={24} color="white" />}
+            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
+          />
         </Link>
 
         <Link href="/likedPlaces" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Image source={HeartIcon} style={styles.icon} />
-            <Text style={styles.buttonText}>liked places</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title={"Liked Places"}
+            IconLeft={<AntDesign name="hearto" size={24} color="white" />}
+            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
+          />
         </Link>
 
         <Link href="/documents" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Image source={DocumentIcon} style={styles.icon} />
-            <Text style={styles.buttonText}>documents</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title={"Documents"}
+            IconLeft={
+              <Ionicons name="documents-outline" size={24} color="white" />
+            }
+            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
+          />
         </Link>
 
         <Link href="/savedChats" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Image source={ChatIcon} style={styles.icon} />
-            <Text style={styles.buttonText}>saved chats</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title={"Saved Chats"}
+            IconLeft={
+              <Ionicons
+                name="chatbubble-ellipses-outline"
+                size={24}
+                color="white"
+              />
+            }
+            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
+          />
         </Link>
 
         <Link href="/contactUs" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Image source={ContactIcon} style={styles.icon} />
-            <Text style={styles.buttonText}>contact us</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title={"Contact Us"}
+            IconLeft={<AntDesign name="phone" size={24} color="white" />}
+            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
+          />
         </Link>
 
         <Link href="/todoLists" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Image source={ListIcon} style={styles.icon} />
-            <Text style={styles.buttonText}>todo lists</Text>
-          </TouchableOpacity>
+          <CustomButton
+            title={"To Do Lists"}
+            IconLeft={
+              <MaterialCommunityIcons
+                name="clipboard-list-outline"
+                size={24}
+                color="white"
+              />
+            }
+            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
+          />
         </Link>
 
         <TouchableOpacity style={styles.signOutWrapper} onPress={handleSignOut}>
@@ -81,33 +94,27 @@ const User = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 100,
-    paddingHorizontal: 20,
-    backgroundColor: '#fff',
-  },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   header: {
     fontSize: 30,
-    fontWeight: '600',
-    textAlign: 'left',
+    fontWeight: "600",
+    textAlign: "left",
   },
   buttonGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   button: {
-    width: '47%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#49735A',
+    width: "47%",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#49735A",
     paddingVertical: 30,
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -117,26 +124,26 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '600',
-    textTransform: 'capitalize',
+    fontWeight: "600",
+    textTransform: "capitalize",
   },
   signOutWrapper: {
-    width: '100%',
-    backgroundColor: '#D32F2F',
+    width: "100%",
+    backgroundColor: "#D32F2F",
     paddingVertical: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   signOutText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

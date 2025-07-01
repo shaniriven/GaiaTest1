@@ -7,7 +7,8 @@ from flask import current_app, jsonify, request
 
 from . import main_bp
 from .ai_module import generate_query_for_hobby
-from .scraper import scrape_municipality_open_data
+
+# from .scraper import scrape_municipality_open_data
 
 # # Google Places API base URL and key from the environment
 # GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
