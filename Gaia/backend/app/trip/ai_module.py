@@ -14,9 +14,30 @@ from flask import jsonify
 load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# write function for unsused values:  -> locationOptions.suggestFlights
+
+
 def generate_prompt(data: any ) -> str:
+    # location
     locations = data.get("locations")
     locationOptions = data.get("locationOptions")
+    locations_prompt = ""
+
+    # -> locationOptions -> anywhere
+    anywhere = locationOptions.get("anywhere", False) 
+    print("\ngenerate_prompt: anywhere ", anywhere, "\n")
+    if not anywhere and locations:
+        location_names = ", ".join(location['name'] for location in locations)
+        locations_prompt = "The locations for the trip are: " + location_names  
+    if anywhere:
+        locations_prompt = "you pick the locations for the trip." 
+    print("\ngenerate_prompt: anywhere ", locations_prompt, "\n")
+
+    # -> locationOptions -> suggestFlights
+    suggestFlights = locationOptions.get("suggestFlights", False) 
+    if suggestFlights:
+        locations_prompt += " suggest flights or arrival ways from israel to the locations."
+
     startDate = data.get("startDate", "")
     startDate = startDate.split("T")[0] if "T" in startDate else startDate
 
@@ -33,10 +54,7 @@ def generate_prompt(data: any ) -> str:
 
     interestsKeysAndActiveLabels = data.get("interestsKeysAndActiveLabels")
 
-    # prompt versions
-    # -> location 
-    location_names = ", ".join(location['name'] for location in locations)
-    print(location_names)
+
     # -> dates
     dates_prompt = ""
 
@@ -62,7 +80,8 @@ def generate_prompt(data: any ) -> str:
     prompt = f"""
         You are a travel assistant AI. Ggenerate a daily travel itinerary in a specific structured JSON format.
         Plan The daily itinerary by the following information:
-        The locations of the trip are: {location_names}.
+        {locations_prompt}
+        
         the trip is from {startDate} to {endDate}. {dates_prompt}                               
         consider there are {group_total} people in the group. {children_prompt}
         the budget for the trip is {minBadgetValue} - {maxBudgetValue} dollars.
@@ -73,6 +92,7 @@ def generate_prompt(data: any ) -> str:
             
                 "trip_dates": "<start date> to <end date>",
                 "locations": "<city, country> // list of all the locations",
+                "flight_info": "<flight details for the locations, if suggestFlights is true>",
                 "group_size": <number>,
                 "budget": "<minimum>-<maximum> USD",
                 "itinerary": {{
@@ -104,6 +124,7 @@ def save_plan_in_mongo(data: str, user_id: any):
     db = mongo.get_db("Users")
     plans_collection = db.get_collection("plans")
     users_collection = db.get_collection("user_profile")
+    
     json_str = re.search(r'\{.*\}', data, re.DOTALL).group()
     try:
         plan = json.loads(json_str)

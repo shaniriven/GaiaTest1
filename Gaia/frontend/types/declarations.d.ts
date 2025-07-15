@@ -28,12 +28,15 @@ declare interface NewTripScreenProps {
   onChangeEnd?: any;
   handleOptimizedDatesSelect?: any | function;
   optimizDates?: boolean;
+  tripLength?: number;
+  setTripLength?: any | function;
   onChangeGroupType?: any;
   currentGroupValue?: GroupDetails;
   detailsCheckboxes?: typeof defaultDetailsCheckboxes;
   interestsOptions?: typeof defaultInterestsLabels;
   budgetOptions?: BudgetOptions;
   onChangeInterests?: any;
+  resetTrigger?: number;
 }
 
 // -> new trip -> intrests menu options
@@ -52,6 +55,7 @@ declare interface BouncyCheckboxClassicProps extends BouncyCheckboxProps {
   setState: any;
   label: string;
   className?: string;
+  icon?: string;
 }
 // -> floating eliptic tab button
 declare interface TabButtonProps extends TouchableOpacityProps {
@@ -196,7 +200,7 @@ declare interface DaysSwiperProps extends SwiperProps {
 // trip tests -------------------------------
 // // full trip
 // declare interface Full_Trip {
-//   id: number;
+//   id: number;o
 //   title: string;
 //   dayTrips: Day_Trip[];
 //   startDate: string;

@@ -4,6 +4,7 @@ import re
 import traceback
 from datetime import datetime
 
+import google.generativeai as genai
 import requests
 from app.extensions import mongo
 from app.trip import bp
@@ -16,14 +17,19 @@ from .ai_module import (generate_prompt, generate_query_for_hobby,
 # from google import genai
 
 
+# from google import generativeai as genai
+
+
+
+
 # from .scraper import scrape_municipality_open_data
 
-# from google import generativeai as genai
 
 
 # Google Places API base URL and key from the environment
 GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=GOOGLE_API_KEY)
 
 def convert_objectids(obj):
     """
@@ -48,10 +54,12 @@ def askAgent():
     try:
         data = request.get_json()
         prompt = generate_prompt(data)
-        client = genai.Client(api_key=GOOGLE_API_KEY)
-        response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=prompt
-        )
+        # client = genai.Client(api_key=GOOGLE_API_KEY)
+        # response = client.models.generate_content(
+        #     model="gemini-2.0-flash", contents=prompt
+        # )
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
         generated_text = response.text
         user_id = data.get("user_id")
         plan_id_json = save_plan_in_mongo(generated_text, user_id)

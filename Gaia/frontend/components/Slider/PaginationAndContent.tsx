@@ -38,7 +38,7 @@ const PaginationAndContent = ({
       </View>
       <View className="mt-2">
         {/* content */}
-        {items[paginationIndex]?.value && (
+        {items[paginationIndex]?.day && (
           <DailyPlan
             daily_plan={itinerary[paginationIndex]}
             item={plan?.id || "unable to load plan id"}

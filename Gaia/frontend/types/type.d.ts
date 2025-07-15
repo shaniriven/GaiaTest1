@@ -35,9 +35,9 @@ type Locations = {
   };
 };
 type LocationOptions = {
-  multiple: boolean;
+  anywhere: boolean;
   suggestFlights: boolean;
-  isOptimized: boolean;
+  // isOptimized: boolean;
 };
 // -> group
 type GroupDetails = {
@@ -71,6 +71,7 @@ type DayPlan = {
 type AgentPlan = {
   trip_dates: string;
   locations: string;
+  flight_info?: string;
   group_size: number;
   budget: string;
   itinerary: DayPlan[];

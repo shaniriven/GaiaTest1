@@ -21,37 +21,6 @@ from .manipulate import generate_dates_list
 load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# @bp.route('generate_image/', methods=['POST'])
-# def generate_image():
-#     try:
-#         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-#         if not OPENAI_API_KEY:
-#             return jsonify({"error": "Missing OPENAI_API_KEY"}), 500
-#         print("OPENAI_API_KEY:", OPENAI_API_KEY)
-#         client = OpenAI(api_key=OPENAI_API_KEY)
-#         models = client.models.list()
-#         print("=== Models Available to Your Key ===")
-#         for m in models.data:
-#             print("-", m.id)
-#         prompt = "landing in greece"
-
-
-#         # Generate image with DALL·E 3
-#         response = client.images.generate(
-#             model="dall-e-3",
-#             prompt="landing in greece",
-#             n=1,
-#             size="1024x1024"
-#         )
-
-#         image_url = response.data[0].url
-#         print("\nimage_url", image_url, "\n")
-
-#         return jsonify({"image_url": image_url}), 200
-#     except Exception as e:
-#         print("Error generating image:", e)
-#         return jsonify({"error": "Failed to generate image", "details": str(e)}), 500
-
 @bp.route('fetchActivitiesImages/', methods=['POST'])
 def fetchActivitiesImages():
     try:
@@ -84,22 +53,9 @@ def fetchActivitiesImages():
                     "prompt": prompt,
                     "image": response.content
                 }
-                # image = Image.open(BytesIO(response.content))
-                # cropped_image = image.crop((0, 0, image.width, image.height - 48))
-                # img_byte_arr = BytesIO()
-                # cropped_image.save(img_byte_arr, format='PNG')
-                # img_byte_arr.seek(0)
-                # img_bytes = img_byte_arr.read()
-                # base64_image_str = base64.b64encode(img_bytes).decode('utf-8')
-                # image_doc = {
-                    # "prompt": prompt,
-                    # "image_data": base64_image_str
-                # }
                 images_collection.insert_one(image_doc)
                 base64_image_str = base64.b64encode(response.content).decode('utf-8')
-
             activity["image"] = base64_image_str
-                # activity["image_data"] = Binary(img_byte_arr.read())
         print(activities)
         return jsonify({
             "updatedActivities": activities,
