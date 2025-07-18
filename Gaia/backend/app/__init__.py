@@ -19,5 +19,11 @@ def create_app(config_class=Config):
     from app.documents import documents_bp
     app.register_blueprint(documents_bp)
 
+    from app.chats.routes import chat_bp
+    app.register_blueprint(chat_bp, url_prefix="/api")
+
+
+    for rule in app.url_map.iter_rules():
+        print(rule)
 
     return app

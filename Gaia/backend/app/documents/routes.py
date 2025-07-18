@@ -1,83 +1,84 @@
-from app.documents import documents_bp  # Get the blueprint
-from flask import request, jsonify, send_from_directory
-from app.extensions import mongo
-import os
-from bson import ObjectId
+from flask import Blueprint, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
-from datetime import datetime
+import os
+from app.extensions import mongo
+from app.documents import documents_bp
 
-# Upload folder inside the project
-UPLOAD_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static', 'uploads'))
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.abspath(os.path.join(BASE_DIR, '..', 'static', 'uploads'))
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @documents_bp.route('/upload_document', methods=['POST'])
 def upload_document():
     file = request.files.get('file')
     user_id = request.form.get('user_id')
+    trip_name = request.form.get('trip_name')
 
-    if not file or not user_id:
-        return jsonify({'message': 'Missing file or user_id'}), 400
+    if not file or not user_id or not trip_name:
+        return jsonify({'message': 'Missing file, user_id, or trip_name'}), 400
 
     filename = secure_filename(file.filename)
-    user_folder = os.path.join(UPLOAD_FOLDER, user_id)
-    os.makedirs(user_folder, exist_ok=True)
+    folder = os.path.join(UPLOAD_FOLDER, user_id, trip_name)
+    os.makedirs(folder, exist_ok=True)
 
-    filepath = os.path.join(user_folder, filename)
+    filepath = os.path.join(folder, filename)
     file.save(filepath)
 
-    doc_data = {
-        'user_id': user_id,
-        'filename': filename,
-        'file_path': filepath,
-        'file_url': f'/static/uploads/{user_id}/{filename}',
-        'uploaded_at': datetime.utcnow()
-    }
-
-    db = mongo.get_db("Users")  # ✅ Correct usage
-    inserted = db.documents.insert_one(doc_data)
-
-    return jsonify({'message': 'Upload successful', 'document_id': str(inserted.inserted_id)}), 200
+    return jsonify({'message': 'Upload successful'}), 200
 
 
 @documents_bp.route('/documents', methods=['GET'])
 def get_documents():
     user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({'message': 'Missing user_id'}), 400
-    db= mongo.get_db("Users")
-    docs = db.documents.find({'user_id': user_id})
-    result = []
-    for doc in docs:
-        result.append({
-            '_id': str(doc['_id']),
-            'filename': doc['filename'],
-            'file_url': f"/static/uploads/{user_id}/{doc['filename']}",
-            'uploaded_at': doc['uploaded_at']
+    trip_name = request.args.get('trip_name')
+    if not user_id or not trip_name:
+        return jsonify({'message': 'Missing user_id or trip_name'}), 400
+
+    folder = os.path.join(UPLOAD_FOLDER, user_id, trip_name)
+    if not os.path.exists(folder):
+        return jsonify([])
+
+    files = []
+    for filename in os.listdir(folder):
+        files.append({
+            '_id': filename,
+            'filename': filename,
+            'file_url': f'/static/uploads/{user_id}/{trip_name}/{filename}'
         })
 
-    return jsonify(result)
+    return jsonify(files)
 
 
-@documents_bp.route('/documents/<doc_id>', methods=['DELETE'])
-def delete_document(doc_id):
-    try:
-        db = mongo.get_db("Users")
-        doc = db.documents.find_one({'_id': ObjectId(doc_id)})
-        if not doc:
-            return jsonify({'message': 'Document not found'}), 404
+@documents_bp.route('/documents/<filename>', methods=['DELETE'])
+def delete_document(filename):
+    user_id = request.args.get('user_id')
+    trip_name = request.args.get('trip_name')
+    if not user_id or not trip_name:
+        return jsonify({'message': 'Missing user_id or trip_name'}), 400
 
-        if os.path.exists(doc['file_path']):
-            os.remove(doc['file_path'])
-
-        db.documents.delete_one({'_id': ObjectId(doc_id)})
-
-        return jsonify({'message': 'Document deleted'}), 200
-    except Exception as e:
-        return jsonify({'message': f'Error: {str(e)}'}), 500
+    filepath = os.path.join(UPLOAD_FOLDER, user_id, trip_name, filename)
+    if os.path.exists(filepath):
+        os.remove(filepath)
+        return jsonify({'message': 'File deleted'}), 200
+    else:
+        return jsonify({'message': 'File not found'}), 404
 
 
+@documents_bp.route('/static/uploads/<user_id>/<trip_name>/<filename>')
+def serve_uploaded_file(user_id, trip_name, filename):
+    return send_from_directory(os.path.join(UPLOAD_FOLDER, user_id, trip_name), filename)
 
-@documents_bp.route('/static/uploads/<user_id>/<filename>', endpoint='serve_user_upload')
-def serve_uploaded_file(user_id, filename):
-    return send_from_directory(os.path.join(UPLOAD_FOLDER, user_id), filename)
 
+@documents_bp.route('/user_trips', methods=['GET'])
+def get_user_trips():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'Missing user_id'}), 400
 
+    plans_collection = mongo.get_db("Users").get_collection("plans")
+    plans = plans_collection.find({'creator': user_id})
+
+    trip_names = [plan.get('name') for plan in plans if 'name' in plan]
+    return jsonify(sorted(list(set(trip_names))))

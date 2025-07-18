@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { router, Tabs } from "expo-router";
 import { Platform, TouchableOpacity, View, Text } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -103,7 +102,6 @@ export default function Layout() {
 
               <TouchableOpacity
                 onPress={() => {
-                  // Your action here
                   console.log('location delete button press');
                 }}
                 className="w-full flex-row justify-end items-end p-5">
@@ -126,16 +124,28 @@ export default function Layout() {
             tabBarIcon: ({ focused }) => (<TabIcon source="search" focused={focused} />),
           }}
         />
-        <Tabs.Screen name="chat"
+<Tabs.Screen
+          name="chat"
           options={{
             headerShown: true,
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => (
-              <ScreenHeader text="Chat" />
+            headerTitle: () => <ScreenHeader text="Gaia's Chat" />,
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.push("/home")}
+                className="pl-4 pr-2"
+              >
+                <AntDesign name="arrowleft" size={24} color="black" />
+              </TouchableOpacity>
             ),
-            tabBarIcon: ({ focused }) => (<TabIcon source="wechat" focused={focused} />),
+            tabBarIcon: ({ focused }) => (
+              <TabIcon source="wechat" focused={focused} />
+            ),
+            tabBarStyle: {
+              display: "none",
+            },
           }}
         />
       </Tabs>
