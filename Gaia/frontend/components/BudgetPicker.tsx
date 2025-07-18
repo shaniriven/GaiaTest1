@@ -1,11 +1,11 @@
 // using
-import React, { useState } from "react";
-import { View, Text } from "react-native";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { BudgetRange } from "@/types/type";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
 
 export default function BudgetPicker({
-  range = [100, 400],
+  range = [1000, 2000],
   onRangeChange,
 }: BudgetRange) {
   const [budget, setBudget] = useState(range);
@@ -27,9 +27,9 @@ export default function BudgetPicker({
       {/* MultiSlider */}
       <MultiSlider
         values={budget}
-        min={0}
-        max={2000}
-        step={10}
+        min={100}
+        max={6000}
+        step={100}
         sliderLength={200}
         onValuesChange={handleRangeChange}
         selectedStyle={{ backgroundColor: "#d3d3d3" }}

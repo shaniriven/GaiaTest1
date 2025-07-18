@@ -1,7 +1,15 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch, Modal } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useUser, useAuth } from '@clerk/clerk-expo';
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import { Stack, useRouter } from "expo-router";
+import React from "react";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const Settings = () => {
   const router = useRouter();
@@ -30,7 +38,7 @@ const Settings = () => {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -38,15 +46,27 @@ const Settings = () => {
 
   return (
     <View style={[styles.container, themeStyles.container]}>
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerTintColor: "black",
+          headerBackTitle: "back",
+        }}
+      />
       <Text style={[styles.header, themeStyles.text]}>Settings</Text>
 
       <Text style={[styles.section, themeStyles.text]}>Account</Text>
-      <TouchableOpacity style={styles.item} onPress={() => router.push('/editUser')}>
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => router.push("/editUser")}
+      >
         <Text style={[styles.itemText, themeStyles.text]}>Edit Profile</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.item} onPress={handleDeleteAccount}>
-        <Text style={[styles.itemText, { color: 'red' }]}>🗑️ Delete My Account</Text>
+        <Text style={[styles.itemText, { color: "red" }]}>
+          🗑️ Delete My Account
+        </Text>
       </TouchableOpacity>
 
       <Text style={[styles.section, themeStyles.text]}>🎛️ App Preferences</Text>
@@ -57,26 +77,35 @@ const Settings = () => {
       </View>
 
       <View style={styles.itemRow}>
-        <Text style={[styles.itemText, themeStyles.text]}>🔔 Push Notifications</Text>
-        <Switch value={notificationsEnabled} onValueChange={setNotificationsEnabled} />
+        <Text style={[styles.itemText, themeStyles.text]}>
+          🔔 Push Notifications
+        </Text>
+        <Switch
+          value={notificationsEnabled}
+          onValueChange={setNotificationsEnabled}
+        />
       </View>
 
-      <TouchableOpacity style={styles.item} onPress={() => setAboutVisible(true)}>
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => setAboutVisible(true)}
+      >
         <Text style={[styles.itemText, themeStyles.text]}>ℹ️ About</Text>
       </TouchableOpacity>
-
-     
-
-     
 
       <Modal visible={aboutVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>About Gaia</Text>
             <Text style={styles.modalText}>
-              Gaia is a smart vacation planner developed as part of a final project by Dor Yubiler and Shani Riven. All rights reserved © 2025.
+              Gaia is a smart vacation planner developed as part of a final
+              project by Dor Yubiler and Shani Riven. All rights reserved ©
+              2025.
             </Text>
-            <TouchableOpacity onPress={() => setAboutVisible(false)} style={styles.modalButton}>
+            <TouchableOpacity
+              onPress={() => setAboutVisible(false)}
+              style={styles.modalButton}
+            >
               <Text style={styles.modalButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -88,19 +117,19 @@ const Settings = () => {
 
 const lightTheme = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   text: {
-    color: '#000',
+    color: "#000",
   },
 });
 
 const darkTheme = StyleSheet.create({
   container: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#1a1a1a",
   },
   text: {
-    color: '#fff',
+    color: "#fff",
   },
 });
 
@@ -111,12 +140,12 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   section: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 20,
     marginBottom: 10,
   },
@@ -127,26 +156,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   itemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 15,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   modalText: {
@@ -154,14 +183,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalButton: {
-    backgroundColor: '#13875B',
+    backgroundColor: "#13875B",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

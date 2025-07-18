@@ -1,28 +1,28 @@
 import { NewTripScreenProps } from "@/types/declarations";
+import { LocationOptions } from "@/types/type";
+import { useEffect, useState } from "react";
 import {
+  Alert,
   Keyboard,
-  View,
-  Text,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
+  Text,
   TouchableOpacity,
-  Alert,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { useEffect, useState } from "react";
 import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
 import GooglePlacesInput from "../GooglePlaceInput";
-import { LocationOptions } from "@/types/type";
 
 const Location = ({
   handleSelect,
   handleLocationOptionsSelect,
   locationList = {},
   locationOptions = {
-    multiple: false,
+    anywhere: false,
     suggestFlights: false,
-    isOptimized: false,
   },
+  resetTrigger = 0,
 }: NewTripScreenProps) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -31,16 +31,25 @@ const Location = ({
   const initialPlaces = Object.entries(locationList).map(([id, value]) => ({
     id,
     name: value.name,
+    startDate: new Date(),
+    endDate: new Date(),
   }));
 
   const [selectedPlaces, setSelectedPlaces] =
     useState<{ id: string; name: string }[]>(initialPlaces);
 
   const [options, setOptions] = useState<LocationOptions>({
-    multiple: locationOptions.multiple,
+    anywhere: locationOptions.anywhere,
     suggestFlights: locationOptions.suggestFlights,
-    isOptimized: locationOptions.isOptimized,
   });
+
+  // useEffect(() => {
+  //   setSelectedPlaces([]);
+  //   setOptions({
+  //     anywhere: false,
+  //     suggestFlights: false,
+  //   });
+  // }, [resetTrigger]);
 
   useEffect(() => {
     handleLocationOptionsSelect(options);
@@ -65,23 +74,27 @@ const Location = ({
   };
 
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <View className="flex items-center mt-2 ">
-        <Text className="text-2xl font-JakartaBold">
-          select your destination
-        </Text>
-        <KeyboardAvoidingView
-          className="flex items-center w-[100%] z-0 mt-5"
-          behavior={Platform.OS === "ios" ? "position" : "height"}
-          keyboardVerticalOffset={250}
-        >
-          <View className="flex items-center mt-2">
+    <KeyboardAvoidingView
+      className="flex-1 w-[100%] items-center"
+      behavior={Platform.OS === "ios" ? "position" : "height"}
+      keyboardVerticalOffset={100} // <-- Adjust this value as needed for keyboard avoiding
+    >
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View className="flex-1 items-center mt-2 mb-2 w-[90%]">
+          <Text className="text-2xl font-JakartaBold mb-7">
+            select your destination
+          </Text>
+          <View className="flex items-center">
             <BouncyCheckboxClassic
-              label="multiple destinations"
-              state={options.multiple}
+              label="anywhere"
+              state={options.anywhere}
               setState={(value: boolean) => {
-                setOptions((prev) => ({ ...prev, multiple: value }));
+                setOptions((prev) => ({ ...prev, anywhere: value }));
+                if (value) {
+                  setSelectedPlaces([]); // Clear selected places when "anywhere" is selected
+                }
               }}
+              icon="anywhere"
             />
           </View>
           <View className="flex items-center mt-3">
@@ -91,23 +104,18 @@ const Location = ({
               setState={(value: boolean) => {
                 setOptions((prev) => ({ ...prev, suggestFlights: value }));
               }}
+              icon="flights"
             />
           </View>
-          <View className="flex items-center mt-3 mb-16">
-            <BouncyCheckboxClassic
-              label="optimize route"
-              state={options.isOptimized}
-              setState={(value: boolean) => {
-                setOptions((prev) => ({ ...prev, isOptimized: value }));
-              }}
-            />
-          </View>
-          <View className="flex w-[90%] flex-row flex-start z-50">
-            <GooglePlacesInput handleSelect={handlePlaceSelect} />
-          </View>
-        </KeyboardAvoidingView>
-        <View className=" flex items-center">
-          <View className="flex flex-row flex-wrap justify-start items-center gap-2 mt-7 w-full z-0">
+          {!locationOptions?.anywhere && (
+            <View className="flex flex-row z-50 mt-24">
+              <GooglePlacesInput
+                handleSelect={handlePlaceSelect}
+                locationOptions={options}
+              />
+            </View>
+          )}
+          <View className="flex flex-row flex-wrap justify-start items-center gap-2 mt-7 z-0">
             {selectedPlaces.map((place) => (
               <View
                 key={place.id}
@@ -123,8 +131,8 @@ const Location = ({
             ))}
           </View>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

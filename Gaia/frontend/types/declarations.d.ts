@@ -1,21 +1,22 @@
-import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
-import { DraggableFlatListProps } from "react-native-draggable-flatlist";
-import { CheckboxProps } from "react-native-paper";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
-import { SwiperProps } from "react-native-swiper";
 import {
   defaultDetailsCheckboxes,
   defaultInterestsLabels,
 } from "@/constants/index";
+import { BouncyCheckboxProps } from "react-native-bouncy-checkbox";
+import { DraggableFlatListProps } from "react-native-draggable-flatlist";
+import { SwiperProps } from "react-native-swiper";
 import {
-  Locations,
-  LocationOptions,
-  GroupDetails,
+  AgentPlan,
   BudgetOptions,
+  DateLabel,
+  DayPlan,
   DetailsCheckboxes,
+  GroupDetails,
+  LocationOptions,
+  Locations,
 } from "./type";
 
-// new trip interfaces
+// -> new trip screens
 declare interface NewTripScreenProps {
   handleSelect?: any | function;
   handleLocationOptionsSelect?: any | function;
@@ -27,19 +28,25 @@ declare interface NewTripScreenProps {
   onChangeEnd?: any;
   handleOptimizedDatesSelect?: any | function;
   optimizDates?: boolean;
+  tripLength?: number;
+  setTripLength?: any | function;
   onChangeGroupType?: any;
   currentGroupValue?: GroupDetails;
   detailsCheckboxes?: typeof defaultDetailsCheckboxes;
   interestsOptions?: typeof defaultInterestsLabels;
   budgetOptions?: BudgetOptions;
   onChangeInterests?: any;
+  resetTrigger?: number;
 }
+
+// -> new trip -> intrests menu options
 declare interface SectionProps {
   budgetOptions?: BudgetOptions;
   detailsOptions?: DetailsCheckboxes;
   onOptionsChange: function;
   interestsOptions?: typeof defaultInterestsLabels;
 }
+// ---------------------------------------------------------------
 
 // components
 // -> checkbox
@@ -48,6 +55,7 @@ declare interface BouncyCheckboxClassicProps extends BouncyCheckboxProps {
   setState: any;
   label: string;
   className?: string;
+  icon?: string;
 }
 // -> floating eliptic tab button
 declare interface TabButtonProps extends TouchableOpacityProps {
@@ -59,10 +67,34 @@ declare interface TabButtonProps extends TouchableOpacityProps {
   onPress?: (event: GestureResponderEvent) => void | Promise<void>;
   activeStyle?: string;
 }
+// -> dates slider
+declare interface SliderItemProps {
+  item: DateLabel;
+  width: number;
+  index: number;
+  scrollX: SharedValue<number>;
+}
+declare interface SliderProps {
+  datesLabelList: DateLabel[];
+  width: number;
+  plan: AgentPlan;
+  generatedPlan: DayPlan[];
+}
+declare interface PaginationProps {
+  datesItems: DateLabel[];
+  paginationIndex: number;
+  scrollX: SharedValue<number>;
+  width: number;
+  plan: AgentPlan;
+  generatedPlan: DayPlan[];
+}
 
-// not checked
-// custom components
-// Button
+declare interface DailyPlanProps {
+  item?: string;
+  daily_plan: DayPlan;
+}
+
+// -> Button
 declare interface ButtonProps extends TouchableOpacityProps {
   title: string;
   bgVariant?:
@@ -80,11 +112,16 @@ declare interface ButtonProps extends TouchableOpacityProps {
     | "danger"
     | "success"
     | "gray-vibe";
-  IconLeft?: React.ComponentType<any>;
-  IconRight?: React.ComponentType<any>;
+  IconLeft?: React.ReactNode;
+  IconRight?: React.ReactNode;
   className?: string;
+  textClassName?: string;
+  pastTripButton?: boolean;
+  tripDate?: string;
   onPress?: (event: GestureResponderEvent) => void | Promise<void>;
 }
+// ---------------------------------------------------------------
+// not checked
 
 // country search bar
 declare interface CountrySearchBarProps {
@@ -161,14 +198,15 @@ declare interface DaysSwiperProps extends SwiperProps {
 }
 
 // trip tests -------------------------------
-// full trip
-declare interface Full_Trip {
-  id: number;
-  title: string;
-  dayTrips: Day_Trip[];
-  startDate: string;
-  endDate: string;
-}
+// // full trip
+// declare interface Full_Trip {
+//   id: number;o
+//   title: string;
+//   dayTrips: Day_Trip[];
+//   startDate: string;
+//   endDate: string;
+// }
+
 // one day of the trip
 declare interface Day_Trip {
   day: string;

@@ -17,7 +17,7 @@ const Documents = () => {
   const [uploading, setUploading] = useState(false);
   const { user } = useUser();
   const userId = user?.id;
-
+  const router = useRouter();
   useEffect(() => {
     if (userId) fetchUserTrips(userId);
   }, [userId]);
@@ -55,7 +55,7 @@ const Documents = () => {
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
+        type: "*/*",
         multiple: false,
         copyToCacheDirectory: true,
       });
@@ -74,14 +74,14 @@ const Documents = () => {
     formData.append('file', {
       uri: doc.uri,
       name: doc.name,
-      type: doc.mimeType || 'application/octet-stream',
+      type: doc.mimeType || "application/octet-stream",
     } as any);
     formData.append('user_id', userId);
     formData.append('trip_name', tripName);
 
     try {
       const response = await fetch(`${api_url}/upload_document`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -146,12 +146,18 @@ const Documents = () => {
         <Text style={styles.uploadButtonText}>Choose Document</Text>
       </TouchableOpacity>
 
-      {uploading && <ActivityIndicator size="large" color="#49735A" style={{ marginBottom: 20 }} />}
+      {uploading && (
+        <ActivityIndicator
+          size="large"
+          color="#49735A"
+          style={{ marginBottom: 20 }}
+        />
+      )}
 
       <FlatList
         data={documents}
         numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ paddingBottom: 60 }}
         renderItem={({ item }) => (
@@ -165,7 +171,9 @@ const Documents = () => {
             </TouchableOpacity>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>No documents uploaded.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No documents uploaded.</Text>
+        }
       />
     </View>
   );

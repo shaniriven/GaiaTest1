@@ -1,77 +1,76 @@
-/* eslint-disable prettier/prettier */
-import { test_trip_I, test_trip_II } from '@/constants/testData';
-import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
-import { Link } from 'expo-router'
-import { Text, View, Dimensions, Animated, Pressable, FlatList, TouchableOpacity, StyleSheet, ListRenderItemInfo } from 'react-native'
-import { useClerk } from '@clerk/clerk-react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import ScreenHeader from '@/components/ScreenHeader';
-import { useEffect, useRef, useState } from 'react';
-import { Full_Trip } from '@/types/declarations';
-import { icons } from '@/constants';
-import TripSwiper from '@/components/TripSwiper';
-import { colors } from '@/constants/index';
-const screenWidth = Dimensions.get("window").width;
-const numColumns = 4;
-const squareSize = screenWidth / numColumns - 20;
-
+import CustomTripButton from "@/components/CustomTripButton";
+import config from "@/config";
+import { AgentPlan } from "@/types/type";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import axios from "axios";
+import { router, usePathname } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 export default function Page() {
+  const { user } = useUser();
+  const user_id = user?.id || "1";
+  const api_url = config.api_url;
+  const [userData, setUserData] = useState([]);
 
+  const [plansLabels, setPlansLabels] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const { user } = useUser()
-  const [fullTripList, setFullTripList] = useState([test_trip_I, test_trip_II]);
-  const color = colors.primary;
-  const [selectedScreen, setSelectedScreen] = useState<Full_Trip | null>(null,);
-  const [fullTripListCopy, setFullTripListCopy] = useState([...fullTripList])
+  const [currentPlan, setCurrentPlan] = useState<AgentPlan | null>(null);
+
   const screenWidth = Dimensions.get("window").width;
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
+  const pathname = usePathname();
 
+  useEffect(() => {
+    const fetchPlansData = async (user_id: string) => {
+      try {
+        const response = await axios.get(`${api_url}/home/fetchPlansData/`, {
+          params: { user_id },
+        });
+        setUserData(response.data);
+        if (userData) {
+          const plansData = response.data.map(
+            (plan: {
+              name: string;
+              formatted_date: string;
+              is_past: boolean;
+              _id: string;
+            }) => ({
+              name: plan.name,
+              formatted_date: plan.formatted_date,
+              is_past: plan.is_past,
+              id: plan._id,
+            }),
+          );
+          setPlansLabels(plansData);
+        }
+      } catch (error) {
+        console.error("error fetching user: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const openPanel = (screen: Full_Trip) => {
-    setSelectedScreen(screen);
-    Animated.timing(slideAnim, {
-      toValue: 0, // Slide in
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const closePanel = () => {
-    Animated.timing(slideAnim, {
-      toValue: screenWidth, // Slide out
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => setSelectedScreen(null));
-  };
-
-  const handleClosePanel = () => {
-    // Fade out the arrow before sliding the panel out
-    Animated.timing(arrowOpacity, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      closePanel();
-    });
-  };
-
-  const formatDateRange = (startDate: string, endDate: string) => {
-    const [day1, month1, year1] = startDate.split("-").map(Number);
-    const [day2, month2, year2] = endDate.split("-").map(Number);
-
-    if (year1 === year2 && month1 === month2)
-      return `${day1}-${day2}.${month1}.${String(year1).slice(2)}`;
-    else if (year1 === year2)
-      return `${day1}.${month1}-${day2}.${month2}.${String(year1).slice(2)}`;
-    else
-      return `${day1}.${month1}.${year1}-${day2}.${month2}.${year2}`;
-  };
+    fetchPlansData(user_id);
+  }, [pathname]);
 
   const arrowOpacity = useRef(new Animated.Value(0)).current;
+
+  // plan screen animation
   useEffect(() => {
-    if (selectedScreen) {
-      // fade in 
+    if (currentPlan) {
+      // fade in
       setTimeout(() => {
         Animated.timing(arrowOpacity, {
           toValue: 1,
@@ -80,21 +79,125 @@ export default function Page() {
         }).start();
       }, 300);
     } else {
-      // fade out 
+      // fade out
       Animated.timing(arrowOpacity, {
         toValue: 0,
         duration: 200,
         useNativeDriver: true,
       }).start();
     }
-  }, [selectedScreen]);
+  }, [currentPlan]);
 
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" />
+        <Text>Loading user data...</Text>
+      </View>
+    );
+  }
+
+  //
+
+  // check
+  // const formatDateRange = (startDate: string, endDate: string) => {
+  //   const [day1, month1, year1] = startDate.split("-").map(Number);
+  //   const [day2, month2, year2] = endDate.split("-").map(Number);
+
+  //   if (year1 === year2 && month1 === month2)
+  //     return `${day1}-${day2}.${month1}.${String(year1).slice(2)}`;
+  //   else if (year1 === year2)
+  //     return `${day1}.${month1}-${day2}.${month2}.${String(year1).slice(2)}`;
+  //   else return `${day1}.${month1}.${year1}-${day2}.${month2}.${year2}`;
+  // };
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
   return (
     <View className="flex-1 bg-white">
       <SignedIn>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <TouchableWithoutFeedback onPress={dismissKeyboard}>
+            <View className="flex w-full p-4 h-full">
+              <View className="flex-row flex-wrap justify-center">
+                {plansLabels.length > 0 ? (
+                  plansLabels.map((plan: AgentPlan, index) => (
+                    <CustomTripButton
+                      title={plan.name}
+                      onPress={() =>
+                        router.push(
+                          `/(plans)/${plan.id}?name=${plan.name}&pickedName=true`,
+                        )
+                      }
+                      key={index}
+                      pastTripButton={plan.is_past}
+                      tripDate={plan.formatted_date}
+                      className="rounded-lg m-2 w-[160px] h-[90px] "
+                      textClassName="text-white text-lg font-JakartaMedium "
+                    ></CustomTripButton>
+                  ))
+                ) : (
+                  <View className="flex-1 items-center justify-center">
+                    <Text className="text-lg font-JakartaMedium">
+                      No planned trips yet
+                    </Text>
+                  </View>
+                  // <View className="flex  mt-3 items-center justify-center">
+                  //   {/* choose name screen */}
+                  //   <Text className="text-xl font-JakartaSemiBold text-center">
+                  //     Enter a name for your trip
+                  //   </Text>
+                  //   <Text className="mt-2 mx-1 text-xl font-JakartaLight text-center">
+                  //     You can add it later or edit it in the trip settings
+                  //   </Text>
+                  //   <InputField
+                  //     placeholder="Girl's in Paris"
+                  //     onChangeText={(text: string) => setTripName(text)}
+                  //     value={tripName}
+                  //     className="w-[300px]"
+                  //   />
+                  //   <View className="flex flex-row flex-wrap gap-5 justify-between mb-5 mt-7 w-[260px] z-500">
+                  //     <TabButton
+                  //       key={1}
+                  //       title={"choose for me"}
+                  //       bgColor="bg-grayTab"
+                  //       textColor="text-primary"
+                  //       onPress={() => {}}
+                  //       isActive={false}
+                  //     />
+                  //     <TabButton
+                  //       key={2}
+                  //       title={"save"}
+                  //       bgColor="bg-grayTab"
+                  //       textColor="text-primary"
+                  //       onPress={() => {}}
+                  //       isActive={false}
+                  //     />
+                  //   </View>
+                  // </View>
+                )}
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </SignedIn>
+      <SignedOut>
+        <View className="flex-1 items-center justify-center">
+          <Text>sing out view</Text>
+        </View>
+      </SignedOut>
+    </View>
+  );
+}
 
-        {/* header and back arrow */}
-        {/* <View className="flex-row items-center justify-between">
+{
+  /* header and back arrow */
+}
+
+{
+  /* <View className="flex-row items-center justify-between">
         {selectedScreen && (
           <TouchableOpacity onPress={handleClosePanel} className="absolute left-4 pt-2">
             <Animated.Image
@@ -107,66 +210,101 @@ export default function Page() {
         <View className="flex-1 items-center">
           <ScreenHeader text="Planned Trips" />
         </View>
-      </View> */}
+      </View> */
+}
+// open plan screen
+// const openPanel = (screen: AgentPlan) => {
+//   setCurrentPlan(screen);
+//   Animated.timing(slideAnim, {
+//     toValue: 0, // Slide in
+//     duration: 300,
+//     useNativeDriver: true,
+//   }).start();
+// };
 
-        <View className="flex-1 p-4">
+// const closePanel = () => {
+//   Animated.timing(slideAnim, {
+//     toValue: screenWidth, // Slide out
+//     duration: 300,
+//     useNativeDriver: true,
+//   }).start(() => setCurrentPlan(null));
+// };
 
-          {/* planned trips list */}
-          <FlatList data={fullTripListCopy} keyExtractor={(item) => item.id.toString()} numColumns={numColumns}
+// const handleClosePanel = () => {
+//   // Fade out the arrow before sliding the panel out
+//   Animated.timing(arrowOpacity, {
+//     toValue: 0,
+//     duration: 200,
+//     useNativeDriver: true,
+//   }).start(() => {
+//     closePanel();
+//   });
+// };
+// {/* selected trip modal */}
+// {currentPlan && (
+//   <Animated.View
+//     className="absolute top-2 bottom-0 bg-white shadow-lg bg-tabs-400 self-center rounded-xl p-2"
+//     style={{
+//       width: screenWidth - 20,
+//       transform: [{ translateX: slideAnim }],
+//     }}
+//   >
+//     <View className="flex-1 mt-4">
+//       <View className="flex-row justify-between items-end">
+//         {/* header  */}
+//         <View className="flex-row items-end ml-2">
+//           {/* back arrow  */}
+//           <TouchableOpacity onPress={handleClosePanel}>
+//             <Animated.Image
+//               source={
+//                 typeof icons.backArrow === "string"
+//                   ? { uri: icons.backArrow }
+//                   : icons.backArrow
+//               }
+//               className="w-[24px] h-[24px] mr-2"
+//               style={{ opacity: arrowOpacity }}
+//             />
+//           </TouchableOpacity>
+//           <Text className="text-3xl font-JakartaMedium">
+//             trip to {currentPlan.name}
+//           </Text>
+//         </View>
+
+//         {/* dates above progress bar */}
+//         {/* <View className="flex-row items-end mr-2">
+//           <Text className="text-lg font-JakartaMedium">
+//             {formatDateRange(
+//               selectedScreen.startDate,
+//               selectedScreen.endDate,
+//             )}
+//           </Text>
+//         </View> */}
+//       </View>
+
+//       {/* trip swiper */}
+//       {/* <View className="flex-1 m-2 ">
+//         <TripSwiper
+//           dayTrips={selectedScreen.dayTrips}
+//           color={color}
+//         />
+//       </View> */}
+//     </View>
+//   </Animated.View>
+// )}
+{
+  /* planned trips list */
+}
+{
+  /* <FlatList data={fullTripListCopy} keyExtractor={(item) => item.id.toString()} numColumns={numColumns}
             renderItem={({ item }) => (
               <TouchableOpacity className={`bg-gaiaGreen-100 justify-center items-center m-2 rounded-lg`} style={{ width: squareSize, height: squareSize }} onPress={() => openPanel(item)} >
                 <Text className="text-white text-lg font-JakartaMedium">{item.title}</Text>
               </TouchableOpacity>
             )}
-          />
-
-          {/* selected trip modal */}
-          {selectedScreen && (
-            <Animated.View
-              className="absolute top-2 bottom-0 bg-white shadow-lg bg-tabs-400 self-center rounded-xl p-2"
-              style={{
-                width: screenWidth - 20, 
-                transform: [{ translateX: slideAnim }],
-              }}
-            >
-              <View className="flex-1 mt-4">
-                <View className="flex-row justify-between items-end">
-
-                  {/* trip name (selected screen title) */}
-                  <View className="flex-row items-end ml-2">
-                    <TouchableOpacity onPress={handleClosePanel} >
-                      <Animated.Image
-                        source={icons.backArrow}
-                        className="w-[24px] h-[24px] mr-2"
-                        style={{ opacity: arrowOpacity }}
-                      />
-                    </TouchableOpacity>
-                    <Text className="text-3xl font-JakartaMedium">{selectedScreen.title}</Text>
-                  </View>
-
-                  {/* dates above progress bar */}
-                  <View className="flex-row items-end mr-2">
-                    <Text className="text-lg font-JakartaMedium">{formatDateRange(selectedScreen.startDate, selectedScreen.endDate)}</Text>
-                  </View>
-                </View>
-
-                {/* trip swiper */}
-                <View className="flex-1 m-2 ">
-                  <TripSwiper dayTrips={selectedScreen.dayTrips} color={color} />
-                </View>
-              </View>
-            </Animated.View>
-          )}
-        </View>
-      </SignedIn>
-      <SignedOut>
-        <View className="flex-1 items-center justify-center">
-          <Text>sing out view</Text>
-        </View>
-      </SignedOut>
-    </View>
-  );
+          /> 
+          
+          
+          user_2ywdmrKOOqJwSthQP28KhpKD3Wx
+          685bd7576e2ee284d7b72211
+          */
 }
-
-
-

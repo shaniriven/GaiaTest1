@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { Text, TouchableOpacity, View, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import Swiper from "react-native-swiper";
-import { useRef, useState } from "react";
-import { onboarding } from "../../constants/index";
 import CustomButton from "@/components/CustomButton";
+import { router } from "expo-router";
+import { useRef, useState } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Swiper from "react-native-swiper";
+import { onboarding } from "../../constants/index";
 
 
 const Onboarding = () => {
@@ -50,7 +50,7 @@ const Onboarding = () => {
 
         onPress={() => isLastSlide
           ? router.replace('/(auth)/sign-up')
-          : swiperRef.current?.scrollBy(1)} IconLeft={undefined} IconRight={undefined}/>
+          : swiperRef.current?.scrollBy(1)} />
     </SafeAreaView>
   );
 };

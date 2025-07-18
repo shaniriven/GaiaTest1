@@ -1,18 +1,18 @@
-import { NewTripScreenProps } from "@/types/declarations";
-import { View, Text, Animated, TouchableOpacity, Easing } from "react-native";
-import { useState, useRef, useEffect } from "react";
-import {
-  DetailsCheckboxes,
-  SectionType,
-  BudgetOptions,
-  UserInterestsList,
-} from "@/types/type";
-import Budget from "./Budget";
-import Details from "./Details";
 import {
   defaultDetailsCheckboxes,
   defaultInterestsLabels,
 } from "@/constants/index";
+import { NewTripScreenProps } from "@/types/declarations";
+import {
+  BudgetOptions,
+  DetailsCheckboxes,
+  SectionType,
+  UserInterestsList,
+} from "@/types/type";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Easing, Text, TouchableOpacity, View } from "react-native";
+import Budget from "./Budget";
+import Details from "./Details";
 import Interests from "./Interests";
 
 const MoreSettings = ({
@@ -20,10 +20,8 @@ const MoreSettings = ({
   detailsCheckboxes = defaultDetailsCheckboxes,
   interestsOptions = defaultInterestsLabels,
   budgetOptions = {
-    budgetPerNight: false,
     includeMeals: false,
-    budgetPerPerson: false,
-    range: [0, 200],
+    range: [100, 1000],
   },
 }: Omit<NewTripScreenProps, "handleSelect"> & {
   handleSelect: (
@@ -38,9 +36,7 @@ const MoreSettings = ({
   ];
   const [openSection, setOpenSection] = useState<SectionType | null>(null);
   const [budget, setBudgetOptions] = useState<BudgetOptions>({
-    budgetPerNight: budgetOptions.budgetPerNight,
     includeMeals: budgetOptions.includeMeals,
-    budgetPerPerson: budgetOptions.budgetPerPerson,
     range: budgetOptions.range,
   });
   const [checkboxSelection, setcheckboxSelection] =
@@ -95,6 +91,7 @@ const MoreSettings = ({
   useEffect(() => {
     handleSelect("BudgetOptions", budget);
   }, [budget]);
+
   const handleBudgetOptionsChange = (options: BudgetOptions) => {
     setBudgetOptions(options);
     handleSelect("BudgetOptions", options);
@@ -154,7 +151,7 @@ const MoreSettings = ({
       </View>
       {/* acordion view */}
       {sections.map((section) => (
-        <View key={section} className="mb-0 w-[320px]">
+        <View key={section} className="flex mb-0 w-[320px]">
           <TouchableOpacity
             onPress={() => handleToggle(section)}
             className={`flex-row justify-between p-3 ${
@@ -170,7 +167,7 @@ const MoreSettings = ({
             <Text className="text-xl text-white text-base font-JakartaLight">
               {section}
             </Text>
-            <Text className="text-white text-base mr-2">
+            <Text className="text-white text-base mr-2 text-lg">
               {openSection === section ? "✓" : "+"}
             </Text>
           </TouchableOpacity>
@@ -182,16 +179,16 @@ const MoreSettings = ({
                 overflow: "hidden",
                 height: animations[section].interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, 250],
+                  outputRange: [0, 190],
                 }),
               }}
             >
               <View
-                className={`p-3 h-[300px] rounded-b-xl ${
+                className={`p-3 bg-black rounded-b-xl ${
                   section === "budget"
-                    ? "bg-cardsGreen-100"
+                    ? "bg-cardsGreen-100 "
                     : section === "trip details and content"
-                      ? "bg-cardsGreen-200"
+                      ? "bg-cardsGreen-200 "
                       : section === "personal interests"
                         ? "bg-cardsGreen-300"
                         : "bg-gray-500"

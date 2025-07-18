@@ -1,11 +1,14 @@
 // use
+import { NewTripScreenProps } from "@/types/declarations";
 import React, { useRef } from "react";
+import { Text, TouchableOpacity } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import config from "../config";
-import { Text, TouchableOpacity } from "react-native";
-import { NewTripScreenProps } from "@/types/declarations";
 
-const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
+const GooglePlacesInput = ({
+  handleSelect,
+  locationOptions,
+}: NewTripScreenProps) => {
   const googlePlacesApiKey = config.googlePlacesApiKey;
   const ref = useRef<any>(null);
 
@@ -57,7 +60,10 @@ const GooglePlacesInput = ({ handleSelect }: NewTripScreenProps) => {
       timeout={20000}
       fetchDetails={true}
       predefinedPlaces={[]}
-      textInputProps={{ placeholderTextColor: "grey" }}
+      textInputProps={{
+        placeholderTextColor: "grey",
+        editable: !locationOptions?.anywhere,
+      }}
       renderRightButton={() => (
         <TouchableOpacity
           onPress={() => ref.current?.clear()}

@@ -1,12 +1,13 @@
 # backend/app/main/ai_module.py
 
-import os
 import json
-import openai
+import os
+
+# import openai
 from dotenv import load_dotenv
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_query_for_hobby(destination: str, hobby: str) -> str:
     """

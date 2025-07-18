@@ -1,8 +1,3 @@
-import ob1 from "@/assets/images/ob1.png";
-import ob2 from "@/assets/images/NatureOrCity.png";
-import ob3 from "@/assets/images/groupIcons.png";
-import singUp from "@/assets/images/logo.png";
-import check from "@/assets/images/check.png";
 import arrowDown from "@/assets/icons/arrow-down.png";
 import arrowUp from "@/assets/icons/arrow-up.png";
 import backArrow from "@/assets/icons/back-arrow.png";
@@ -28,6 +23,11 @@ import selectedMarker from "@/assets/icons/selected-marker.png";
 import star from "@/assets/icons/star.png";
 import target from "@/assets/icons/target.png";
 import to from "@/assets/icons/to.png";
+import ob2 from "@/assets/images/NatureOrCity.png";
+import check from "@/assets/images/check.png";
+import ob3 from "@/assets/images/groupIcons.png";
+import singUp from "@/assets/images/logo.png";
+import ob1 from "@/assets/images/ob1.png";
 
 // More Settings
 // interests key to label and save active
@@ -60,44 +60,30 @@ export const defaultInterestsLabels = [
     activeLabels: [""],
   },
 ];
+
 // -> details checkboxes
 export const defaultDetailsCheckboxes = {
   hotels: false,
   hostels: false,
   resorts: false,
-  rentals: false,
   camping: false,
-  dorms: false,
   guidedTours: false,
   trails: false,
   urbanTrip: false,
-  sightseeing: false,
-  dayTrip: false,
-  includeFlights: false,
-  includeMeals: false,
-  includeTransport: false,
-  includeEvents: false,
 };
 // checkboxes key to label
-// -> settings
-export const settingsLabels = [
-  { key: "includeFlights", label: "include flights" },
-  { key: "includeMeals", label: "include meals" },
-  { key: "includeTransport", label: "include public transport" },
-  { key: "includeEvents", label: "include seasonal and local events" },
-] as const;
 // -> activities
 export const activitiesLabels = [
   { key: "guidedTours", label: "guided tours" },
-  { key: "trails", label: "trails" },
+  { key: "trails", label: "walikng trails" },
   { key: "urbanTrip", label: "urban trip" },
-  { key: "sightseeing", label: "sightseeing" },
+
   // { key: "dayTrip", label: "day trip" },
 ] as const;
 // -> accommodationLabels
 export const accommodationLabels = [
   { key: "hotels", label: "hotels" },
-  { key: "hostels", label: "hostels/dorms" },
+  { key: "hostels", label: "hostels" },
   { key: "resorts", label: "resorts" },
   { key: "camping", label: "camping" },
 ] as const;
