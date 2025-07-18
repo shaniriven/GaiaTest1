@@ -8,8 +8,8 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Dates = ({
-  startDate = new Date(),
-  endDate = new Date(),
+  startDate,
+  endDate,
   onChangeStart,
   onChangeEnd,
   handleOptimizedDatesSelect,
@@ -17,7 +17,10 @@ const Dates = ({
   locationList,
   handleSelect,
 }: NewTripScreenProps) => {
-  const [tripDeparture, setTripDeparture] = useState(startDate);
+  const [tripDeparture, setTripDeparture] = useState(startDate || new Date());
+  const [tripReturn, setTripReturn] = useState(
+    endDate || addDays(tripDeparture, 1),
+  );
 
   const [optimized, setOptimized] = useState(optimizDates);
   const initialPlaces = Object.entries(locationList || {}).map(
@@ -31,9 +34,7 @@ const Dates = ({
   const [destinationNumber, setDestinationNumber] = useState(
     Object.keys(locationList || {}).length || 1,
   );
-  const [tripReturn, setTripReturn] = useState(
-    addDays(startDate, destinationNumber),
-  );
+
   const [selectedPlaces, setSelectedPlaces] =
     useState<{ id: string; name: string; startDate: Date; endDate: Date }[]>(
       initialPlaces,
@@ -98,7 +99,7 @@ const Dates = ({
   };
 
   const onChangeReturn = (event: any, selectedDate: Date | undefined) => {
-    const pickedDate = selectedDate || endDate;
+    const pickedDate = selectedDate || tripReturn;
     setTripReturn(pickedDate);
     initDaysPerDestination();
     onChangeEnd(pickedDate);

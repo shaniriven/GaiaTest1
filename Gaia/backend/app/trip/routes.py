@@ -35,12 +35,30 @@ def convert_objectids(obj):
     else:
         return obj
 
+@bp.route('submitFormData/', methods=['POST'])
+def submitFormData():
+    print("submitField")
+    data = request.json
+    user_id = data.get("user_id")
+    print("user id:", user_id)
+    print(data)
+    if not user_id:
+        return jsonify({"error": "user_id is required"}), 400
+
+    db = mongo.get_db("Users")
+    trips_collection = db.get_collection("planned_trips")
+    data["user_id"] = user_id
+    insert_result = trips_collection.insert_one(data)
+    return jsonify({"message": "Form submitted successfully", "inserted_id": str(insert_result.inserted_id)}), 200
+
+
 @bp.route('submitForm/', methods=['POST'])
 def submitForm():
     print("submitField")
     data = request.json
     user_id = data.get("user_id")
     print("user id:", user_id)
+    print(data)
     if not user_id:
         return jsonify({"error": "user_id is required"}), 400
 
@@ -124,41 +142,48 @@ def askAgent():
     multiple = data.get("multipleDestinations")
     suggest_flights = data.get("suggestFlights")
     optimized_dates = data.get("optimizedDates")
-                               
-    # location = ", ".join(data.get("location", []))
-    location = data.get("location")
-    # Map location to name for better readability in the prompt
-    print(location)
 
-    interests = ", ".join(data.get("interestsList", []))
-    include_restaurants = data.get("includeRestaurants")
-    include_flights = data.get("includeFlights")
+    # check 
+    # Flatten the list of lists
+    locations_raw = data.get("form", {}).get("locations", [])
+    flattened_locations = [loc for sublist in locations_raw for loc in sublist]
+    location_names = [loc.get("name", "Unknown") for loc in flattened_locations]
+    print(location_names)
+    interests_list = data.get("interestsList", [])
+    interests = []
+    for category in interests_list:
+        interests.extend(category.get("activeLabels", []))
+    interests = ", ".join(interests)
+    details_list = data.get("detailsList", {})
+    included_details = [k.replace("_", " ") for k, v in details_list.items() if v]
+    details_text = ", ".join(included_details)
+    
     try:
         prompt = f"""
-        Plan a trip for the following details:
+        Plan a trip with the following preferences:
 
         - Dates: {start} to {end}
-        - Destination(s): {location}
+        - Locations: {', '.join(location_names)}
+        - Multiple Destinations: {'Yes' if multiple else 'No'}
+        - Optimize Route: {'Yes' if is_optimized else 'No'}
+        - Flexible Dates: {'Yes' if optimized_dates else 'No'}
         - Group Type: {group_type}
-        - Number of Adults: {adults}
-        - Number of Children: {children}
+        - Adults: {adults}, Children: {children}
+        - Budget: {budget}
         - Interests: {interests}
-        - Include Restaurants: {include_restaurants}
-        - Include Flights: {include_flights}
+        - Special Requests: {details_text}
+        - Suggest Flights: {'Yes' if suggest_flights else 'No'}
 
-        Generate a day-by-day itinerary with activities, food suggestions, and any travel tips. 
-        Include estimated daily costs if possible.
+        Provide a day-by-day itinerary with activities, restaurants, tips, and estimated costs.
         """
 
         client = genai.configure(api_key=GOOGLE_API_KEY)
         response = client.models.generate_content(
             model="gemini-2.0-flash", contents=prompt
         )
-        print(response.text)
         return jsonify({"response": response.text}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 # check if needed
 @bp.route('newTrip/', methods=['POST'])

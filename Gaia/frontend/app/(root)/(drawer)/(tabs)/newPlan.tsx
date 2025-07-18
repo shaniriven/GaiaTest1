@@ -20,7 +20,6 @@ import MoreSettings from "@/components/NewTripScreens/MoreSettings";
 import {
   BudgetOptions,
   DetailsCheckboxes,
-  FormFields,
   LocationOptions,
   Locations,
   UserInterestsList,
@@ -29,6 +28,7 @@ import {
   defaultInterestsLabels,
   defaultDetailsCheckboxes,
 } from "@/constants/index";
+import { addDays } from "date-fns";
 
 const NewPlan = () => {
   const { user } = useUser();
@@ -36,7 +36,7 @@ const NewPlan = () => {
   const router = useRouter();
 
   // -> add loading of exsisting plan instead of always creating a new one
-  const [locations, setLocations] = useState<Locations>({});
+  const [locations, setLocations] = useState<Locations>();
   const [locationOptions, setLocationOptions] = useState<LocationOptions>({
     multiple: false,
     suggestFlights: false,
@@ -44,7 +44,7 @@ const NewPlan = () => {
   });
 
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(addDays(new Date(), 1));
   const [optimizedDates, setOptimizedDates] = useState(false);
 
   const [group, setGroup] = useState({
@@ -71,22 +71,6 @@ const NewPlan = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const isLastScreen = activeIndex === screens.length - 1;
 
-  const [form, setForm] = useState({
-    locations: locations,
-    multipleDestinations: locationOptions.multiple,
-    suggestFlights: locationOptions.suggestFlights,
-    isOptimized: locationOptions.isOptimized,
-    startDate: startDate,
-    endDate: endDate,
-    optimizedDates: optimizedDates,
-    adults: group.adults,
-    children: group.children,
-    groupType: group.type,
-    budget: budget,
-    interestsList: interestsList,
-    detailsList: details,
-  });
-
   const translateX = useSharedValue(300);
 
   useEffect(() => {
@@ -102,30 +86,25 @@ const NewPlan = () => {
   // -> location
   const handleSelectLocation = (locations: Locations) => {
     setLocations(locations);
-    updateField("locations", locations);
   };
+
   const handleSelectLocationOptions = (options: LocationOptions) => {
     setLocationOptions(options);
-    updateField("multipleDestinations", options.multiple);
-    updateField("suggestFlights", options.suggestFlights);
-    updateField("isOptimized", options.isOptimized);
   };
+
   // -> dates
   const onChangeStart = (pickedDate: Date) => {
-    setEndDate(pickedDate);
-    updateField("endDate", pickedDate);
     setStartDate(pickedDate);
-    updateField("startDate", pickedDate);
   };
-  const onChangeEnd = (selectedDate?: Date | undefined) => {
-    const pickedDate = selectedDate || endDate;
+
+  const onChangeEnd = (pickedDate: Date) => {
     setEndDate(pickedDate);
-    updateField("endDate", pickedDate);
   };
+
   const handleOptimizedDatesSelect = (optimize: boolean) => {
     setOptimizedDates(optimize);
-    updateField("optimizedDates", optimize);
   };
+
   // -> group
   const handleChangeNumberOfPeople = (adults: number, children: number) => {
     setGroup((prevGroup) => ({
@@ -134,15 +113,13 @@ const NewPlan = () => {
       children: children,
       total: adults + children,
     }));
-    updateField("adults", adults);
-    updateField("children", children);
   };
+
   const onChangeGroupType = (value: string) => {
     setGroup((prevGroup) => ({
       ...prevGroup,
       type: value,
     }));
-    updateField("groupType", value);
   };
 
   // -> more settings: budget + trip details + user interests
@@ -156,13 +133,10 @@ const NewPlan = () => {
       "budgetPerNight" in value
     ) {
       setBudget(value as BudgetOptions);
-      updateField("budget", value);
     } else if (key === "UserInterestsList") {
       setInterestsList(value as UserInterestsList);
-      updateField("interestsList", value);
     } else if (key === "DetailsCheckboxes") {
       setDetails(value as DetailsCheckboxes);
-      updateField("detailsList", value);
     }
   };
 
@@ -212,21 +186,25 @@ const NewPlan = () => {
     }
   };
 
-  const updateField = (field: FormFields, value: any) => {
-    setForm((prevForm) => ({
-      ...prevForm,
-      [field]: Array.isArray(prevForm[field])
-        ? [...prevForm[field], value]
-        : value,
-    }));
-    console.log("Selected place 222:", form);
-  };
-
   const submitForm = async () => {
+    const interestsKeysAndActiveLabels = defaultInterestsLabels.map(
+      ({ key, activeLabels }) => ({
+        key,
+        activeLabels,
+      }),
+    );
     try {
-      const response = await axios.post(`${api_url}/trip/submitForm/`, {
-        form,
-        user_id: user.id,
+      const response = await axios.post(`${api_url}/trip/submitFormData/`, {
+        locations,
+        locationOptions,
+        startDate,
+        endDate,
+        optimizedDates,
+        group,
+        budget,
+        details,
+        interestsKeysAndActiveLabels,
+        user_id: user?.id,
       });
       if (response.status === 200) {
         console.log(
@@ -249,23 +227,23 @@ const NewPlan = () => {
 
   const askAgent = async () => {
     submitForm();
-    try {
-      const response = await axios.post(`${api_url}/trip/askAgent/`, form);
-      if (response.status === 200) {
-        console.log(
-          "newPlan.tsx askAgent(): Agent response:",
-          response.data.response,
-        ); // Log the response from the backend
-      } else {
-        console.error(
-          "newPlan.tsx askAgent(): Unexpected response status:",
-          response.status,
-        );
-      }
-    } catch (error) {
-      console.error("newPlan.tsx askAgent(): Error asking agent:", error);
-    }
-    console.log("newPlan.tsx askAgent(): Agent asked for help");
+    // try {
+    //   const response = await axios.post(`${api_url}/trip/askAgent/`, form);
+    //   if (response.status === 200) {
+    //     console.log(
+    //       "newPlan.tsx askAgent(): Agent response:",
+    //       response.data.response,
+    //     ); // Log the response from the backend
+    //   } else {
+    //     console.error(
+    //       "newPlan.tsx askAgent(): Unexpected response status:",
+    //       response.status,
+    //     );
+    //   }
+    // } catch (error) {
+    //   console.error("newPlan.tsx askAgent(): Error asking agent:", error);
+    // }
+    // console.log("newPlan.tsx askAgent(): Agent asked for help");
   };
 
   return (
