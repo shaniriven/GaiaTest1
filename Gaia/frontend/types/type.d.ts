@@ -16,9 +16,7 @@ type InterestsSectionType =
 
 // -> budget
 type BudgetOptions = {
-  budgetPerNight: boolean;
   includeMeals: boolean;
-  budgetPerPerson: boolean;
   range: number[];
 };
 type BudgetRange = {
@@ -37,7 +35,6 @@ type Locations = {
 type LocationOptions = {
   anywhere: boolean;
   suggestFlights: boolean;
-  // isOptimized: boolean;
 };
 // -> group
 type GroupDetails = {
@@ -65,7 +62,8 @@ type DayPlan = {
   day: string;
   theme: string;
   activities: Activity[];
-  food: string;
+  accommodation: string;
+  transportation: string;
 };
 // -> Agent request type
 type AgentPlan = {

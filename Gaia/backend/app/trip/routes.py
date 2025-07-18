@@ -123,7 +123,7 @@ def deleteTrip():
 
 @bp.route('newTrip/', methods=['POST'])
 def newTrip():
-    print("newTrip")
+    # print("newTrip")
     # Expected input JSON example:
     # {
     #   "start_date": "2025-01-01",
@@ -185,10 +185,10 @@ def newTrip():
         "user_name": user_name,
         "destination": destination.lower(), 
     })
-    print("existing_trip", existing_trip)
+    # print("existing_trip", existing_trip)
 
     if existing_trip:
-        print("there is an existing trip")
+        # print("there is an existing trip")
         if not overwrite:
             # Return a 409 Conflict with a message and the existing data.
             existing_trip_clean = convert_objectids(existing_trip)
@@ -204,7 +204,7 @@ def newTrip():
             combined_result = convert_objectids(combined_result)
             return jsonify(combined_result), 200
     else:
-        print("there is no existing trip")
+        # print("there is no existing trip")
         # Insert the new trip data.
         insert_result = combined_collection.insert_one(combined_result)
         combined_result['_id'] = str(insert_result.inserted_id)

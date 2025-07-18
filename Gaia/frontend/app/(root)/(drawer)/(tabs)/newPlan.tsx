@@ -7,12 +7,9 @@ import ScreenHeader from "@/components/ScreenHeader";
 import TabButton from "@/components/TabButton";
 import config from "@/config";
 import {
-  accommodationLabels,
-  activitiesLabels,
   defaultDetailsCheckboxes,
   defaultInterestsLabels,
   screens,
-  settingsLabels,
 } from "@/constants/index";
 import {
   BudgetOptions,
@@ -57,11 +54,10 @@ const NewPlan = () => {
   });
 
   const [budget, setBudget] = useState<BudgetOptions>({
-    budgetPerNight: false,
     includeMeals: false,
-    budgetPerPerson: false,
-    range: [0, 200],
+    range: [100, 1000],
   });
+
   const [details, setDetails] = useState<DetailsCheckboxes>(
     defaultDetailsCheckboxes,
   );
@@ -161,10 +157,6 @@ const NewPlan = () => {
   const handleSelectLocation = (locations: Locations) => {
     console.log("newPlan.tsx handleSelectLocation:", locations);
     setLocations(locations);
-
-    // setTripLength(calculateTripLength());
-
-    // You can now store it in state if needed:
   };
 
   const handleSelectLocationOptions = (options: LocationOptions) => {
@@ -213,11 +205,7 @@ const NewPlan = () => {
     key: "BudgetOptions" | "UserInterestsList" | "DetailsCheckboxes",
     value: BudgetOptions | UserInterestsList | DetailsCheckboxes,
   ) => {
-    if (
-      key === "BudgetOptions" &&
-      typeof value === "object" &&
-      "budgetPerNight" in value
-    ) {
+    if (key === "BudgetOptions" && typeof value === "object") {
       setBudget(value as BudgetOptions);
     } else if (key === "UserInterestsList") {
       setInterestsList(value as UserInterestsList);
@@ -283,44 +271,45 @@ const NewPlan = () => {
     }
   };
 
-  const submitForm = async () => {
-    const interestsKeysAndActiveLabels = defaultInterestsLabels.map(
-      ({ key, activeLabels }) => ({
-        key,
-        activeLabels,
-      }),
-    );
-    try {
-      const response = await axios.post(`${api_url}/trip/submitFormData/`, {
-        locations,
-        locationOptions,
-        startDate,
-        endDate,
-        optimizedDates,
-        group,
-        budget,
-        details,
-        interestsKeysAndActiveLabels,
-        user_id: user?.id,
-      });
-      if (response.status === 200) {
-        console.log(
-          "newPlan.tsx submitForm(): Form submitted successfully:",
-          response.data,
-        );
-      } else {
-        console.error(
-          "newPlan.tsx submitForm(): Unexpected response status:",
-          response.status,
-        );
-      }
-    } catch (error) {
-      console.error(
-        "newPlan.tsx submitForm(): Error submitting the form:",
-        error,
-      );
-    }
-  };
+  // const submitForm = async () => {
+  //   const interestsKeysAndActiveLabels = defaultInterestsLabels.map(
+  //     ({ key, activeLabels }) => ({
+  //       key,
+  //       activeLabels,
+  //     }),
+  //   );
+  //   try {
+  //     const response = await axios.post(`${api_url}/trip/submitFormData/`, {
+  //       locations,
+  //       locationOptions,
+  //       startDate,
+  //       endDate,
+  //       optimizedDates,
+  //       tripLength,
+  //       group,
+  //       budget,
+  //       details,
+  //       interestsKeysAndActiveLabels,
+  //       user_id: user?.id,
+  //     });
+  //     if (response.status === 200) {
+  //       console.log(
+  //         "newPlan.tsx submitForm(): Form submitted successfully:",
+  //         response.data,
+  //       );
+  //     } else {
+  //       console.error(
+  //         "newPlan.tsx submitForm(): Unexpected response status:",
+  //         response.status,
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "newPlan.tsx submitForm(): Error submitting the form:",
+  //       error,
+  //     );
+  //   }
+  // };
 
   const askAgent = async () => {
     setLoading(true);
@@ -338,19 +327,18 @@ const NewPlan = () => {
         startDate,
         endDate,
         optimizedDates,
+        tripLength,
         group,
         budget,
         details,
-        settingsLabels,
-        activitiesLabels,
-        accommodationLabels,
-        interestsKeysAndActiveLabels: interests_keys_activeLavels,
         user_id: user?.id,
       });
       if (response.status === 200) {
         setLoading(false);
         console.log("newPlan.tsx askAgent(): Agent response:", response.data); // Log the response from the backend
-        router.push(`/(plans)/${response.data.id}?name=${response.data.name}`);
+        router.push(
+          `/(plans)/${response.data.id}?name=${response.data.name}&pickedName=false`,
+        );
       } else {
         console.error(
           "newPlan.tsx askAgent(): Unexpected response status:",

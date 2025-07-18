@@ -40,12 +40,12 @@ def fetchPlansLabels():
     if not user_id:
         return jsonify({"error": "Missing user_id parameter"}), 400
     try:
-        print("home/fetchPlansLabels 1:", user_id, "\n")
+        # print("home/fetchPlansLabels 1:", user_id, "\n")
         db = mongo.get_db("Users")
         plans_collection = db.get_collection("plans")
         plans = list(plans_collection.find({"creator": user_id}))
         plans_labels = []
-        print("home/fetchPlansLabels 2\n")
+        # print("home/fetchPlansLabels 2\n")
         for plan in plans:
             plans_labels.append({
                 "_id": str(plan["_id"]),
@@ -53,7 +53,7 @@ def fetchPlansLabels():
                 "formatted_date": plan["formatted_date"],
                 "is_past": plan["is_past"]
             })
-        print("home/fetchPlansLabels 3\n")
+        # print("home/fetchPlansLabels 3\n")
         return jsonify(plans_labels), 200
     except Exception as e:
         print("Error fetching plans:", e)

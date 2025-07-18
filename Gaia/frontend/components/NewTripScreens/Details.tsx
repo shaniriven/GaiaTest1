@@ -1,14 +1,13 @@
-import { SectionProps } from "@/types/declarations";
-import { View, Text } from "react-native";
-import { useEffect, useState } from "react";
-import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
-import { DetailsCheckboxes } from "@/types/type";
 import {
-  defaultDetailsCheckboxes,
-  settingsLabels,
-  activitiesLabels,
   accommodationLabels,
+  activitiesLabels,
+  defaultDetailsCheckboxes,
 } from "@/constants/index";
+import { SectionProps } from "@/types/declarations";
+import { DetailsCheckboxes } from "@/types/type";
+import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
+import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
 
 const DetailsContent = ({
   onOptionsChange,
@@ -29,7 +28,7 @@ const DetailsContent = ({
   }, [detailsCheckboxes]);
 
   return (
-    <View className="flex-1 flex-col  items-center">
+    <View className="flex flex-col  items-center mb-10">
       <View className="flex-row justify-between">
         {/* accomodation checkboxes */}
         <View className="flex-1  mr-2 gap-1">
@@ -86,34 +85,6 @@ const DetailsContent = ({
             />
           ))}
         </View>
-      </View>
-      <View className="flex items-center mt-3">
-        <Text className="text-white font-JakartaSemiBold mb-1 text-xl flex items-center">
-          settings
-        </Text>
-      </View>
-      <View className="gap-1 flex flex-col items-start ">
-        {settingsLabels.map((item) => (
-          <BouncyCheckboxClassic
-            key={item.key}
-            size={16}
-            fillColor="white"
-            unFillColor="transparent"
-            iconStyle={{ borderColor: "#13875b" }}
-            innerIconStyle={{ backgroundColor: "#13875b" }}
-            textStyle={{
-              fontFamily: detailsCheckboxes[item.key]
-                ? "Jakarta-SemiBold"
-                : "Jakarta-Light",
-              textDecorationLine: "none",
-              fontSize: 16,
-              color: "white",
-            }}
-            label={item.label}
-            state={detailsCheckboxes[item.key]}
-            setState={() => toggleCheckbox(item.key)}
-          />
-        ))}
       </View>
     </View>
   );

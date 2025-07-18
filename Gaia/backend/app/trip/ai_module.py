@@ -18,6 +18,7 @@ load_dotenv()
 
 
 def generate_prompt(data: any ) -> str:
+    # print("\ngenerate_prompt: data ", data, "\n")
     # location
     locations = data.get("locations")
     locationOptions = data.get("locationOptions")
@@ -25,56 +26,98 @@ def generate_prompt(data: any ) -> str:
 
     # -> locationOptions -> anywhere
     anywhere = locationOptions.get("anywhere", False) 
-    print("\ngenerate_prompt: anywhere ", anywhere, "\n")
+    # print("\ngenerate_prompt: anywhere ", anywhere, "\n")
     if not anywhere and locations:
         location_names = ", ".join(location['name'] for location in locations)
         locations_prompt = "The locations for the trip are: " + location_names  
     if anywhere:
         locations_prompt = "you pick the locations for the trip." 
-    print("\ngenerate_prompt: anywhere ", locations_prompt, "\n")
+    # print("\ngenerate_prompt: anywhere ", locations_prompt, "\n")
 
     # -> locationOptions -> suggestFlights
     suggestFlights = locationOptions.get("suggestFlights", False) 
     if suggestFlights:
         locations_prompt += " suggest flights or arrival ways from israel to the locations."
 
+    # -> dates 
     startDate = data.get("startDate", "")
     startDate = startDate.split("T")[0] if "T" in startDate else startDate
 
     endDate = data.get("endDate", "")
     endDate = endDate.split("T")[0] if "T" in endDate else endDate
-    optimized_dates = data.get("optimizedDates")
-    group = data.get("group")
-    budget = data.get("budget")
-    details = data.get("details")
-    is_optimized = data.get("isOptimized")
-    setting_labels = data.get("settingsLabels")
-    activities_labels = data.get("activitiesLabels")
-    accommodation_labels = data.get("accommodationLabels")
 
-    interestsKeysAndActiveLabels = data.get("interestsKeysAndActiveLabels")
-
-
-    # -> dates
+    # -> dates -> optimizeDates
+    optimize_dates = data.get("optimizedDates", False)
+    tripLength = data.get("tripLength", 1)
     dates_prompt = ""
-
-    # # -> group
+    if optimize_dates:
+        dates_prompt = f"""make a plan for {tripLength} in the best season for the locations."""
+    else:
+        dates_prompt = f"""the trip is from {startDate} to {endDate}."""
+        
+    # -> group
+    group = data.get("group")
     group_total = group.get("total")
     children_prompt = ""
-    if locationOptions.get("isOptimized") == True:
-        dates_prompt = "pick the best dates for each locations between the start date and the return date of the trip"
     if int(group.get("children", 0)) > 0:
         children_prompt = "there are children under 18 in the group. find relevant activities for them too."
-        
+    
+
     # -> budget
-    minBadgetValue = budget.get("range")[0]
-    maxBudgetValue = budget.get("range")[1]
+    budgetOptions = data.get("budget")
+    includeMeals = budgetOptions.get("includeMeals", False)
+    includeMeals_prompt = ""
+    if includeMeals:
+        includeMeals_prompt = "reccomand on good restarutants that will fit the budget and the group size."
+    minBadgetValue = budgetOptions.get("range")[0]
+    maxBudgetValue = budgetOptions.get("range")[1]
 
     # -> details
-    include_settings = [
-        item["label"] for item in setting_labels if details.get(item["key"]) is True
-    ]
-    include_settings = ", ".join(include_settings)
+    details = data.get("details")
+    noneChecked = True
+    hotels_checkbox = details.get("hotels", False)
+    hostels_checkbox = details.get("hostels", False)
+    resorts_checkbox = details.get("resorts", False)
+    camping_checkbox = details.get("camping", False)
+
+    guidedTours_checkbox = details.get("guidedTours", False)
+    trails_checkbox = details.get("trails", False)
+    urbanTrip_checkbox = details.get("urbanTrip", False)
+
+    accommodation_prompt = "include accommodation options: "
+    if hotels_checkbox:
+        accommodation_prompt += "hotels, "
+        noneChecked = False
+    if hostels_checkbox:
+        accommodation_prompt += "hostels, "
+        noneChecked = False
+    if resorts_checkbox:
+        accommodation_prompt += "resorts, "
+        noneChecked = False
+    if camping_checkbox:
+        accommodation_prompt += "camping, "
+        noneChecked = False
+    if (noneChecked):
+        accommodation_prompt += "any type of accommodation that fits the budget and the group size. "
+    else:
+        accommodation_prompt += "are preferred. "
+
+    activities_prompt = "if possible, include activities from the following types: "
+    noneChecked = True
+    if guidedTours_checkbox:
+        activities_prompt += "guided tours, "
+        noneChecked = False
+    if trails_checkbox:
+        activities_prompt += "trails, "
+        noneChecked = False
+    if urbanTrip_checkbox:
+        activities_prompt += "urban trip, "
+        noneChecked = False
+    if (noneChecked):
+        activities_prompt += "any type of activities that fits the budget and the group size. "
+    else:
+        activities_prompt += "activities are preferred. "
+
 
     # dates_prompt: Optimize dates
     prompt = f"""
@@ -82,10 +125,12 @@ def generate_prompt(data: any ) -> str:
         Plan The daily itinerary by the following information:
         {locations_prompt}
         
-        the trip is from {startDate} to {endDate}. {dates_prompt}                               
+        {dates_prompt}                             
         consider there are {group_total} people in the group. {children_prompt}
         the budget for the trip is {minBadgetValue} - {maxBudgetValue} dollars.
-        in your plan {include_settings}
+        {includeMeals_prompt}
+        {accommodation_prompt}
+        {activities_prompt}
         Provide a day-by-day itinerary. return a json.
         Heres the required format:
             {{
@@ -109,7 +154,8 @@ def generate_prompt(data: any ) -> str:
                             }},
                             ...
                         ],
-                        "food": "<Highlight local food tried that day>"
+                        "accommodation": "<recommended at least 3 good accommodation places.>",
+                        "transportation": "<transportation details needed for the day. (how to pay on public transport if needed, what is recommaned to use, etc)>",
                     }},
                     ...
                 }}

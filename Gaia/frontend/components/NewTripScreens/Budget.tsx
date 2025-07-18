@@ -1,15 +1,16 @@
 import { SectionProps } from "@/types/declarations";
-import { View } from "react-native";
+import { BudgetOptions } from "@/types/type";
 import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
 import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
 import BudgetPicker from "../BudgetPicker";
-import { BudgetOptions } from "@/types/type";
 
-const Budget = ({ budgetOptions, onOptionsChange }: SectionProps) => {
+const Budget = ({
+  budgetOptions = { includeMeals: true, range: [1000, 2000] },
+  onOptionsChange,
+}: SectionProps) => {
   const [tempOptions, setTempOptions] = useState<BudgetOptions>({
-    budgetPerNight: budgetOptions.budgetPerNight,
     includeMeals: budgetOptions.includeMeals,
-    budgetPerPerson: budgetOptions.budgetPerPerson,
     range: budgetOptions.range,
   });
 
@@ -25,47 +26,11 @@ const Budget = ({ budgetOptions, onOptionsChange }: SectionProps) => {
   }, [tempOptions]);
 
   return (
-    <View className="flex flex-col gap-4 items-center">
-      <BouncyCheckboxClassic
-        size={20}
-        fillColor="white"
-        unFillColor="transparent"
-        iconStyle={{ borderColor: "#13875b" }}
-        innerIconStyle={{ backgroundColor: "#13875b" }}
-        textStyle={{
-          fontFamily: tempOptions.budgetPerNight
-            ? "Jakarta-SemiBold"
-            : "Jakarta-Light",
-          textDecorationLine: "none",
-          fontSize: 18,
-          color: "white",
-        }}
-        label="set budget per night"
-        state={tempOptions.budgetPerNight}
-        setState={(value: boolean) => {
-          setTempOptions((prev) => ({ ...prev, budgetPerNight: value }));
-        }}
-      />
-      <BouncyCheckboxClassic
-        size={20}
-        fillColor="white"
-        unFillColor="transparent"
-        iconStyle={{ borderColor: "#13875b" }}
-        innerIconStyle={{ backgroundColor: "#13875b" }}
-        textStyle={{
-          fontFamily: tempOptions.budgetPerPerson
-            ? "Jakarta-SemiBold"
-            : "Jakarta-Light",
-          textDecorationLine: "none",
-          fontSize: 18,
-          color: "white",
-        }}
-        label="set budget per person"
-        state={tempOptions.budgetPerPerson}
-        setState={(value: boolean) => {
-          setTempOptions((prev) => ({ ...prev, budgetPerPerson: value }));
-        }}
-      />
+    <View className="flex flex-col gap-4 items-center mb-1">
+      <Text className="text-lg font-JakartaMedium text-white self-start">
+        set a budget for your trip
+      </Text>
+
       <BouncyCheckboxClassic
         size={20}
         fillColor="white"

@@ -66,39 +66,24 @@ export const defaultDetailsCheckboxes = {
   hotels: false,
   hostels: false,
   resorts: false,
-  rentals: false,
   camping: false,
-  dorms: false,
   guidedTours: false,
   trails: false,
   urbanTrip: false,
-  sightseeing: false,
-  dayTrip: false,
-  includeFlights: false,
-  includeMeals: false,
-  includeTransport: false,
-  includeEvents: false,
 };
 // checkboxes key to label
-// -> settings
-export const settingsLabels = [
-  { key: "includeFlights", label: "include flights" },
-  { key: "includeMeals", label: "include meals" },
-  { key: "includeTransport", label: "include public transport" },
-  { key: "includeEvents", label: "include seasonal and local events" },
-] as const;
 // -> activities
 export const activitiesLabels = [
   { key: "guidedTours", label: "guided tours" },
-  { key: "trails", label: "trails" },
+  { key: "trails", label: "walikng trails" },
   { key: "urbanTrip", label: "urban trip" },
-  { key: "sightseeing", label: "sightseeing" },
+
   // { key: "dayTrip", label: "day trip" },
 ] as const;
 // -> accommodationLabels
 export const accommodationLabels = [
   { key: "hotels", label: "hotels" },
-  { key: "hostels", label: "hostels/dorms" },
+  { key: "hostels", label: "hostels" },
   { key: "resorts", label: "resorts" },
   { key: "camping", label: "camping" },
 ] as const;

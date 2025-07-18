@@ -65,6 +65,7 @@ const BouncyCheckboxClassic = ({
       return (
         <View className="flex-1 flex-row items-center justify-start ml-2">
           <Text
+            style={{ color: "white" }}
             className={`${state ? "font-JakartaBold" : "font-JakartaMedium"} ml-2 text-lg`}
           >
             {label}
