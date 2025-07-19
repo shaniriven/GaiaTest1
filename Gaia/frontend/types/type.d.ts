@@ -64,6 +64,7 @@ type DayPlan = {
   activities: Activity[];
   accommodation: string;
   transportation: string;
+  image?: any;
 };
 // -> Agent request type
 type AgentPlan = {

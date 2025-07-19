@@ -4,6 +4,7 @@ import json
 import os
 import re
 from datetime import datetime
+from time import timezone
 
 # import openai
 from app.extensions import mongo
@@ -40,10 +41,16 @@ def generate_prompt(data: any ) -> str:
         locations_prompt += " suggest flights or arrival ways from israel to the locations."
 
     # -> dates 
-    startDate = data.get("startDate", "")
+    # startDate = data.get("startDate", "")
+    startDate = data.get("startDate")
+    if not startDate:
+         startDate = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+    print("\ngenerate_prompt: startDate ", startDate, "\n")
     startDate = startDate.split("T")[0] if "T" in startDate else startDate
 
     endDate = data.get("endDate", "")
+    if not endDate:
+         endDate = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
     endDate = endDate.split("T")[0] if "T" in endDate else endDate
 
     # -> dates -> optimizeDates
@@ -51,7 +58,7 @@ def generate_prompt(data: any ) -> str:
     tripLength = data.get("tripLength", 1)
     dates_prompt = ""
     if optimize_dates:
-        dates_prompt = f"""make a plan for {tripLength} in the best season for the locations."""
+        dates_prompt = f"""make a plan for {tripLength} days in the near futer, and pick the best date for the location."""
     else:
         dates_prompt = f"""the trip is from {startDate} to {endDate}."""
         

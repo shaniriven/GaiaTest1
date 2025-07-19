@@ -16,11 +16,10 @@ import {
   View,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import BouncyCheckboxClassic from "../BouncyCheckboxClassic";
 
 const Dates = ({
   startDate = new Date(),
-  endDate,
+  endDate = new Date(addDays(new Date(), 1)),
   onChangeStart,
   onChangeEnd,
   handleOptimizedDatesSelect,
@@ -63,7 +62,7 @@ const Dates = ({
     useState<{ id: string; name: string; startDate: Date; endDate: Date }[]>(
       initialPlaces,
     );
-
+  const hasAnywhere = selectedPlaces.some((place) => place.name === "anywhere");
   const [destinationNumber, setDestinationNumber] = useState(
     locationList && Object.keys(locationList).length > 0
       ? Object.keys(locationList).length
@@ -224,11 +223,11 @@ const Dates = ({
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
-        <View className="flex-1 items-center justify-start mt-2 ">
+        <View className="flex-1 items-center justify-start mt-2 w-[350px]">
           <Text className="text-2xl font-JakartaBold">
             when would you like to travel?
           </Text>
-          <View className="mt-4 w-full items-center">
+          {/* <View className="mt-4 w-[90%] items-center">
             <View className="w-[85%] items-center">
               <BouncyCheckboxClassic
                 label="pick for me the best time"
@@ -238,7 +237,7 @@ const Dates = ({
                 icon="timeOptimize"
               />
             </View>
-          </View>
+          </View> */}
           {optimized ? (
             <View className="flex items-center w-full">
               {/* input row */}
@@ -280,10 +279,10 @@ const Dates = ({
               </View>
             </View>
           ) : (
-            <View className="flex flex-col items-center w-full mt-4">
-              <View className="flex flex-col justify-center gap-3 mt-4">
+            <View className="flex  flex-col items-center w-full mt-4">
+              <View className="w-[85%] flex flex-col justify-center gap-3 mt-4">
                 {/* Departure */}
-                <View className="flex flex-row justify-between items-center px-4 w-[80%]">
+                <View className="flex flex-row justify-between items-center px-4">
                   <Text className="text-xl font-JakartaMedium text-center">
                     departure day:
                   </Text>
@@ -315,63 +314,68 @@ const Dates = ({
                 </View>
               </View>
               {/* trip length header */}
-              <View className="flex flex-row items-center  mt-6 ">
-                <Fontisto name="day-sunny" size={20} color="gray" />
-                <Text className="text-base ml-1 font-[Jakarta-Medium] no-underline  text-gray-400 mr-2">
-                  {tripLength} days,
-                </Text>
-                <Ionicons name="moon-outline" size={18} color="gray" />
-                <Text className="text-base ml-1 font-[Jakarta-Medium] no-underline  text-gray-400">
-                  {tripLength - 1} nights
-                </Text>
-              </View>
+              {!hasAnywhere && (
+                <View className="flex flex-row items-center  mt-6 ">
+                  <Fontisto name="day-sunny" size={20} color="gray" />
+                  <Text className="text-base ml-1 font-[Jakarta-Medium] no-underline  text-gray-400 mr-2">
+                    {tripLength} days,
+                  </Text>
+                  <Ionicons name="moon-outline" size={18} color="gray" />
+                  <Text className="text-base ml-1 font-[Jakarta-Medium] no-underline  text-gray-400">
+                    {tripLength - 1} nights
+                  </Text>
+                </View>
+              )}
 
               {/* destinations ScrollView  */}
-              <ScrollView
-                className="w-full max-h-[300px] mt-4 pt-3 px-5 "
-                contentContainerStyle={{ gap: 10 }}
-              >
-                {selectedPlaces.map((place, index) => {
-                  const isLast = index === selectedPlaces.length - 1;
-                  const isFirst = index === 0;
+              {!hasAnywhere && (
+                <ScrollView
+                  className="w-full max-h-[300px] mt-4 pt-3 px-5 bg-white"
+                  contentContainerStyle={{ gap: 10, alignItems: "center" }}
+                >
+                  {selectedPlaces.map((place, index) => {
+                    const isLast = index === selectedPlaces.length - 1;
+                    const isFirst = index === 0;
 
-                  return (
-                    <View
-                      key={index}
-                      className="bg-[#f5f5f5] p-4 rounded-xl shadow-md w-full"
-                    >
-                      <Text className="text-lg font-JakartaBold mb-2">
-                        {place.name}
-                      </Text>
-                      {/* destination departure  */}
-                      <View className="flex-row justify-between items-center mb-2">
-                        <Text className="font-JakartaMedium mr-4">from:</Text>
-                        {isFirst ? (
-                          <Text className="text-base text-black font-JakartaMedium">
-                            {place.startDate.toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          </Text>
-                        ) : (
-                          // </View>
-                          <DateTimePicker
-                            value={place.startDate}
-                            mode="date"
-                            minimumDate={tripDeparture}
-                            maximumDate={tripReturn}
-                            display="default"
-                            onChange={(event, date) =>
-                              updateDestinationsDates(
-                                index,
-                                "departure",
-                                date || place.startDate,
-                              )
-                            }
-                          />
-                        )}
-                        {/* <DateTimePicker
+                    return (
+                      <View
+                        key={index}
+                        className="bg-[#f5f5f5] p-4 rounded-xl shadow-md w-[85%]"
+                      >
+                        <Text className="text-lg font-JakartaBold mb-2">
+                          {place.name}
+                        </Text>
+                        {/* destination departure  */}
+                        <View className="flex-row justify-between items-center mb-2">
+                          <Text className="font-JakartaMedium mr-4">from:</Text>
+                          {isFirst ? (
+                            <View className="px-4 py-2 rounded-xl bg-[#eeeeee]">
+                              <Text className="text-base text-black">
+                                {tripDeparture.toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </Text>
+                            </View>
+                          ) : (
+                            // </View>
+                            <DateTimePicker
+                              value={place.startDate}
+                              mode="date"
+                              minimumDate={tripDeparture}
+                              maximumDate={tripReturn}
+                              display="default"
+                              onChange={(event, date) =>
+                                updateDestinationsDates(
+                                  index,
+                                  "departure",
+                                  date || place.startDate,
+                                )
+                              }
+                            />
+                          )}
+                          {/* <DateTimePicker
                   value={place.startDate}
                   mode="date"
                   minimumDate={getMinDepartureDate(index)}
@@ -381,43 +385,44 @@ const Dates = ({
                     onChangeDestinationDeparture(event, date, index)
                   }
                 /> */}
+                        </View>
+                        {/* destination return */}
+                        <View className="flex-row justify-between items-center">
+                          <Text className="font-JakartaMedium">to:</Text>
+                          {isLast ? (
+                            <View className="px-4 py-2 rounded-xl bg-[#eeeeee]">
+                              <Text className="text-base text-black">
+                                {tripReturn.toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </Text>
+                            </View>
+                          ) : (
+                            <DateTimePicker
+                              value={place.endDate}
+                              mode="date"
+                              minimumDate={tripDeparture}
+                              maximumDate={tripReturn} // Add logic if you want to vary this per index
+                              display="default"
+                              onChange={(event, date) => {
+                                if (!date) return;
+                                updateDestinationsDates(
+                                  index,
+                                  "return",
+                                  date || place.startDate,
+                                );
+                              }}
+                            />
+                          )}
+                        </View>
                       </View>
-                      {/* destination return */}
-                      <View className="flex-row justify-between items-center">
-                        <Text className="font-JakartaMedium">to:</Text>
-                        {isLast ? (
-                          <View className="px-4 py-2 rounded-xl bg-[#eeeeee]">
-                            <Text className="text-base text-black">
-                              {tripReturn.toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })}
-                            </Text>
-                          </View>
-                        ) : (
-                          <DateTimePicker
-                            value={place.endDate}
-                            mode="date"
-                            minimumDate={tripDeparture}
-                            maximumDate={tripReturn} // Add logic if you want to vary this per index
-                            display="default"
-                            onChange={(event, date) => {
-                              if (!date) return;
-                              updateDestinationsDates(
-                                index,
-                                "return",
-                                date || place.startDate,
-                              );
-                            }}
-                          />
-                        )}
-                      </View>
-                    </View>
-                  );
-                })}
-                <View className="mt-16" />
-              </ScrollView>
+                    );
+                  })}
+                  <View className="mt-16" />
+                </ScrollView>
+              )}
             </View>
           )}
         </View>

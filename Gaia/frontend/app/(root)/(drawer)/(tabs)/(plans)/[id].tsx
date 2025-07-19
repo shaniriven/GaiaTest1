@@ -27,9 +27,9 @@ export default function PlanID() {
   const [loading, setLoading] = useState(false);
 
   const [tripName, setTripName] = useState(name);
-  const [finishedPickingName, setFinishedPickingName] = useState(
-    pickedName === "true",
-  );
+  const pickedNameBoolean = pickedName === "true"; //
+  const [finishedPickingName, setFinishedPickingName] =
+    useState(pickedNameBoolean);
 
   // Dynamically set the header by plan name
   useLayoutEffect(() => {
@@ -40,7 +40,7 @@ export default function PlanID() {
         height: 110,
       },
     });
-  }, [pathname]);
+  }, [pathname, finishedPickingName]);
 
   useEffect(() => {
     const fetchPlanData = async (plan_id: string) => {
@@ -56,12 +56,25 @@ export default function PlanID() {
         const planData = {
           ...plan,
         } as AgentPlan;
+        // console.log("[id]: useEffect pathname: before image lodad\n");
         const imageResponse = await axios.post(
           `${api_url}/plan/fetchPlanImages/`,
           { agent_plan: planData.id },
         );
+        // const imagePerDayResponse = await axios.post(
+        // `${api_url}/plan/createDayImages/`,
+        // { id: planData.id },
+        // );
+        // const { updatedPlan } = imagePerDayResponse.data;
+        // const updatedPlanData = {
+        // ...updatedPlan,
+        // } as AgentPlan;
+        // console.log(
+        // "[id]: useEffect pathname: image per day\n",
+        // updatedPlanData,
+        // );
         if (imageResponse) {
-          setActivePlan(planData);
+          setActivePlan(imageResponse.data);
           setDatesList(datesList);
           setGeneratedPlansList(generatedPlansList);
         }
@@ -102,6 +115,16 @@ export default function PlanID() {
           isActive={false}
           onPress={async () => {
             setFinishedPickingName(true);
+          }}
+        />
+        <TabButton
+          key={2}
+          title={"save"}
+          bgColor="bg-grayTab"
+          textColor="text-primary"
+          onPress={async () => {
+            console.log("[id]: 115");
+            setFinishedPickingName(true);
             const response = await axios.post(`${api_url}/plan/changeName/`, {
               tripName,
               id,
@@ -111,15 +134,6 @@ export default function PlanID() {
             } else {
               console.error("Failed to change name");
             }
-          }}
-        />
-        <TabButton
-          key={2}
-          title={"save"}
-          bgColor="bg-grayTab"
-          textColor="text-primary"
-          onPress={() => {
-            setFinishedPickingName(true);
           }}
           isActive={false}
         />

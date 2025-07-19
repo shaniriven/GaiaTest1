@@ -119,7 +119,9 @@ const DrawerMenu = (props: DrawerContentComponentProps) => {
                 elevation: isActive ? 2 : 0, // for Android shadow
               }}
               onPress={() =>
-                router.push(`/(plans)/${item._id}?name=${item.name}`)
+                router.push(
+                  `/(plans)/${item._id}?name=${item.name}&pickedName=ture`,
+                )
               }
               icon={({ color, size }) => (
                 <FontAwesome6

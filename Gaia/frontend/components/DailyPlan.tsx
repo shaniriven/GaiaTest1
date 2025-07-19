@@ -12,7 +12,7 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
 
   const [loading, setLoading] = useState(false);
   const [currentActivities, setCurrentActivities] = useState<Activity[]>([]);
-
+  const [plan, setPlan] = useState(daily_plan);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
     null,
@@ -23,6 +23,7 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
       try {
         setLoading(true);
         setCurrentActivities([]);
+
         const response = await axios.post(
           `${api_url}/plan/fetchActivitiesImages/`,
           { daily_plan_activities },
@@ -35,9 +36,8 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
         setLoading(false);
       }
     };
-
     fetchActivitiesImages(daily_plan.activities);
-  }, [daily_plan]);
+  }, [plan]);
 
   return (
     <View className="flex">
