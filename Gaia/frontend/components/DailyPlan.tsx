@@ -66,11 +66,11 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
             />
 
             <View className="flex-1 ml-4 justify-between">
-              {/* title and time container  */}
+              {/* title  */}
               <Text className="text-black text-base font-JakartaExtraBold text-lg mx-4">
                 {activity.title}
               </Text>
-              {/* Bottom Row: Time (left) + Info Icon (right) */}
+
               <View className="flex-row justify-between items-center mx-4 mt-2">
                 {/* Time with Sun Icon */}
                 <View className="flex-row items-center">
@@ -85,16 +85,23 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
                   </Text>
                 </View>
 
-                {/* Info Icon Button */}
-                <TouchableOpacity
-                  className="p-1.5"
-                  onPress={() => {
-                    setSelectedActivity(activity);
-                    setModalVisible(true);
-                  }}
-                >
-                  <Feather name="info" size={22} color="black" />
-                </TouchableOpacity>
+                <View className="flex-row items-center space-x-2 gap-4">
+                  {/* like and info buttons */}
+                  <TouchableOpacity onPress={() => {}}>
+                    {/* like */}
+                    <Feather name="heart" size={22} color="black" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedActivity(activity);
+                      setModalVisible(true);
+                    }}
+                  >
+                    {/* info */}
+                    <Feather name="info" size={22} color="black" />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>

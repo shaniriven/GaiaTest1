@@ -21,17 +21,17 @@ def chat_with_gemini():
     try:
         user_input = request.json.get("message", "")
         use_trips = request.json.get("useTrips", False)
+        user_id = request.json.get("user_id", "")
 
         if not user_input:
             return jsonify({"error": "Empty message"}), 400
-
-        user_id = "685e7eed2664126ae1e23d97"  # replace with session later
-
-        # Default context message to AI
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        if "Check my trip plan" in user_input:
+            use_trips = True
         initial_prompt = "Hi, what can I help you with?"
-
-        # Check trip context eligibility
         trip_context = ""
+
         if use_trips:
             user_trips = list(plans_collection.find({"creator": user_id}))
             if user_trips:
@@ -41,13 +41,10 @@ def chat_with_gemini():
                 ]
                 trip_context = "The user has the following trips planned:\n" + "\n".join(formatted)
                 print("📦 Trip Context:\n", trip_context)
-                # Send trip context before the first user message
                 chat_session.send_message(trip_context)
 
-        # Continue the conversation with user input
         response = chat_session.send_message(user_input)
 
-        # First reply is always fixed
         if len(chat_session.history) <= 2:
             reply = initial_prompt
         else:
@@ -59,6 +56,7 @@ def chat_with_gemini():
     except Exception as e:
         print("❌ Gemini Error:", e)
         return jsonify({"error": str(e)}), 500
+
 
 
 

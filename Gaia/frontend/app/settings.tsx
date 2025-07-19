@@ -69,12 +69,9 @@ const Settings = () => {
         </Text>
       </TouchableOpacity>
 
-      <Text style={[styles.section, themeStyles.text]}>🎛️ App Preferences</Text>
+      <Text style={[styles.section, themeStyles.text]}>App Preferences</Text>
 
-      <View style={styles.itemRow}>
-        <Text style={[styles.itemText, themeStyles.text]}>🌙 Dark Mode</Text>
-        <Switch value={darkMode} onValueChange={setDarkMode} />
-      </View>
+      
 
       <View style={styles.itemRow}>
         <Text style={[styles.itemText, themeStyles.text]}>

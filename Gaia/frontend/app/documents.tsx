@@ -7,6 +7,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as Linking from 'expo-linking';
 import { useUser } from '@clerk/clerk-expo';
 import config from '../config';
+import { useRouter } from 'expo-router';
 
 const api_url = config.api_url;
 

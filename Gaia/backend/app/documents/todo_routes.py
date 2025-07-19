@@ -1,83 +1,154 @@
 from flask import Blueprint, request, jsonify
-from app.extensions import mongo
 from bson import ObjectId
-import time
-import random
+from pymongo import MongoClient
+import os
 
-documents_bp = Blueprint('documents_bp', __name__)
+todo_bp = Blueprint('todo_routes', __name__)
 
-def generate_id():
-    return str(int(time.time() * 1000)) + str(random.randint(1000, 9999))
+mongo_uri = os.getenv("MONGO_URI")
+client = MongoClient(mongo_uri)
+todo_col = client.Users.todoLists
+users_col =client.Users.users
+plans_col = client.Users.plans
 
-# GET: Fetch existing to-do list for user & trip
-@documents_bp.route('/todo_list', methods=['GET'])
-def get_todo_list():
-    user_id = request.args.get('user_id')
-    trip_name = request.args.get('trip_name')
-    if not user_id or not trip_name:
-        return jsonify({'message': 'Missing user_id or trip_name'}), 400
+# Utility: get todoList document by trip_id and creator
+def get_todo_doc(creator, trip_id):
+    return todo_col.find_one({"creator": creator, "trip_id": trip_id})
 
-    db = mongo.get_db("Users")
-    todo_collection = db.get_collection("todoLists")
-    todo = todo_collection.find_one({'user_id': user_id, 'name': trip_name})
-
-    if not todo:
-        return jsonify({'exists': False, 'tasks': []})
-
-    tasks = todo.get('tasks', [])
-    updated = False
-
-    for task in tasks:
-        if 'id' not in task:
-            task['id'] = generate_id()
-            updated = True
-
-    if updated:
-        todo_collection.update_one({'_id': todo['_id']}, {'$set': {'tasks': tasks}})
-
-    return jsonify({
-        'exists': True,
-        'list_id': str(todo['_id']),
-        'trip_id': todo.get('trip_id'),
-        'tasks': tasks
-    })
-
-# ✅ POST: Create a new to-do list
-@documents_bp.route('/todo_list', methods=['POST'])
+# 1. Create new todo list
+@todo_bp.route('/todo/create', methods=['POST'])
 def create_todo_list():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    trip_name = data.get('trip_name')
-    trip_id = data.get('trip_id')
+    data = request.json
+    creator = data.get("creator")
+    trip_id = data.get("trip_id")
+    task = data.get("task")
 
-    if not user_id or not trip_name or not trip_id:
-        return jsonify({'message': 'Missing user_id, trip_name, or trip_id'}), 400
+    if not (creator and trip_id and task):
+        return jsonify({"error": "Missing required fields."}), 400
 
-    db = mongo.get_db("Users")
-    todo_collection = db.get_collection("todoLists")
-    users_collection = db.get_collection("users")
+    existing = get_todo_doc(creator, trip_id)
+    if existing:
+        return jsonify({"error": "Todo list already exists for this trip."}), 400
 
-    # Create new list
-    new_list = {
-        'list_id': ObjectId(),
-        'creator': user_id,
-        'trip_id': trip_id,
-        'name': trip_name,
-        'tasks': []
+    doc = {
+        "creator": creator,
+        "trip_id": trip_id,
+        task: True
     }
 
-    inserted = todo_collection.insert_one(new_list)
+    result = todo_col.insert_one(doc)
+    todo_id = str(result.inserted_id)
 
-    # Update user.todos field with the new list ID
-    users_collection.update_one(
-        {'creator': user_id},
-        {'$addToSet': {'todos': str(inserted.inserted_id)}},
-        upsert=True
+    users_col.update_one(
+        {"creator": creator},
+        {"$addToSet": {"todos": todo_id}}
     )
 
-    return jsonify({
-        'message': 'List created successfully',
-        'list_id': str(inserted.inserted_id),
-        'trip_id': trip_id,
-        'tasks': []
-    }), 201
+    return jsonify({"message": "Todo list created.", "todo_id": todo_id})
+
+# 2. Add task to existing todo list
+@todo_bp.route('/todo/add_task', methods=['POST'])
+def add_task():
+    print("Incoming data:", request.json) 
+    data = request.json
+    creator = data.get("creator")
+    trip_id = data.get("trip_id")
+    task = data.get("task")
+
+    if not (creator and trip_id and task):
+        return jsonify({"error": "Missing required fields."}), 400
+
+    result = todo_col.update_one(
+        {"creator": creator, "trip_id": trip_id},
+        {"$set": {task: True}}
+    )
+
+    if result.matched_count == 0:
+        return jsonify({"error": "Todo list not found."}), 404
+    elif result.modified_count == 0:
+        return jsonify({"message": "Task already exists."}), 200
+
+
+    return jsonify({"message": "Task added."})
+
+# 3. Mark task as done (set to False)
+@todo_bp.route('/todo/complete_task', methods=['POST'])
+def complete_task():
+    data = request.json
+    creator = data.get("creator")
+    trip_id = data.get("trip_id")
+    task = data.get("task")
+
+    if not (creator and trip_id and task):
+        return jsonify({"error": "Missing required fields."}), 400
+
+    doc = get_todo_doc(creator, trip_id)
+    if not doc or task not in doc:
+        return jsonify({"error": "Task not found."}), 404
+
+    todo_col.update_one(
+        {"_id": doc["_id"]},
+        {"$set": {task: False}}
+    )
+
+    # Check if all tasks are completed
+    updated_doc = todo_col.find_one({"_id": doc["_id"]})
+    tasks_only = {k: v for k, v in updated_doc.items() if k not in ["_id", "creator", "trip_id"]}
+    all_done = all(v is False for v in tasks_only.values())
+
+    return jsonify({"message": "Task marked as done.", "all_done": all_done})
+
+# 4. Delete entire todo list by trip and creator
+@todo_bp.route('/todo/delete_list', methods=['POST'])
+def delete_list():
+    data = request.json
+    creator = data.get("creator")
+    trip_id = data.get("trip_id")
+
+    if not (creator and trip_id):
+        return jsonify({"error": "Missing required fields."}), 400
+
+    doc = get_todo_doc(creator, trip_id)
+    if not doc:
+        return jsonify({"error": "Todo list not found."}), 404
+
+    todo_col.delete_one({"_id": doc["_id"]})
+
+    users_col.update_one(
+        {"creator": creator},
+        {"$pull": {"todos": str(doc["_id"])}}
+    )
+
+    return jsonify({"message": "Todo list deleted."})
+
+@todo_bp.route('/todo/plans', methods=['GET'])
+def get_user_plans():
+    user_id = request.args.get('creator')
+    if not user_id:
+        return jsonify({"error": "Missing creator parameter"}), 400
+
+    plans = list(plans_col.find({"creator": user_id}))
+    for plan in plans:
+        plan["_id"] = str(plan["_id"])
+    return jsonify(plans)
+
+@todo_bp.route('/todo/todos', methods=['GET'])
+def get_todo_list():
+    creator = request.args.get("user_id")  # changed from "creator"
+    trip_id = request.args.get("trip_id")
+
+    if not creator or not trip_id:
+        return jsonify({"error": "Missing user_id or trip_id"}), 400
+
+    doc = todo_col.find_one({"creator": creator, "trip_id": trip_id})
+    if not doc:
+        return jsonify({"tasks": []})  # Return empty if no list found
+
+    tasks = [
+        {"text": key, "done": not value}
+        for key, value in doc.items()
+        if key not in ["_id", "creator", "trip_id"]
+    ]
+
+    return jsonify({"tasks": tasks})
+
