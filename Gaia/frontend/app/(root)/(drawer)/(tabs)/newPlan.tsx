@@ -240,12 +240,12 @@ const NewPlan = () => {
     setLoading(true);
     try {
       //submitForm();
-      const interests_keys_activeLavels = defaultInterestsLabels.map(
-        ({ key, activeLabels }) => ({
-          key,
-          activeLabels,
-        }),
-      );
+     // const interests_keys_activeLavels = defaultInterestsLabels.map(
+       // ({ key, activeLabels }) => ({
+       //   key,
+       //   activeLabels,
+       // }),
+      //);
       const response = await axios.post(`${api_url}/trip/askAgent/`, {
         locations,
         locationOptions,

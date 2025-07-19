@@ -6,10 +6,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useLikedPlaces } from "@/context/LikedPLacesContext";
 
 const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
   const api_url = config.api_url;
-
+  const { likedPlaces, toggleLike } = useLikedPlaces();
   const [loading, setLoading] = useState(false);
   const [currentActivities, setCurrentActivities] = useState<Activity[]>([]);
   const [plan, setPlan] = useState(daily_plan);
@@ -87,9 +88,14 @@ const DailyPlan = ({ daily_plan }: DailyPlanProps) => {
 
                 <View className="flex-row items-center space-x-2 gap-4">
                   {/* like and info buttons */}
-                  <TouchableOpacity onPress={() => {}}>
-                    {/* like */}
-                    <Feather name="heart" size={22} color="black" />
+                  <TouchableOpacity onPress={() => toggleLike(activity)}>
+                    <Feather
+                      name="heart"
+                      size={22}
+                      color={
+                        likedPlaces.some((a) => a.title === activity.title) ? "red" : "black"
+                      }
+                    />
                   </TouchableOpacity>
 
                   <TouchableOpacity

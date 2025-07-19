@@ -99,7 +99,7 @@ def complete_task():
     return jsonify({"message": "Task marked as done.", "all_done": all_done})
 
 # 4. Delete entire todo list by trip and creator
-@todo_bp.route('/todo/delete_list', methods=['POST'])
+@todo_bp.route('/todo/delete_list', methods=['DELETE'])
 def delete_list():
     data = request.json
     creator = data.get("creator")

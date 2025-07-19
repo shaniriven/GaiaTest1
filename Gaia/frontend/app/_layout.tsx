@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
+import { LikedPlacesProvider } from "@/context/LikedPLacesContext";
 
 // Clerk imports
 import { ResetProvider } from "@/contexts/ResetContext";
@@ -51,12 +52,14 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
         <ClerkLoaded>
+          <LikedPlacesProvider>
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(root)" options={{ headerShown: false }} /> 
             <Stack.Screen name="+not-found" />
           </Stack>
+          </LikedPlacesProvider>
           <StatusBar style="auto" />
         </ClerkLoaded>
       </ClerkProvider>
