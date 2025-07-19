@@ -6,11 +6,11 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
-import { Drawer } from 'expo-router/drawer';
 
 // Clerk imports
+import { ResetProvider } from "@/contexts/ResetContext";
+import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
-import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
@@ -47,6 +47,7 @@ export default function RootLayout() {
   }
 
   return (
+    <ResetProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
         <ClerkLoaded>
@@ -60,5 +61,6 @@ export default function RootLayout() {
         </ClerkLoaded>
       </ClerkProvider>
     </GestureHandlerRootView>
+    </ResetProvider>
   );
 }

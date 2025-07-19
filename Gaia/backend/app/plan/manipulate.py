@@ -12,7 +12,9 @@ def generate_dates_list(data: str, itinerary: dict) -> List[Dict]:
     dates_list = []
     current_date = start_date
     # day_counter = 1
-
+    print("\nmanipulate: generate_dates_list: start_date ", start_date)
+    print("\nmanipulate: generate_dates_list: end_date ", end_date)
+    print("\nmanipulate: generate_dates_list: current_date ", current_date)
     while current_date <= end_date:
         date_key = current_date.strftime("%Y-%m-%d")
         # format to dd.mm
@@ -23,4 +25,5 @@ def generate_dates_list(data: str, itinerary: dict) -> List[Dict]:
         })
         dates_list.append(day_data)
         current_date += timedelta(days=1)
+    print("manipulate: generate_dates_list: dates_list", dates_list)
     return dates_list

@@ -1,6 +1,7 @@
+import { useReset } from "@/contexts/ResetContext";
 import { NewTripScreenProps } from "@/types/declarations";
 import { LocationOptions } from "@/types/type";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -20,13 +21,13 @@ const Location = ({
   locationList = {},
   locationOptions = {
     anywhere: false,
-    suggestFlights: false,
+    suggestFlights: true,
   },
-  resetTrigger = 0,
 }: NewTripScreenProps) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
+  const { resetTrigger } = useReset();
 
   const initialPlaces = Object.entries(locationList).map(([id, value]) => ({
     id,
@@ -43,13 +44,19 @@ const Location = ({
     suggestFlights: locationOptions.suggestFlights,
   });
 
-  // useEffect(() => {
-  //   setSelectedPlaces([]);
-  //   setOptions({
-  //     anywhere: false,
-  //     suggestFlights: false,
-  //   });
-  // }, [resetTrigger]);
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      setSelectedPlaces([]);
+      setOptions({
+        anywhere: false,
+        suggestFlights: true,
+      });
+    } else {
+      hasMounted.current = true;
+    }
+  }, [resetTrigger]);
 
   useEffect(() => {
     handleLocationOptionsSelect(options);
@@ -116,19 +123,24 @@ const Location = ({
             </View>
           )}
           <View className="flex flex-row flex-wrap justify-start items-center gap-2 mt-7 z-0">
-            {selectedPlaces.map((place) => (
-              <View
-                key={place.id}
-                className="flex-row items-center bg-tabs-100 px-3 py-1 rounded-full mr-2 mb-2 border-[0.5px] border-gaiaGreen-100"
-              >
-                <Text className="text-md font-JakartaMedium text-white mr-3">
-                  {place.name}
-                </Text>
-                <TouchableOpacity onPress={() => handleRemovePlace(place.id)}>
-                  <Text className="text-white text-lg">×</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            {selectedPlaces.map(
+              (place) =>
+                place.name !== "anywhere" && (
+                  <View
+                    key={place.id}
+                    className="flex-row items-center bg-tabs-100 px-3 py-1 rounded-full mr-2 mb-2 border-[0.5px] border-gaiaGreen-100"
+                  >
+                    <Text className="text-md font-JakartaMedium text-white mr-3">
+                      {place.name}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => handleRemovePlace(place.id)}
+                    >
+                      <Text className="text-white text-lg">×</Text>
+                    </TouchableOpacity>
+                  </View>
+                ),
+            )}
           </View>
         </View>
       </TouchableWithoutFeedback>

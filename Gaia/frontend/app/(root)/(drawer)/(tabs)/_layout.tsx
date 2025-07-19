@@ -1,9 +1,11 @@
 import ScreenHeader from "@/components/ScreenHeader";
+import { useReset } from "@/contexts/ResetContext";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { Tabs, useLocalSearchParams, useRouter } from "expo-router";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Modal, Platform, Text, TouchableOpacity, View } from "react-native";
 import "react-native-get-random-values";
 
 const validFontAwesomeIcons = [
@@ -53,6 +55,8 @@ const TabIcon = ({ source, focused }: TabIconPropsFixed) => {
 export default function Layout() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const { triggerReset } = useReset();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   return (
     <View className="flex-1">
@@ -118,18 +122,10 @@ export default function Layout() {
             headerTitle: () => <ScreenHeader text="New Trip" />,
             headerRight: () => (
               <TouchableOpacity
-                onPress={() => {
-                  // Your action here
-                  console.log("location delete button press");
-                }}
+                onPress={() => setShowConfirmModal(true)}
                 className="w-full flex-row justify-end items-end p-5"
               >
-                <AntDesign
-                  name="delete"
-                  size={20}
-                  color="black"
-                  className="mr-1"
-                />
+                <AntDesign name="delete" size={20} color="black" />
               </TouchableOpacity>
             ),
             tabBarIcon: ({ focused }) => (
@@ -205,6 +201,43 @@ export default function Layout() {
           }}
         />
       </Tabs>
+      {showConfirmModal && (
+        <Modal
+          transparent
+          animationType="fade"
+          visible={showConfirmModal}
+          onRequestClose={() => setShowConfirmModal(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <View className="w-4/5 bg-white rounded-2xl items-center py-14 px-4">
+              <Text className="text-xl font-JakartaSemiBold mb-4 text-center">
+                Are you sure you want to delete your trip?
+              </Text>
+              <View className="flex-row gap-4 mt-4">
+                <TouchableOpacity
+                  onPress={() => setShowConfirmModal(false)}
+                  className="px-4 py-2 bg-gray-200 rounded-xl"
+                >
+                  <Text className="text-black text-md font-JakartaSemiBold">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    triggerReset();
+                    setShowConfirmModal(false);
+                  }}
+                  className="px-4 py-2 bg-[#c64c4c] rounded-xl"
+                >
+                  <Text className="text-white text-black text-md font-JakartaSemiBold">
+                    Delete
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }

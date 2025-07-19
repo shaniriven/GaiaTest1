@@ -29,16 +29,16 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+
 const NewPlan = () => {
   const { user } = useUser();
   const api_url = config.api_url;
   const router = useRouter();
-  const [resetTrigger, setResetTrigger] = useState(0);
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState<Locations>({});
   const [locationOptions, setLocationOptions] = useState<LocationOptions>({
     anywhere: false,
-    suggestFlights: false,
+    suggestFlights: true,
   });
 
   const [startDate, setStartDate] = useState(new Date());
@@ -71,88 +71,15 @@ const NewPlan = () => {
 
   const translateX = useSharedValue(300);
   const pathname = usePathname();
-  // useEffect(() => {
-  //   if (pathname === "/newPlan") {
-  //     setActiveIndex(0);
-  //     reset("all");
-  //   }
-  // }, [pathname]);
+
   useEffect(() => {
     translateX.value = 300;
     translateX.value = withTiming(0, { duration: 1000 });
   }, [activeIndex]);
 
-  useEffect(() => {
-    console.log("NewPlan.tsx useEffect: tripLength changed to", tripLength);
-  }, [tripLength]);
-
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
-
-  // const resetAllScreens = () => {
-  //   resetAll();
-  //   setResetTrigger((prev) => prev + 1); // forces all children to reset
-  // };
-
-  // const resetAll = () => {
-  //   setLocations({});
-  //   setLocationOptions({ anywhere: false, suggestFlights: false });
-  //   setStartDate(new Date());
-  //   setEndDate(addDays(new Date(), 1));
-  //   setOptimizedDates(false);
-  //   setGroup({ adults: 1, children: 0, total: 1, type: "solo" });
-  //   setBudget({
-  //     budgetPerNight: false,
-  //     includeMeals: false,
-  //     budgetPerPerson: false,
-  //     range: [0, 200],
-  //   });
-  //   setDetails(defaultDetailsCheckboxes);
-  //   setInterestsList(defaultInterestsLabels);
-  //   setActiveIndex(0);
-  // };
-
-  // handle selection in screens
-  // const reset = (field: string) => {
-  //   switch (field) {
-  //     case "Locations":
-  //       setLocations({});
-  //       break;
-
-  //     case "all":
-  //       resetAll();
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // };
-  // -> location
-
-  // const calculateTripLength = (): number => {
-  // if (optimizedDates) {
-  //   return tripLength;
-  // } else {
-  //   const values = Object.values(locations);
-  //   if (values.length === 0) return 0;
-  //   // Sort by startDate to find first and last
-  //   const sortedByStart = [...values].sort(
-  //     (a, b) =>
-  //       new Date(a.startDate || 0).getTime() -
-  //       new Date(b.startDate || 0).getTime(),
-  //   );
-  //   const sortedByEnd = [...values].sort(
-  //     (a, b) =>
-  //       new Date(b.endDate || 0).getTime() -
-  //       new Date(a.endDate || 0).getTime(),
-  //   );
-  //   const firstStart = sortedByStart[0].startDate;
-  //   const lastEnd = sortedByEnd[0].endDate;
-  //   if (!firstStart || !lastEnd) return 0;
-  //   return differenceInDays(new Date(lastEnd), new Date(firstStart)) + 1;
-  // }
-  // };
 
   const handleSelectLocation = (locations: Locations) => {
     console.log("newPlan.tsx handleSelectLocation:", locations);
@@ -166,7 +93,6 @@ const NewPlan = () => {
     setLocationOptions(options);
   };
 
-  // -> dates
   const onChangeStart = (pickedDate: Date) => {
     setStartDate(pickedDate);
   };
@@ -231,7 +157,6 @@ const NewPlan = () => {
             handleLocationOptionsSelect={handleSelectLocationOptions}
             locationList={locations}
             locationOptions={locationOptions}
-            resetTrigger={resetTrigger}
           />
         );
       case 1:

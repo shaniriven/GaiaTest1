@@ -26,7 +26,7 @@ def changeName():
     try:
         data = request.get_json()
         plan_id = data.get("id")
-        new_name = data.get("name")
+        new_name = data.get("tripName")
         if not plan_id or not new_name:
             return jsonify({"error": "Missing id or name parameter"}), 400
 
@@ -40,7 +40,9 @@ def changeName():
     except Exception as e:
         print("Error changing plan name:", e)
         return jsonify({"error": "Internal Server Error"}), 500
-    
+
+
+
 @bp.route('fetchActivitiesImages/', methods=['POST'])
 def fetchActivitiesImages():
     try:
@@ -61,19 +63,6 @@ def fetchActivitiesImages():
             if existing_image_doc:
                 image_data_bytes = existing_image_doc["image"]
                 base64_image_str = base64.b64encode(image_data_bytes).decode('utf-8')
-            # else:
-            #     formatted_prompt = prompt.replace(" ", "-")
-            #     # print('\nformatted_prompt: ', formatted_prompt, "\n")
-            #     url = f"https://image.pollinations.ai/prompt/{formatted_prompt}"
-            #     response = requests.get(url)
-            #     if response.status_code != 200:
-            #         return jsonify({"error": "Failed to generate image"}), 500
-            #     image_doc = {
-            #         "prompt": prompt,
-            #         "image": response.content
-            #     }
-            #     images_collection.insert_one(image_doc)
-            #     base64_image_str = base64.b64encode(response.content).decode('utf-8')
             activity["image"] = base64_image_str
         # print(activities)
         return jsonify({
@@ -84,6 +73,132 @@ def fetchActivitiesImages():
         print("Error fetching plans fetchActivitiesImages:", e)
         return jsonify({"error": "Internal Server Error"}), 500
     
+# @bp.route('createDayImages/', methods=['POST'])
+# def createDayImages():
+#     try:
+#         data = request.get_json()
+#         planId = data.get("id", [])
+#         if not planId:
+#             return jsonify({"error": "Missing planId parameter"}), 400
+
+#         db = mongo.get_db("Users")
+#         plans_collection = db.get_collection("plans")
+#         plan = plans_collection.find_one({"_id": planId})
+#         if not plan:
+#             return jsonify({"error": "Plan not found"}), 404
+#         itinerary = plan.get("itinerary", {})
+#         themes = []
+#         for day_data in itinerary.values():
+#             day_theme = day_data.get("theme", "image of people in vacation")
+#             themes.append(day_theme)
+#         db = mongo.get_db("GaiaDB") 
+#         images_collection = db.get_collection("day_images")
+
+#         for day_data in itinerary.values():
+#             day_theme = day_data.get("theme", "image of people in vacation")
+#             existing_image_doc = images_collection.find_one({"prompt": day_theme})
+#             if existing_image_doc:
+#                 image_data_bytes = existing_image_doc["image"]
+#                 base64_image_str = base64.b64encode(image_data_bytes).decode('utf-8')
+#             else:
+#                 formatted_prompt = day_theme.replace(" ", "-")
+#                 print('\ncreatePlanImages(): formatted_prompt: ', formatted_prompt, "\n")
+#                 url = f"https://image.pollinations.ai/prompt/{formatted_prompt}"
+#                 response = requests.get(url)
+#                 if response.status_code != 200:
+#                     return jsonify({"error": "Failed to generate image"}), 500
+
+#                 image_data_bytes = response.content
+#                 base64_image_str = base64.b64encode(image_data_bytes).decode('utf-8')
+
+#                 image_doc = {
+#                     "prompt": day_theme,
+#                     "image": image_data_bytes
+#                 }
+#                 images_collection.insert_one(image_doc)
+
+#                 plans_collection.update_one(
+#                     {"_id": planId},
+#                     {"$set": {"image": base64_image_str}}
+#                 )
+#             day_data["image"] = base64_image_str
+#         updatedPlan = plans_collection.find_one({"_id": planId})
+#         return jsonify({
+#             "updatedThemes": themes,
+#             "updatedPlan": updatedPlan,
+#          }), 200
+
+#     except Exception as e:
+#         print("Error fetching plans createPlanImages:", e)
+#         return jsonify({"error": str(e)}), 500
+
+@bp.route('createDayImages/', methods=['POST'])
+def createDayImages():
+    try:
+        data = request.get_json()
+        planId = data.get("id", None)
+        if not planId:
+            return jsonify({"error": "Missing planId parameter"}), 400
+
+        db = mongo.get_db("Users")
+        plans_collection = db.get_collection("plans")
+        plan = plans_collection.find_one({"_id": planId})
+        if not plan:
+            return jsonify({"error": "Plan not found"}), 404
+
+        itinerary = plan.get("itinerary", {})
+        db = mongo.get_db("GaiaDB")
+        images_collection = db.get_collection("day_images")
+
+        updated_themes = []
+
+        for day_key, day_data in itinerary.items():
+            day_theme = day_data.get("theme", "image of people in vacation")
+            updated_themes.append(day_theme)
+
+            existing_image_doc = images_collection.find_one({"prompt": day_theme})
+            if existing_image_doc:
+                image_data_bytes = existing_image_doc["image"]
+                base64_image_str = base64.b64encode(image_data_bytes).decode('utf-8')
+            else:
+                formatted_prompt = day_theme.replace(" ", "-")
+                url = f"https://image.pollinations.ai/prompt/{formatted_prompt}"
+                response = requests.get(url)
+                if response.status_code != 200:
+                    return jsonify({"error": "Failed to generate image"}), 500
+
+                image_data_bytes = response.content
+                base64_image_str = base64.b64encode(image_data_bytes).decode('utf-8')
+
+                image_doc = {
+                    "prompt": day_theme,
+                    "image": image_data_bytes
+                }
+                images_collection.insert_one(image_doc)
+
+            # Update image inside day_data
+            day_data["image"] = base64_image_str
+
+        # Save the updated itinerary to the DB
+        plans_collection.update_one(
+            {"_id": planId},
+            {"$set": {"itinerary": itinerary}}
+        )
+
+        updated_plan = plans_collection.find_one({"_id": planId})
+        return jsonify({
+            "updatedThemes": updated_themes,
+            "updatedPlan": updated_plan,
+        }), 200
+
+    except Exception as e:
+        print("Error in createDayImages:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
 @bp.route('fetchPlanImages/', methods=['POST'])
 def fetchPlanImages():
     try:
@@ -135,7 +250,7 @@ def fetchPlanImages():
 
     except Exception as e:
         print("Error fetching plans fetchPlanImages:", e)
-        return jsonify({"error": "fetchPlanImages"}), 500
+        return jsonify({"error": e}), 500
 
 
 @bp.route('fetchPlanData/', methods=['GET'])

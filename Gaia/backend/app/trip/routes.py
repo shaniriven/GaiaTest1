@@ -63,6 +63,7 @@ def askAgent():
         generated_text = response.text
         user_id = data.get("user_id")
         plan_id_json = save_plan_in_mongo(generated_text, user_id)
+        print("\naskAgent(): plan_id_json: ", plan_id_json)
         return plan_id_json, 200
     except Exception as e:
         print("An error occurred in /askAgent route:")

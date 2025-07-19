@@ -2,13 +2,14 @@ import CustomTripButton from "@/components/CustomTripButton";
 import config from "@/config";
 import { AgentPlan } from "@/types/type";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router, usePathname } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+
 import {
   ActivityIndicator,
   Animated,
-  Dimensions,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -18,6 +19,9 @@ import {
 } from "react-native";
 
 export default function Page() {
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
   const { user } = useUser();
   const user_id = user?.id || "1";
   const api_url = config.api_url;
@@ -28,8 +32,8 @@ export default function Page() {
 
   const [currentPlan, setCurrentPlan] = useState<AgentPlan | null>(null);
 
-  const screenWidth = Dimensions.get("window").width;
-  const slideAnim = useRef(new Animated.Value(screenWidth)).current;
+  // const screenWidth = Dimensions.get("window").width;
+  // const slideAnim = useRef(new Animated.Value(screenWidth)).current;
   const pathname = usePathname();
 
   useEffect(() => {
@@ -96,23 +100,6 @@ export default function Page() {
       </View>
     );
   }
-
-  //
-
-  // check
-  // const formatDateRange = (startDate: string, endDate: string) => {
-  //   const [day1, month1, year1] = startDate.split("-").map(Number);
-  //   const [day2, month2, year2] = endDate.split("-").map(Number);
-
-  //   if (year1 === year2 && month1 === month2)
-  //     return `${day1}-${day2}.${month1}.${String(year1).slice(2)}`;
-  //   else if (year1 === year2)
-  //     return `${day1}.${month1}-${day2}.${month2}.${String(year1).slice(2)}`;
-  //   else return `${day1}.${month1}.${year1}-${day2}.${month2}.${year2}`;
-  // };
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
   return (
     <View className="flex-1 bg-white">
       <SignedIn>
@@ -123,6 +110,7 @@ export default function Page() {
             <View className="flex w-full p-4 h-full">
               <View className="flex-row flex-wrap justify-center">
                 {plansLabels.length > 0 ? (
+                  //  planned trips list
                   plansLabels.map((plan: AgentPlan, index) => (
                     <CustomTripButton
                       title={plan.name}
@@ -139,10 +127,29 @@ export default function Page() {
                     ></CustomTripButton>
                   ))
                 ) : (
+                  // no planned trips
                   <View className="flex-1 items-center justify-center">
-                    <Text className="text-lg font-JakartaMedium">
-                      No planned trips yet
-                    </Text>
+                    <View className="justify-start items-center gap-2">
+                      <View className="items-center justify-center bg-gray-100 shadow-md rounded-2xl px-3 py-3 w-full h-[60%] mb-12">
+                        {/* label */}
+                        <View className="flex flex-row items-center ">
+                          <Entypo name="globe" size={24} color="black" />
+                          <Text className="text-black text-xl font-JakartaBold mx-3 pl-1">
+                            No trips planned
+                          </Text>
+                        </View>
+                        <Text className="text-black text-xl font-Jakarta m-1 pt-5 px-2">
+                          click the button below to start planning
+                        </Text>
+                      </View>
+                      <View className="mt-20">
+                        <MaterialIcons
+                          name="arrow-downward"
+                          size={56}
+                          color="black"
+                        />
+                      </View>
+                    </View>
                   </View>
                   // <View className="flex  mt-3 items-center justify-center">
                   //   {/* choose name screen */}
