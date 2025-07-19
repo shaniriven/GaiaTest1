@@ -2,7 +2,7 @@
 import { InputFieldProps } from "@/types/declarations";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react";
-import { View, Text, Image, TextInput } from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 
 const InputField = ({
   label,
@@ -17,6 +17,7 @@ const InputField = ({
   ...props
 }: InputFieldProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View className="my-2 w-full">
@@ -41,11 +42,25 @@ const InputField = ({
         <TextInput
           className={`rounded-full p-4 font-JakartaSemiBold text-[15px] flex-1 ${inputStyle}`}
           placeholderTextColor="gray"
-          secureTextEntry={secureTextEntry}
+          secureTextEntry={secureTextEntry && !showPassword}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           {...props}
         />
+
+        {/* Password toggle icon */}
+        {secureTextEntry && (
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            className="mr-4"
+          >
+            <FontAwesome
+              name={showPassword ? "eye-slash" as any : "eye" as any}
+              size={20}
+              color={isFocused ? "#13875b" : "gray"}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
     //   </TouchableWithoutFeedback>

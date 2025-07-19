@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Text, ScrollView, View, Image, Alert } from "react-native";
+import { Text, ScrollView, View, Image, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { singUpImage, icons } from "../../constants/index";
 import InputField from "@/components/InputField";
@@ -13,23 +13,19 @@ const SignIn = () => {
   const router = useRouter()
   const [form, setForm] = useState({ email: '', password: '',});
   
-  // auth using clerk 
-  // Handle the submission of the sign-in form
+
   const onSignInPress = useCallback(async () => {
     if (!isLoaded) return
-    // Start the sign-in process using the email and password provided
     try {
       const signInAttempt = await signIn.create({
         identifier: form.email,
         password: form.password,
       })
 
-      // If sign-in process is complete, set the created session as active and redirect the user
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId })
         router.replace('/')
       } else {
-        // If the status isn't complete, check why. User might need to complete further steps.
         Alert.alert('Error','error, cant sign in')
       }
     } catch (err: any) {
@@ -39,18 +35,23 @@ const SignIn = () => {
 
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView 
+      className="flex-1 bg-white"
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
       <View className="flex-1 bg-white">
-        <View className="relative w-full h-[250px] mt-6">
-          <Image source={singUpImage} className="z-0 w-full h-[250px]" />
+        <View className="relative w-full h-[100px] mt-6">
+          <Image source={singUpImage as any} className="z-0 w-full h-[200px]" />
         </View>
-        <View className="px-4 left-5" style={{ marginTop: 60 }}>
+        <View className="px-4 left-5" style={{ marginTop: 150 }}>
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5">
             Welcome 👋
           </Text>
         </View>
 
-        <View className="ml-5 mr-5">
+        <View className="ml-5 mr-5 mt-8">
           <InputField 
             label="Email"
             placeholder="Enter your email"
@@ -62,6 +63,11 @@ const SignIn = () => {
                 email: value,
               })
             }
+            containerStyle="mb-6"
+            inputStyle="text-base"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <InputField 
             label="Password"
@@ -75,10 +81,14 @@ const SignIn = () => {
                 password: value,
               })
             }
+            containerStyle="mb-8"
+            inputStyle="text-base"
+            autoCapitalize="none"
+            autoCorrect={false}
           />
-          <CustomButton title="Sign In" onPress={onSignInPress} className="mt-10" bgVariant="primary" />
+          <CustomButton title="Sign In" onPress={onSignInPress} className="mt-6" bgVariant="primary" />
           <OAuth/>
-          <Link href="/sign-up" className="text-lg text-center text-general-200 mt-5">
+          <Link href="/sign-up" className="text-lg text-center text-general-200 mt-5 mb-8">
             <Text>Don't have an account? </Text>
             <Text className="text-primary-111">Sign Up</Text>
           </Link>

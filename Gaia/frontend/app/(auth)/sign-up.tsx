@@ -114,6 +114,9 @@ const onVerifyPress = async () => {
                 email: value,
               })
             }
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <InputField 
             label="Password"
