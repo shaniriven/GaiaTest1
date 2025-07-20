@@ -27,5 +27,16 @@ def create_app(config_class=Config):
     from app.documents import documents_bp
     app.register_blueprint(documents_bp)
 
+    from app.chats.routes import chat_bp
+    app.register_blueprint(chat_bp)
+
+    from app.documents.saved_chats_routes import saved_chats_bp
+    app.register_blueprint(saved_chats_bp, url_prefix='/documents')
+
+    from app.documents.todo_routes import todo_bp
+    app.register_blueprint(todo_bp, url_prefix='/documents')
+
+    for rule in app.url_map.iter_rules():
+        print(rule)
 
     return app

@@ -14,6 +14,7 @@ const validFontAwesomeIcons = [
   "plus",
   "search",
   "wechat",
+  "heart"
   // add any other icon names you use here
 ] as const;
 
@@ -140,9 +141,9 @@ export default function Layout() {
             headerStyle: {
               height: 110,
             },
-            headerTitle: () => <ScreenHeader text="Search" />,
+            headerTitle: () => <ScreenHeader text="Liked places & activities" />,
             tabBarIcon: ({ focused }) => (
-              <TabIcon source="search" focused={focused} />
+              <TabIcon source="heart" focused={focused} />
             ),
           }}
         />

@@ -114,6 +114,9 @@ const onVerifyPress = async () => {
                 email: value,
               })
             }
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <InputField 
             label="Password"
@@ -130,8 +133,6 @@ const onVerifyPress = async () => {
           />
 
           <CustomButton title="Sign Up" onPress={onSignUpPress} className="mt-10" bgVariant="primary"/>
-          
-          <OAuth/>
           
           <Link href="/sign-in" className="text-lg text-center text-general-200 mt-5">
             <Text>Already have an account? </Text>

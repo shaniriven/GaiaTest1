@@ -31,13 +31,7 @@ const User = () => {
           />
         </Link>
 
-        <Link href="/likedPlaces" asChild>
-          <CustomButton
-            title={"Liked Places"}
-            IconLeft={<AntDesign name="hearto" size={24} color="white" />}
-            className="w-[48%] flex-row items-center rounded-[10px] h-[80px]"
-          />
-        </Link>
+        
 
         <Link href="/documents" asChild>
           <CustomButton

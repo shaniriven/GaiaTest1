@@ -142,7 +142,7 @@ declare interface ScreenHeaderProps extends ViewProps {
 // input field
 declare interface InputFieldProps extends TextInputProps {
   label?: string;
-  icon?: any;
+  icon?: ImageSourcePropType;
   secureTextEntry?: boolean;
   labelStyle?: string;
   containerStyle?: string;
@@ -154,6 +154,8 @@ declare interface InputFieldProps extends TextInputProps {
   value?: string;
   onChangeText?: any;
   keyboardType?: KeyboardTypeOptions;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCorrect?: boolean;
 }
 
 // checkbox
