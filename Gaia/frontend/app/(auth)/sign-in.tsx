@@ -29,7 +29,7 @@ const SignIn = () => {
         Alert.alert('Error','error, cant sign in')
       }
     } catch (err: any) {
-      Alert.alert('Error', err.errors[0].longMessage)
+      Alert.alert('Error', 'invalid email or password');
     }
   }, [isLoaded, form.email, form.password])
 
