@@ -54,10 +54,6 @@ def askAgent():
     try:
         data = request.get_json()
         prompt = generate_prompt(data)
-        # client = genai.Client(api_key=GOOGLE_API_KEY)
-        # response = client.models.generate_content(
-        #     model="gemini-2.0-flash", contents=prompt
-        # )
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)
         generated_text = response.text
