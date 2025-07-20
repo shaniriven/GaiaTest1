@@ -87,7 +87,6 @@ const SignIn = () => {
             autoCorrect={false}
           />
           <CustomButton title="Sign In" onPress={onSignInPress} className="mt-6" bgVariant="primary" />
-          <OAuth/>
           <Link href="/sign-up" className="text-lg text-center text-general-200 mt-5 mb-8">
             <Text>Don't have an account? </Text>
             <Text className="text-primary-111">Sign Up</Text>

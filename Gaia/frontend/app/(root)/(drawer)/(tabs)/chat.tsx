@@ -47,9 +47,17 @@ export default function ChatScreen() {
   const navigation = useNavigation();
 
   const { params } = useRoute<any>();
-  const savedChat = params?.savedChat;
+  const savedChatString = params?.savedChat;
 
   useEffect(() => {
+    let savedChat = null;
+    if (typeof savedChatString === 'string') {
+      try {
+        savedChat = JSON.parse(savedChatString);
+      } catch (e) {
+        savedChat = null;
+      }
+    }
     if (savedChat && savedChat.conversation) {
       const formatted = savedChat.conversation.map((msg: any) => ({
         from: msg.sender,
@@ -58,7 +66,7 @@ export default function ChatScreen() {
       setChat(formatted);
       setChatStarted(true);
     }
-  }, []);
+  }, [savedChatString]);
 
   useEffect(() => {
     navigation.setOptions({

@@ -8,7 +8,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  SafeAreaView,
+  Platform,
 } from "react-native";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 const EditUser = () => {
   const { user } = useUser();
@@ -79,7 +82,7 @@ const EditUser = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       <Stack.Screen
         options={{
           headerTitle: "",
@@ -87,95 +90,141 @@ const EditUser = () => {
           headerBackTitle: "back",
         }}
       />
-      <Text style={styles.title}>Edit Profile</Text>
-
-      <Text style={styles.label}>Name:</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-        placeholder="Your full name"
-      />
-
-      <Text style={styles.label}>Current Password:</Text>
-      <View style={styles.inputWrapper}>
+      <View style={styles.headerContainer}>
+        <Feather name="user" size={30} color="#13875B" style={{ marginRight: 10 }} />
+        <Text style={styles.title}>Edit Profile</Text>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>Name</Text>
         <TextInput
-          style={styles.inputWithIcon}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
-          secureTextEntry={!showCurrentPassword}
-          placeholder="Current password"
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          placeholder="Your full name"
+          placeholderTextColor="#aaa"
         />
-        <TouchableOpacity
-          style={styles.eyeButton}
-          onPress={() => setShowCurrentPassword(!showCurrentPassword)}
-        >
-          <Text style={styles.eyeIcon}>{showCurrentPassword ? "👁️" : ""}</Text>
+
+        <Text style={styles.label}>Current Password</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.inputWithIcon}
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            secureTextEntry={!showCurrentPassword}
+            placeholder="Current password"
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowCurrentPassword(!showCurrentPassword)}
+          >
+            <Feather
+              name={showCurrentPassword ? "eye" : "eye-off"}
+              size={20}
+              color="#888"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>New Password</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.inputWithIcon}
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry={!showNewPassword}
+            placeholder="New password"
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowNewPassword(!showNewPassword)}
+          >
+            <Feather
+              name={showNewPassword ? "eye" : "eye-off"}
+              size={20}
+              color="#888"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Confirm Password</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.inputWithIcon}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!showConfirmPassword}
+            placeholder="Confirm password"
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            <Feather
+              name={showConfirmPassword ? "eye" : "eye-off"}
+              size={20}
+              color="#888"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
+          <Text style={styles.buttonText}>Save Changes</Text>
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.label}>New Password:</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.inputWithIcon}
-          value={newPassword}
-          onChangeText={setNewPassword}
-          secureTextEntry={!showNewPassword}
-          placeholder="New password"
-        />
-        <TouchableOpacity
-          style={styles.eyeButton}
-          onPress={() => setShowNewPassword(!showNewPassword)}
-        >
-          <Text style={styles.eyeIcon}>{showNewPassword ? "👁️" : ""}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.label}>Confirm Password:</Text>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.inputWithIcon}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={!showConfirmPassword}
-          placeholder="Confirm password"
-        />
-        <TouchableOpacity
-          style={styles.eyeButton}
-          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-        >
-          <Text style={styles.eyeIcon}>{showConfirmPassword ? "👁️" : ""}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
-        <Text style={styles.buttonText}>Save Changes</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#f6f8fa",
+    paddingTop: Platform.OS === "android" ? 40 : 0,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    marginTop: 10,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#222",
+    letterSpacing: 1,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 22,
+    marginHorizontal: 16,
+    marginBottom: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 2,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 6,
+    marginLeft: 2,
+    color: "#13875B",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 15,
+    backgroundColor: "#fafbfc",
+    fontSize: 15,
+    color: "#222",
   },
   inputWrapper: {
     position: "relative",
@@ -183,30 +232,36 @@ const styles = StyleSheet.create({
   },
   inputWithIcon: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    padding: 12,
     paddingRight: 40,
+    backgroundColor: "#fafbfc",
+    fontSize: 15,
+    color: "#222",
   },
   eyeButton: {
     position: "absolute",
     right: 10,
-    top: "50%",
-    transform: [{ translateY: -12 }],
-  },
-  eyeIcon: {
-    fontSize: 20,
+    padding: 4,
   },
   button: {
     backgroundColor: "#13875B",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 10,
+    shadowColor: "#13875B",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 2,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    letterSpacing: 0.5,
   },
 });
 

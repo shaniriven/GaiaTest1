@@ -134,8 +134,6 @@ const onVerifyPress = async () => {
 
           <CustomButton title="Sign Up" onPress={onSignUpPress} className="mt-10" bgVariant="primary"/>
           
-          <OAuth/>
-          
           <Link href="/sign-in" className="text-lg text-center text-general-200 mt-5">
             <Text>Already have an account? </Text>
             <Text className="text-primary-111">Log In</Text>

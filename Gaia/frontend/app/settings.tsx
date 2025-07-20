@@ -9,7 +9,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView,
+  Platform,
 } from "react-native";
+import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
 
 const Settings = () => {
   const router = useRouter();
@@ -31,8 +34,10 @@ const Settings = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              await user.delete();
-              Alert.alert("Account deleted");
+              if (user) {
+                await user.delete();
+                Alert.alert("Account deleted");
+              }
             } catch (err) {
               Alert.alert("Failed to delete account");
             }
@@ -45,7 +50,7 @@ const Settings = () => {
   const themeStyles = darkMode ? darkTheme : lightTheme;
 
   return (
-    <View style={[styles.container, themeStyles.container]}>
+    <SafeAreaView style={[styles.safeArea, themeStyles.container]}>
       <Stack.Screen
         options={{
           headerTitle: "",
@@ -53,46 +58,59 @@ const Settings = () => {
           headerBackTitle: "back",
         }}
       />
-      <Text style={[styles.header, themeStyles.text]}>Settings</Text>
-
-      <Text style={[styles.section, themeStyles.text]}>Account</Text>
-      <TouchableOpacity
-        style={styles.item}
-        onPress={() => router.push("/editUser")}
-      >
-        <Text style={[styles.itemText, themeStyles.text]}>Edit Profile</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.item} onPress={handleDeleteAccount}>
-        <Text style={[styles.itemText, { color: "red" }]}>
-          🗑️ Delete My Account
-        </Text>
-      </TouchableOpacity>
-
-      <Text style={[styles.section, themeStyles.text]}>App Preferences</Text>
-
-      
-
-      <View style={styles.itemRow}>
-        <Text style={[styles.itemText, themeStyles.text]}>
-          🔔 Push Notifications
-        </Text>
-        <Switch
-          value={notificationsEnabled}
-          onValueChange={setNotificationsEnabled}
-        />
+      <View style={styles.headerContainer}>
+        <Ionicons name="settings-sharp" size={32} color="#13875B" style={{ marginRight: 10 }} />
+        <Text style={[styles.header, themeStyles.text]}>Settings</Text>
       </View>
 
-      <TouchableOpacity
-        style={styles.item}
-        onPress={() => setAboutVisible(true)}
-      >
-        <Text style={[styles.itemText, themeStyles.text]}>ℹ️ About</Text>
-      </TouchableOpacity>
+      {/* Account Section */}
+      <View style={styles.card}>
+        <Text style={[styles.section, themeStyles.text]}>Account</Text>
+        <TouchableOpacity
+          style={styles.itemRow}
+          onPress={() => router.push("/editUser")}
+        >
+          <Feather name="user" size={20} color="#13875B" style={styles.icon} />
+          <Text style={[styles.itemText, themeStyles.text]}>Edit Profile</Text>
+          <MaterialIcons name="keyboard-arrow-right" size={22} color="#888" style={{ marginLeft: "auto" }} />
+        </TouchableOpacity>
+        <View style={styles.divider} />
+        <TouchableOpacity style={styles.itemRow} onPress={handleDeleteAccount}>
+          <MaterialIcons name="delete-outline" size={20} color="#c64c4c" style={styles.icon} />
+          <Text style={[styles.itemText, { color: "#c64c4c", fontWeight: "bold" }]}>Delete My Account</Text>
+        </TouchableOpacity>
+      </View>
 
+      {/* Preferences Section */}
+      <View style={styles.card}>
+        <Text style={[styles.section, themeStyles.text]}>App Preferences</Text>
+        <View style={styles.itemRow}>
+          <Ionicons name="notifications-outline" size={20} color="#13875B" style={styles.icon} />
+          <Text style={[styles.itemText, themeStyles.text]}>Push Notifications</Text>
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={setNotificationsEnabled}
+            thumbColor={notificationsEnabled ? "#13875B" : "#ccc"}
+            trackColor={{ true: "#b2e5d1", false: "#eee" }}
+            style={{ marginLeft: "auto" }}
+          />
+        </View>
+        <View style={styles.divider} />
+        <TouchableOpacity
+          style={styles.itemRow}
+          onPress={() => setAboutVisible(true)}
+        >
+          <Ionicons name="information-circle-outline" size={20} color="#13875B" style={styles.icon} />
+          <Text style={[styles.itemText, themeStyles.text]}>About</Text>
+          <MaterialIcons name="keyboard-arrow-right" size={22} color="#888" style={{ marginLeft: "auto" }} />
+        </TouchableOpacity>
+      </View>
+
+      {/* About Modal */}
       <Modal visible={aboutVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
+            <Ionicons name="leaf" size={36} color="#13875B" style={{ alignSelf: "center", marginBottom: 10 }} />
             <Text style={styles.modalTitle}>About Gaia</Text>
             <Text style={styles.modalText}>
               Gaia is a smart vacation planner developed as part of a final
@@ -108,16 +126,16 @@ const Settings = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const lightTheme = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f6f8fa",
   },
   text: {
-    color: "#000",
+    color: "#222",
   },
 });
 
@@ -131,32 +149,58 @@ const darkTheme = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    padding: 20,
+    paddingTop: Platform.OS === "android" ? 40 : 0,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    marginTop: 10,
+    paddingHorizontal: 20,
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
+    letterSpacing: 1,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 18,
+    marginHorizontal: 16,
+    marginBottom: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 2,
   },
   section: {
     fontSize: 18,
     fontWeight: "600",
-    marginTop: 20,
     marginBottom: 10,
-  },
-  item: {
-    paddingVertical: 15,
-  },
-  itemText: {
-    fontSize: 16,
+    marginLeft: 2,
   },
   itemRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 2,
+  },
+  itemText: {
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  icon: {
+    marginRight: 6,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 4,
+    marginLeft: 28,
   },
   modalOverlay: {
     flex: 1,
@@ -166,28 +210,39 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
+    padding: 28,
+    borderRadius: 18,
+    width: "85%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    elevation: 4,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#13875B",
   },
   modalText: {
     fontSize: 16,
     marginBottom: 20,
+    textAlign: "center",
+    color: "#222",
   },
   modalButton: {
     backgroundColor: "#13875B",
-    padding: 10,
-    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 8,
     alignItems: "center",
   },
   modalButtonText: {
     color: "#fff",
     fontWeight: "bold",
+    fontSize: 16,
   },
 });
 
